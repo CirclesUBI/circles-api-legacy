@@ -1,5 +1,3 @@
-import util from 'util';
-
 const level = process.env.LOG_LEVEL || 'debug';
 
 const levels = {

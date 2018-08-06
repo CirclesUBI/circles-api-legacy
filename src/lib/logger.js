@@ -11,7 +11,7 @@ const transports = [
   new (winston.transports.Console)({ level, formatter, timestamp: true })
 ];
 
-const client = new (winston.Logger)({ levels, transports });
+const client = winston.createLogger({ levels, transports });
 
 client.logErr = (e) => {
   if (e) client.error(e.message || 'error', e.stack || e);
