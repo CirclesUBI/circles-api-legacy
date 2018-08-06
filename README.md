@@ -1,4 +1,4 @@
-#Circles Api
+# Circles Api
 
 This holds the offchain components of the circles api
 
@@ -24,7 +24,7 @@ subscription information.
 **Response example**
 
 
-```json
+```
 {
   id: string,
   agreedToDisclaimer:boolean, 
@@ -56,7 +56,7 @@ Update allowed user parameters
 
 **Request body**
 
-```json
+```
 {
   displayName: string;
   email: string; ??
@@ -71,7 +71,7 @@ Update allowed user parameters
 **Response examples**
 
 
-```json
+```
 {
   id: string,
   agreedToDisclaimer:boolean, 
@@ -104,7 +104,7 @@ Get the profile of the currently Authenticated User along with basic subscriptio
 **Response examples**
 
 
-```json
+```
 {
   id: string,
   agreedToDisclaimer:boolean, 
@@ -136,7 +136,7 @@ Get the profile of the currently Authenticated User along with basic subscriptio
 
 **Request body**
 
-```json
+```
 {
   organizationName: string;
   email: string; ??
@@ -156,7 +156,7 @@ Get the profile of the currently Authenticated User along with basic subscriptio
 **Response examples**
 
 
-```json
+```
 {
   id: string,
   agreedToDisclaimer:boolean, 
@@ -200,7 +200,7 @@ if not organization id is passed, will return user notifications
 **Response example**
 
 
-```json
+```
 {
   id: string,
   desscription: string, 
