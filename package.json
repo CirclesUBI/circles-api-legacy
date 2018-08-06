@@ -1,0 +1,19 @@
+{
+  "name": "user-profile-service",
+  "version": "1.0.0",
+  "description": "Crud app for user and organization profiles",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CirclesUBI/circles-api.git"
+  },
+  "author": "ana0",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CirclesUBI/circles-api/issues"
+  },
+  "homepage": "https://github.com/CirclesUBI/circles-api#readme"
+}
