@@ -1,3 +1,4 @@
+import CognitoExpress from "cognito-express";
 import { cognitoPoolId, cognitoPoolRegion } from '../config/env';
 
 const cognitoExpress = new CognitoExpress({
@@ -7,4 +8,4 @@ const cognitoExpress = new CognitoExpress({
     tokenExpiration: 3600000 // 1 hour expiry
 });
 
-export cognitoExpress;
+export default cognitoExpress;
