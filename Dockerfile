@@ -36,7 +36,7 @@ RUN if [ "$SSH_KEY" ]; then  \
 
 # Build tools
 RUN apt-get install -y build-essential
-COPY app /app
+COPY . /app
 RUN cd /app && \
     npm --unsafe-perm install
 RUN cd /app && \
@@ -48,7 +48,15 @@ RUN cd /app && \
 FROM base as final
 COPY --from=build /app /app
 
+# Open port for dev
+EXPOSE 8080
+
+WORKDIR /app
+
+CMD ["npm", "start" ]
+
+
 # Add runit services
-COPY sv /etc/service 
-ARG BUILD_INFO
-LABEL BUILD_INFO=$BUILD_INFO
+# COPY sv /etc/service 
+# ARG BUILD_INFO
+# LABEL BUILD_INFO=$BUILD_INFO
