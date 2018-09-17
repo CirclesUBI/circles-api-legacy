@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r dotenv/config build/index.js",
-    "build": "babel src -q -d build/"
+    "build": "babel src -q -d build/",
+    "dev": "babel src -q -d build/ && node -r dotenv/config build/index.js"
   },
   "repository": {
     "type": "git",
