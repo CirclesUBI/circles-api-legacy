@@ -13,8 +13,4 @@ const transports = [
 
 const client = winston.createLogger({ levels, transports });
 
-client.logErr = (e) => {
-  if (e) client.error(e.message || 'error', e.stack || e);
-};
-
 export default client;
