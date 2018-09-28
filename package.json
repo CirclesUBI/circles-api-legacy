@@ -4,7 +4,10 @@
   "description": "Crud app for user and organization profiles",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config build/index.js",
+    "build": "babel src -q -d build/",
+    "dev": "babel src -q -d build/ && node -r dotenv/config build/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,11 +21,16 @@
   "homepage": "https://github.com/CirclesUBI/circles-api#readme",
   "dependencies": {
     "bignumber.js": "^7.2.1",
+    "body-parser": "^1.18.3",
+    "cognito-express": "^2.0.11",
     "express": "^4.16.3",
     "web3": "^1.0.0-beta.35",
     "winston": "^3.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
     "dotenv": "^6.0.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.0.0",
