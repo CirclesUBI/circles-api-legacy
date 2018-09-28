@@ -1,8 +1,5 @@
 module.exports = {
   "extends": "airbnb-base",
-  "plugins": [
-    "import"
-  ],
   "rules": {
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
