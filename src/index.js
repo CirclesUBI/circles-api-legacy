@@ -10,7 +10,7 @@ routes(app);
 app.listen(port, (err) => {
   if (err) log.error(err);
   else {
-    log.info(`Docker deploy successful.`);
+    log.info(`ECR deploy successful.`);
     log.info(`Server is now listening on :${port}`);
   }
 });
