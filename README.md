@@ -1,4 +1,4 @@
-# Circles Api
+# Circles Api ![Build Status](https://codebuild.eu-central-1.amazon.com/badges?uuid=...&branch=master)
 
 This holds the offchain components of the circles api
 
