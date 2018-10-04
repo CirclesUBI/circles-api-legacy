@@ -9,8 +9,5 @@ routes(app);
 
 app.listen(port, (err) => {
   if (err) log.error(err);
-  else {
-    log.info(`ECR deploy successful.`);
-    log.info(`Server is now listening on :${port}`);
-  }
+  else log.info(`Server listening on :${port}`);
 });
