@@ -1,6 +1,6 @@
 {
   "name": "user-profile-service",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "CRUD app for user and organization profiles",
   "main": "src/index.js",
   "scripts": {
