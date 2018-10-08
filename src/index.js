@@ -9,5 +9,5 @@ routes(app);
 
 app.listen(port, (err) => {
   if (err) log.error(err);
-  else log.info(`Ed and Julio are listening on :${port}`);
+  else log.info(`Ed Julio & Sarah are listening on :${port}`);
 });
