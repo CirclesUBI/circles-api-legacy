@@ -8,9 +8,18 @@ const defaultAppMsg = {
 const cognitoPoolId = process.env.COGNITO_POOL_ID;
 const cognitoPoolRegion = process.env.COGNITO_POOL_REGION;
 
+const postgres = {
+  host: process.env.PGHOST || 'localhost',
+  port: parseInt(process.env.PGPORT, 10) || 5432,
+  user: process.env.PGUSER || 'postgres',
+  password: process.env.PGPASSWORD || 'postgres',
+  database: process.env.PGDATABASE || 'postgres'
+};
+
 export {
   port,
   defaultAppMsg,
   cognitoPoolId,
-  cognitoPoolRegion
+  cognitoPoolRegion,
+  postgres
 }
