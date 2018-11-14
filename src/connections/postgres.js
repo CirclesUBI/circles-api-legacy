@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import { postgres } from '../config/environment';
+import { postgres } from '../config/env';
 
 export default Knex({
   client: 'pg',
