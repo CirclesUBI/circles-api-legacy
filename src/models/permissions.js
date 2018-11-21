@@ -1,7 +1,7 @@
 import CirclesModel from '../lib/postgresModels';
 
-export default class Permissions extends CirclesModel {
-  static get tableName() { return 'permissions'; }
+export default class Permission extends CirclesModel {
+  static get tableName() { return 'permission'; }
 
   static get jsonSchema() {
     return {
