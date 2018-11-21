@@ -1,10 +1,11 @@
 import AccessControl from 'role-acl';
-import Permissions from '../models/permissions';
+import Permission from '../models/permissions';
 
 const parsePermissions = perms => new AccessControl(perms);
 
 const getPermissionDocuments = async () => {
-  const perms = await Permissions.query().select('role resource action')
+  const perms = await Permission.query();
+  // for now we aren't filtering by attributes
   return perms.map((p) => { p.attributes = ['*']; return p; })
 };
 
