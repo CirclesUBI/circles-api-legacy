@@ -5,7 +5,7 @@ const authMiddleWare = (req, res, next) => {
 
   if (!accessToken) return res.status(401).send("Must provide accesstoken in header");
 
-  cognitoExpress.validate(accessToken, function(err, response) {
+  cognitoExpress.validate(accessToken, (err, response) => {
     if (err) return res.status(401).send(err);
     res.locals.user = response;
     next();
