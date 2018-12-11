@@ -8,10 +8,14 @@
     "start": "node -r dotenv/config build/index.js",
     "migrate:up": "npm run build:clean && npm run build && DEBUG=knex:query,knex:bindings ./node_modules/.bin/knex migrate:latest",
     "migrate:down": "npm run build:clean && npm run build && DEBUG=knex:query,knex:bindings ./node_modules/.bin/knex migrate:rollback",
+    "win_migrate:up": "npm run build:clean && npm run build && knex migrate:latest",
+    "win_migrate:down": "npm run build:clean && npm run build && knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
     "build": "babel src -q -d build/",
     "build:clean": "rm -rf build",
+    "win_build:clean": "rimraf build",
     "dev": "babel src -q -d build/ && node -r dotenv/config build/index.js",
+    "win_dev": "npm run build && nodemon build/index.js",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev"
   },
   "repository": {
@@ -43,6 +47,19 @@
     "dotenv": "^6.0.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.0.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.8"
+  },
+  "nodemonConfig": {
+    "events": {
+      "restart": "npm run build"
+    },
+    "exec": "babel-node",
+    "presets": "babel-preset-env",
+    "watch": ["src"],
+    "env": {
+      "NODE_ENV": "development"
+    },
+    "ext": "js,json"
   }
 }
