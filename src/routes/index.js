@@ -2,7 +2,9 @@ import bodyParser from 'body-parser';
 import authMiddleware from '../middleware/auth';
 import hasPermissionMiddleware from '../middleware/permissions';
 
-import userRouter from './user'
+import userRouter from './userRouter'
+
+const versionString = '/v1'
 
 export default function (app) {
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +18,5 @@ export default function (app) {
     hasPermissionMiddleware('ownUser', 'read'),
     (req, res) => res.status(200).json('Auth was successful!'));
 
-  app.use('/user', userRouter)
-  
+  app.use(versionString + '/user', userRouter)
 }

@@ -1,17 +1,7 @@
-import { Router } from 'express';
 // import * as HttpStatus from 'http-status-codes';
-// import * as userService from '../services/userService';
 // import { findUser, userValidator } from '../validators/userValidator';
 import PostgresDB from '../database';
 import User from '../models/user';
-
-const fakeUser = {
-  id: 'ed0490549ffn-9dflkdf73mvf',
-  displayName: 'Ed',
-  email: 'ed@ed.com',
-  profilePicUrl: 'pic',
-  agreedToDisclaimer: false
-}
 
 async function all (req, res) {
   console.log('all!')
@@ -31,8 +21,8 @@ async function findOne (req, res) {
   console.log('findOne!')
   const trx = await PostgresDB.startTransaction();
   try {
-    const user = await User.query(trx).where({ id: req.params.userId })
-    if (!user) throw new Error('No user.id: ' + req.params.userId)
+    const user = await User.query(trx).where({ id: req.params.id })
+    if (!user.length) throw new Error('No user.id: ' + req.params.id)
     await trx.commit();
     res.status(200).send(user);
   } catch (error) {    
@@ -46,8 +36,8 @@ async function addOne (req, res) {
   console.log('addOne!')
   const trx = await PostgresDB.startTransaction();
   try {
-    const userExists = await User.query(trx).where({ id: req.params.userId })
-    if (userExists.length) throw new Error('user.id exists: ' + req.params.userId)
+    const userExists = await User.query(trx).where({ id: req.params.id })
+    if (userExists.length) throw new Error('user.id exists: ' + req.params.id)
     const newUser = await User.query(trx).insert(req.body)
     await trx.commit();
     res.status(200).send(newUser);
@@ -58,4 +48,33 @@ async function addOne (req, res) {
   }
 }
 
-export default {all, findOne, addOne}
+async function updateOne (req, res) {
+  console.log('updateOne!')
+  const trx = await PostgresDB.startTransaction();
+  try {
+    const patchedUser = await User.query(trx).patchAndFetchById(req.params.id, req.body)
+    await trx.commit();
+    res.status(200).send(patchedUser);
+  } catch (error) {
+    console.error(error)
+    await trx.rollback();
+    res.status(500).send(error);
+  }
+}
+
+async function deleteOne (req, res) {
+  console.log('deleteOne!')
+  const trx = await PostgresDB.startTransaction();
+  try {
+    const result = await User.query(trx).delete().where({ id: req.params.id })
+    if (!result) throw new Error('No user.id: ' + req.params.id)
+    await trx.commit();
+    res.status(200).send();
+  } catch (error) {
+    console.error(error)
+    await trx.rollback();
+    res.status(500).send(error);
+  }
+}
+
+export default {all, findOne, addOne, updateOne, deleteOne}
