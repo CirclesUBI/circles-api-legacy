@@ -32,6 +32,7 @@
     "bignumber.js": "^7.2.1",
     "body-parser": "^1.18.3",
     "cognito-express": "^2.0.11",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
     "knex": "^0.15.2",
     "objection": "^1.4.0",
@@ -56,7 +57,9 @@
     },
     "exec": "babel-node",
     "presets": "babel-preset-env",
-    "watch": ["src"],
+    "watch": [
+      "src"
+    ],
     "env": {
       "NODE_ENV": "development"
     },
