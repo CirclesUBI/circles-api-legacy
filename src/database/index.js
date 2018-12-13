@@ -1,6 +1,5 @@
 import Knex from 'knex';
-import * as Path from 'path';
-
+import { transaction } from 'objection';
 import { postgres } from '../config/env';
 
 const postgresConfig = {
@@ -21,11 +20,7 @@ export default class PostgresDB {
   }
 
   static startTransaction() {
-    return new Promise((resolve, reject) => {
-      return PostgresDB.Connection.transaction(trx => {
-        return resolve(trx);
-      }).catch(reject);
-    })
+    return transaction.start(knex);
   }
 
   static async migrate() {

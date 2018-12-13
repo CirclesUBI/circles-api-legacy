@@ -21,21 +21,41 @@ async function all (req, res) {
     await trx.commit();
     res.status(200).send(users);
   } catch (error) {
+    console.error(error)
     await trx.rollback();
     res.status(500).send(error);
   }
 }
 
 async function findOne (req, res) {
-  // const trx = await DB.startTransaction();
-  // try {
-  //   const user = await User.findOne(trx, req.params.userId);
-  //   await trx.commit();
-  //   res.status(200).send(user);
-  // } catch (error) {
-  //   await trx.rollback();
-  //   res.status(500).send(error);
-  // }
+  console.log('findOne!')
+  const trx = await PostgresDB.startTransaction();
+  try {
+    const user = await User.query(trx).where({ id: req.params.userId })
+    if (!user) throw new Error('No user.id: ' + req.params.userId)
+    await trx.commit();
+    res.status(200).send(user);
+  } catch (error) {    
+    console.error(error)
+    await trx.rollback();
+    res.status(500).send(error);
+  }
 }
 
-export default {all, findOne}
+async function addOne (req, res) {
+  console.log('addOne!')
+  const trx = await PostgresDB.startTransaction();
+  try {
+    const userExists = await User.query(trx).where({ id: req.params.userId })
+    if (userExists.length) throw new Error('user.id exists: ' + req.params.userId)
+    const newUser = await User.query(trx).insert(req.body)
+    await trx.commit();
+    res.status(200).send(newUser);
+  } catch (error) {
+    console.error(error)
+    await trx.rollback();
+    res.status(500).send(error);
+  }
+}
+
+export default {all, findOne, addOne}
