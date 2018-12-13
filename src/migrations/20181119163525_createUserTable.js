@@ -9,7 +9,7 @@ exports.up = (knex, Promise) => {
     t.dateTime('updated_at');
     t.boolean('agreed_to_disclaimer').notNullable().defaultTo(false);
     t.string('device_id').notNullable();
-    t.string('device_endpoint').notNullable();
+    t.string('device_endpoint');
     t.string('phone_number').notNullable();
   });
 };

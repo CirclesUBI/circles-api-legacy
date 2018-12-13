@@ -3,6 +3,17 @@
 import PostgresDB from '../database';
 import User from '../models/user';
 
+function convertCognitoToUser (cognitoUser) {
+  return {
+    id: cognitoUser.sub,
+    deviceId: cognitoUser['custom:deviceId'],
+    email: cognitoUser.email,
+    displayName: cognitoUser.name,
+    phoneNumber: cognitoUser.phone_number,
+    profilePicUrl: cognitoUser.picture
+  }
+}
+
 async function all (req, res) {
   console.log('all!')
   const trx = await PostgresDB.startTransaction();
@@ -38,7 +49,9 @@ async function addOne (req, res) {
   try {
     const userExists = await User.query(trx).where({ id: req.params.id })
     if (userExists.length) throw new Error('user.id exists: ' + req.params.id)
-    const newUser = await User.query(trx).insert(req.body)
+    let circlesUser = convertCognitoToUser(req.body)
+    console.log('adding', circlesUser)
+    const newUser = await User.query(trx).insert(circlesUser)
     await trx.commit();
     res.status(200).send(newUser);
   } catch (error) {
