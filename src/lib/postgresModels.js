@@ -1,7 +1,7 @@
 import { Model, snakeCaseMappers } from 'objection';
 import pg from 'pg';
 import BigNumber from 'bignumber.js';
-import postgresKnex from '../connections/postgres';
+import { knex } from '../database';
 
 // Defaults for all models
 class CirclesModel extends Model {
@@ -33,7 +33,7 @@ class CirclesModel extends Model {
 }
 
 // Set db connection info for the default model.
-CirclesModel.knex(postgresKnex);
+CirclesModel.knex(knex);
 
 // Configure pg to parse data from Postgres Numeric (Decimal) columns into BigNumber instances upon retrieval
 const NUMERIC_OID = 1700;
