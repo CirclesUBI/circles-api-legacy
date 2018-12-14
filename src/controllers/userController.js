@@ -33,7 +33,7 @@ async function findOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
     const user = await User.query(trx).where({ id: req.params.id })
-    if (!user.length) throw new Error('No user.id: ' + req.params.id)
+    // if (!user.length) throw new Error('No user.id: ' + req.params.id)
     await trx.commit();
     res.status(200).send(user);
   } catch (error) {    
