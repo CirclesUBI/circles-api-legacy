@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/CirclesUBI/circles-api#readme",
   "dependencies": {
+    "aws-sdk": "^2.376.0",
     "bignumber.js": "^7.2.1",
     "body-parser": "^1.18.3",
     "cognito-express": "^2.0.11",

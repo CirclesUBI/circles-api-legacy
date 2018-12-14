@@ -7,6 +7,7 @@ const defaultAppMsg = {
 
 const cognitoPoolId = process.env.COGNITO_POOL_ID;
 const cognitoPoolRegion = process.env.COGNITO_POOL_REGION;
+const androidGCMPlatformArn = process.env.ANDROID_GCM_PLATFORM_ARN
 
 const postgres = {
   host: process.env.PGHOST || 'localhost',
@@ -21,5 +22,6 @@ export {
   defaultAppMsg,
   cognitoPoolId,
   cognitoPoolRegion,
+  androidGCMPlatformArn,
   postgres
 }
