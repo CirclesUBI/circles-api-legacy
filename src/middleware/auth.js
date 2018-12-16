@@ -23,8 +23,6 @@ const jwt = require('jsonwebtoken')
 const jwkToPem = require('jwk-to-pem')
 
 const authMiddleWare = (req, res, next) => {
-// check header or url parameters or post parameters for token
-  // console.log(req.body, req.query, req.headers)
   const token = req.headers['accesstoken']
 
   // decode token
@@ -39,7 +37,7 @@ const authMiddleWare = (req, res, next) => {
   } else {
     // if there is no token
     // return an error
-    return res.status(401).send("Must provide accesstoken in header");
+    return res.status(401).send('Must provide accesstoken in header')
   }
 }
 
