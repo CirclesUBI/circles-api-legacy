@@ -72,7 +72,6 @@ async function addOne (req, res) {
 }
 
 function addToCognitoGroup (circlesUser) {
-  console.log('addToCognitoGroup')
   const groupName = 'user'
   var params = {
     GroupName: groupName,
@@ -83,7 +82,6 @@ function addToCognitoGroup (circlesUser) {
     cognitoISP.adminAddUserToGroup(params, (err, data) => {
       if (err) reject(err)
       else {
-        console.log('finished addToCognitoGroup', data)
         const formattedData = {}
         formattedData[groupName] = true
         formattedData.response = data
@@ -94,7 +92,6 @@ function addToCognitoGroup (circlesUser) {
 }
 
 function createSNSEndpoint (circlesUser) {
-  console.log('createSNSEndpoint', androidGCMPlatformArn)
   var snsParams = {
     PlatformApplicationArn: androidGCMPlatformArn,
     Token: circlesUser.deviceId
@@ -102,10 +99,7 @@ function createSNSEndpoint (circlesUser) {
   return new Promise((resolve, reject) => {
     sns.createPlatformEndpoint(snsParams, (err, data) => {
       if (err) reject(err)
-      else {
-        console.log('finished createSNSEndpoint', data)
-        resolve(data.EndpointArn)
-      }
+      else resolve(data.EndpointArn)
     })
   })
 }
