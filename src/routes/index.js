@@ -3,6 +3,7 @@ import authMiddleware from '../middleware/auth';
 // import hasPermissionMiddleware from '../middleware/permissions';
 import cors from 'cors';
 import usersRouter from './usersRouter'
+import orgsRouter from './orgsRouter'
 
 const versionString = '/v1'
 
@@ -15,5 +16,6 @@ export default function (app) {
   
   app.use(authMiddleware)
   app.use(versionString + '/users', usersRouter)
+  app.use(versionString + '/orgs', orgsRouter)
 }
 

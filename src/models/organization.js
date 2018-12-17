@@ -1,7 +1,7 @@
 import CirclesModel from '../lib/postgresModels'
 
-export default class User extends CirclesModel {
-  static get tableName () { return 'user' }
+export default class Organization extends CirclesModel {
+  static get tableName () { return 'organization' }
 
   static get name () { return this.displayName }
 
@@ -13,12 +13,14 @@ export default class User extends CirclesModel {
         agreedToDisclaimer: { type: 'boolean' }, // used for legal reasons, and to denote that the user has been fully set up
         createdAt: { type: 'object' },
         updatedAt: { type: 'object' },
-        displayName: { type: 'string' },
+        lastActive: { type: 'object' },
+        organizationName: { type: 'string' },
         email: { type: 'string' },
-        profilePicUrl: { type: 'string' },
-        deviceId: { type: 'string' },
-        deviceEndpoint: { type: 'string' },
-        phoneNumber: { type: 'string' }        
+        profilePicURL: { type: 'string' },        
+        address: { type: 'string' },
+        latitude: { type: 'float' },
+        longitude: { type: 'float' },
+        description: { type: 'string' }
       }
     }
   }
@@ -28,21 +30,21 @@ export default class User extends CirclesModel {
     const Organization = require('./organization')
 
     return {
-      organizations: {
+      users: {
         relation: CirclesModel.ManyToManyRelation,
         modelClass: Organization,
         join: {
-          from: 'user.id',
+          from: 'organization.id',
           // ManyToMany relation needs the `through` object
           // to describe the join table.
           through: {
             // If you have a model class for the join table
             // you need to specify it like this:
             // modelClass: PersonMovie,
-            from: 'user_organizations.userId',
-            to: 'user_organizations.organizationId'
+            from: 'user_organizations.organizationId',
+            to: 'user_organizations.userId'
           },
-          to: 'organizations.id'
+          to: 'users.id'
         }
       }
     }
