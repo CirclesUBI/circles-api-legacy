@@ -4,7 +4,6 @@ import PostgresDB from '../database'
 import Organization from '../models/organization'
 
 async function all (req, res) {
-  console.log('all!')
   const trx = await PostgresDB.startTransaction()
   try {
     const organizations = await trx.select('*').from('organization').limit(10)
@@ -18,7 +17,6 @@ async function all (req, res) {
 }
 
 async function findOne (req, res) {
-  console.log('findOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     let result = await Organization.query(trx).where({ id: req.params.id })
@@ -33,7 +31,6 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
-  console.log('addOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const orgExists = await Organization.query(trx).where({ id: req.params.id })
@@ -49,7 +46,6 @@ async function addOne (req, res) {
 }
 
 async function updateOne (req, res) {
-  console.log('updateOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const patchedOrganization = await Organization.query(trx).patchAndFetchById(req.params.id, req.body)
@@ -63,7 +59,6 @@ async function updateOne (req, res) {
 }
 
 async function deleteOne (req, res) {
-  console.log('deleteOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const result = await Organization.query(trx).delete().where({ id: req.params.id })

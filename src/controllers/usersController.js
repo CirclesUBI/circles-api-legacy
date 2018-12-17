@@ -23,7 +23,6 @@ function convertCognitoToUser (cognitoUser) {
 }
 
 async function all (req, res) {
-  console.log('all!')
   const trx = await PostgresDB.startTransaction();
   try {
     const users = await trx.select('*').from('user').limit(10);
@@ -37,7 +36,6 @@ async function all (req, res) {
 }
 
 async function findOne (req, res) {
-  console.log('findOne!')
   const trx = await PostgresDB.startTransaction();
   try {
     let result = await User.query(trx).where({ id: req.params.id })
@@ -52,7 +50,6 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
-  console.log('addOne!')
   const trx = await PostgresDB.startTransaction();
   try {
     const userExists = await User.query(trx).where({ id: req.params.id })
@@ -105,7 +102,6 @@ function createSNSEndpoint (circlesUser) {
 }
 
 async function updateOne (req, res) {
-  console.log('updateOne!')
   const trx = await PostgresDB.startTransaction();
   try {
     const patchedUser = await User.query(trx).patchAndFetchById(req.params.id, req.body)
@@ -119,7 +115,6 @@ async function updateOne (req, res) {
 }
 
 async function deleteOne (req, res) {
-  console.log('deleteOne!')
   const trx = await PostgresDB.startTransaction();
   try {
     const result = await User.query(trx).delete().where({ id: req.params.id })

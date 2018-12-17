@@ -21,7 +21,6 @@ exports.seed = function (knex, Promise) {
     knex('notification').del()
   ])
     .then(() => {
-      console.log('deleted tables')
       for (let i = 0; i < requiredUsers; i++) {
         const u = createFakeUser()
         // saving enough userIds so I can associate each
@@ -29,7 +28,6 @@ exports.seed = function (knex, Promise) {
         if (i < requiredOrganizations) fakeUserOrgs.push({userId: u.id})
         fakeUsers.push(u)
       }
-      console.log(fakeUsers)
       return knex('user').insert(fakeUsers)
     })
     .then(() => {
@@ -38,12 +36,9 @@ exports.seed = function (knex, Promise) {
         fakeUserOrgs[i].organizationId = o.id
         fakeOrganizations.push(o)
       }
-      console.log(fakeOrganizations)
       return knex('organization').insert(fakeOrganizations)
     })
     .then(() => {
-      console.log(fakeUserOrgs)
-      // Inserts seed entries
       return knex('user_organizations').insert(fakeUserOrgs)
     })
     .then(() => {
@@ -54,8 +49,6 @@ exports.seed = function (knex, Promise) {
           fakeNotifications.push(n)
         }
       }
-      console.log(fakeNotifications)
-      // Inserts seed entries
       return knex('notification').insert(fakeNotifications)
     })
 }

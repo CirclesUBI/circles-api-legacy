@@ -17,7 +17,6 @@ async function all (req, res) {
 }
 
 async function findOne (req, res) {
-  console.log('findOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     let result = await Notification.query(trx).where({ id: req.params.id })
@@ -32,7 +31,6 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
-  console.log('addOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const orgExists = await Notification.query(trx).where({ id: req.params.id })
@@ -48,7 +46,6 @@ async function addOne (req, res) {
 }
 
 async function updateOne (req, res) {
-  console.log('updateOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const patchedNotification = await Notification.query(trx).patchAndFetchById(req.params.id, req.body)
@@ -62,7 +59,6 @@ async function updateOne (req, res) {
 }
 
 async function deleteOne (req, res) {
-  console.log('deleteOne!')
   const trx = await PostgresDB.startTransaction()
   try {
     const result = await Notification.query(trx).delete().where({ id: req.params.id })
