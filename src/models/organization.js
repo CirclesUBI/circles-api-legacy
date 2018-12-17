@@ -27,12 +27,12 @@ export default class Organization extends CirclesModel {
 
   static get relationMappings () {
     // Import models here to prevent require loops.
-    const Organization = require('./organization')
+    // const User = require('./user')
 
     return {
       users: {
         relation: CirclesModel.ManyToManyRelation,
-        modelClass: Organization,
+        modelClass: `${__dirname}/user`,
         join: {
           from: 'organization.id',
           // ManyToMany relation needs the `through` object
@@ -41,10 +41,10 @@ export default class Organization extends CirclesModel {
             // If you have a model class for the join table
             // you need to specify it like this:
             // modelClass: PersonMovie,
-            from: 'user_organizations.organizationId',
-            to: 'user_organizations.userId'
+            from: 'user_organizations.organization_id',
+            to: 'user_organizations.user_id'
           },
-          to: 'users.id'
+          to: 'user.id'
         }
       }
     }

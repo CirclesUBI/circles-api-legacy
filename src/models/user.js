@@ -18,20 +18,21 @@ export default class User extends CirclesModel {
         profilePicUrl: { type: 'string' },
         deviceId: { type: 'string' },
         deviceEndpoint: { type: 'string' },
-        phoneNumber: { type: 'string' }        
+        phoneNumber: { type: 'string' },
+        notifications: { type: 'object' }
       }
     }
   }
 
   static get relationMappings () {
     // Import models here to prevent require loops.
-    const Organization = require('./organization')
+    // const Organization = require('./organization')
     const Notification = require('./notification')
 
     return {
       organizations: {
         relation: CirclesModel.ManyToManyRelation,
-        modelClass: Organization,
+        modelClass: `${__dirname}/organization`,
         join: {
           from: 'user.id',
           // ManyToMany relation needs the `through` object
@@ -40,10 +41,10 @@ export default class User extends CirclesModel {
             // If you have a model class for the join table
             // you need to specify it like this:
             // modelClass: PersonMovie,
-            from: 'user_organizations.userId',
-            to: 'user_organizations.organizationId'
+            from: 'user_organizations.user_id',
+            to: 'user_organizations.organization_id'
           },
-          to: 'organizations.id'
+          to: 'organization.id'
         }
       },
       notifications: {
@@ -51,7 +52,7 @@ export default class User extends CirclesModel {
         modelClass: Notification,
         join: {
           from: 'user.id',
-          to: 'notifications.userId'
+          to: 'notification.user_id'
         }
       }
     }
