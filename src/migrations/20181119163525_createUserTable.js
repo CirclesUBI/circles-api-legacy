@@ -26,8 +26,8 @@ exports.up = (knex, Promise) => {
     t.text('description')
   }).createTable('user_organizations', (t) => {
     t.increments('id').primary()
-    t.string('userId').references('id').inTable('user')
-    t.string('organizationId').references('id').inTable('organization')
+    t.string('user_id').references('id').inTable('user')
+    t.string('organization_id').references('id').inTable('organization')
   })
 }
 

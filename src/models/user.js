@@ -19,7 +19,7 @@ export default class User extends CirclesModel {
         deviceId: { type: 'string' },
         deviceEndpoint: { type: 'string' },
         phoneNumber: { type: 'string' },
-        notifications: { type: 'object' }
+        // notifications: { type: 'object' }
       }
     }
   }
@@ -27,7 +27,7 @@ export default class User extends CirclesModel {
   static get relationMappings () {
     // Import models here to prevent require loops.
     // const Organization = require('./organization')
-    const Notification = require('./notification')
+    // const Notification = require('./notification')
 
     return {
       organizations: {
@@ -49,7 +49,7 @@ export default class User extends CirclesModel {
       },
       notifications: {
         relation: CirclesModel.HasManyRelation,
-        modelClass: Notification,
+        modelClass: `${__dirname}/notification`,
         join: {
           from: 'user.id',
           to: 'notification.user_id'

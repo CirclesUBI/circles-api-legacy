@@ -25,7 +25,9 @@ exports.seed = function (knex, Promise) {
         const u = createFakeUser()
         // saving enough userIds so I can associate each
         // org with a user in the 'user_organizations' join table
-        if (i < requiredOrganizations) fakeUserOrgs.push({userId: u.id})
+        if (i < requiredOrganizations) {
+          fakeUserOrgs.push({user_id: u.id})
+        }
         fakeUsers.push(u)
       }
       return knex('user').insert(fakeUsers)
@@ -33,7 +35,7 @@ exports.seed = function (knex, Promise) {
     .then(() => {
       for (let i = 0; i < requiredOrganizations; i++) {
         const o = createFakeOrganization()
-        fakeUserOrgs[i].organizationId = o.id
+        fakeUserOrgs[i].organization_id = o.id
         fakeOrganizations.push(o)
       }
       return knex('organization').insert(fakeOrganizations)

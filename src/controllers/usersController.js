@@ -50,17 +50,23 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
+  let user
   const trx = await PostgresDB.startTransaction();
   try {
     const userExists = await User.query(trx).where({ id: req.params.id })
-    if (userExists.length) throw new Error('user.id exists: ' + req.params.id)
-    let circlesUser = convertCognitoToUser(req.body)
-    const endpointArn = await createSNSEndpoint(circlesUser)
-    circlesUser.deviceEndpoint = endpointArn
-    const newUser = await User.query(trx).insert(circlesUser)
-    await addToCognitoGroup(circlesUser)    
+    if (userExists.length) {
+      console.log('user.id exists: ' + req.params.id)
+      // throw new Error('user.id exists: ' + req.params.id)
+      user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
+    } else {
+      let circlesUser = convertCognitoToUser(req.body)
+      const endpointArn = await createSNSEndpoint(circlesUser)
+      await addToCognitoGroup(circlesUser)
+      circlesUser.deviceEndpoint = endpointArn
+      user = await User.query(trx).insert(circlesUser)
+    }
     await trx.commit();
-    res.status(200).send(newUser);              
+    res.status(200).send(user);              
   } catch (error) {
     console.error(error)
     await trx.rollback();
@@ -101,24 +107,30 @@ function createSNSEndpoint (circlesUser) {
   })
 }
 
-async function updateOne (req, res) {
-  const trx = await PostgresDB.startTransaction();
-  try {
-    const patchedUser = await User.query(trx).patchAndFetchById(req.params.id, req.body)
-    await trx.commit();
-    res.status(200).send(patchedUser);
-  } catch (error) {
-    console.error(error)
-    await trx.rollback();
-    res.status(500).send(error);
-  }
-}
+// async function updateOne (req, res) {
+//   const trx = await PostgresDB.startTransaction();
+//   try {
+//     const patchedUser = await User.query(trx).patchAndFetchById(req.params.id, req.body)
+//     await trx.commit();
+//     res.status(200).send(patchedUser);
+//   } catch (error) {
+//     console.error(error)
+//     await trx.rollback();
+//     res.status(500).send(error);
+//   }
+// }
 
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
-    const result = await User.query(trx).delete().where({ id: req.params.id })
-    if (!result) throw new Error('No user.id: ' + req.params.id)
+    let user = await User.query(trx).where({ id: req.params.id }).first()
+    if (user instanceof User) {
+      await user.$relatedQuery('organizations').unrelate()
+      await user.$relatedQuery('notifications').delete().where({ user_id: req.params.id })
+      await User.query(trx).delete().where({ id: req.params.id })
+    } else {
+      throw new Error('No user.id: ' + req.params.id)
+    }
     await trx.commit();
     res.status(200).send();
   } catch (error) {
@@ -128,4 +140,4 @@ async function deleteOne (req, res) {
   }
 }
 
-export default {all, findOne, addOne, updateOne, deleteOne}
+export default {all, findOne, addOne, deleteOne}
