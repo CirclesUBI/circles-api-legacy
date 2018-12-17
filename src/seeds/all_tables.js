@@ -2,20 +2,26 @@
 import faker from 'faker'
 
 const fakeUsers = []
-const requiredUsers = 100
+const requiredUsers = 5
 
 const fakeOrganizations = []
-const requiredOrganizations = 15
+const requiredOrganizations = 2
 
 var fakeUserOrgs = []
 
+const fakeNotifications = []
+const notificationsPerUser = 3
+
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
-  return knex('organization').del()
+  return Promise.all([
+    knex('organization').del(),
+    knex('user').del(),
+    knex('user_organizations').del(),
+    knex('notification').del()
+  ])
     .then(() => {
-      return knex('user').del()
-    })
-    .then(() => {
+      console.log('deleted tables')
       for (let i = 0; i < requiredUsers; i++) {
         const u = createFakeUser()
         // saving enough userIds so I can associate each
@@ -36,12 +42,21 @@ exports.seed = function (knex, Promise) {
       return knex('organization').insert(fakeOrganizations)
     })
     .then(() => {
-      return knex('user_organizations').del()
-    })
-    .then(() => {
       console.log(fakeUserOrgs)
       // Inserts seed entries
       return knex('user_organizations').insert(fakeUserOrgs)
+    })
+    .then(() => {
+      for (let i = 0; i < fakeUsers.length; i++) {
+        for (let j = 0; j < notificationsPerUser; j++) {
+          const n = createFakeNotification()
+          n.user_id = fakeUsers[i].id
+          fakeNotifications.push(n)
+        }
+      }
+      console.log(fakeNotifications)
+      // Inserts seed entries
+      return knex('notification').insert(fakeNotifications)
     })
 }
 
@@ -68,5 +83,11 @@ const createFakeOrganization = () => {
     latitude: faker.address.latitude(),
     longitude: faker.address.longitude(),
     description: faker.company.catchPhrase()
+  }
+}
+
+const createFakeNotification = () => {
+  return {
+    description: faker.lorem.sentence()
   }
 }

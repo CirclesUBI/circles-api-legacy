@@ -26,6 +26,7 @@ export default class User extends CirclesModel {
   static get relationMappings () {
     // Import models here to prevent require loops.
     const Organization = require('./organization')
+    const Notification = require('./notification')
 
     return {
       organizations: {
@@ -43,6 +44,14 @@ export default class User extends CirclesModel {
             to: 'user_organizations.organizationId'
           },
           to: 'organizations.id'
+        }
+      },
+      notifications: {
+        relation: CirclesModel.HasManyRelation,
+        modelClass: Notification,
+        join: {
+          from: 'user.id',
+          to: 'notifications.userId'
         }
       }
     }
