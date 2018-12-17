@@ -6,7 +6,7 @@ import usersRouter from './usersRouter'
 import orgsRouter from './orgsRouter'
 import notifsRouter from './notifsRouter'
 
-import { api } from '../config/env'
+import { apiVersionString } from '../config/env'
 
 export default function (app) {
   app.use(cors());
@@ -16,7 +16,7 @@ export default function (app) {
   app.get('/', (req, res) => res.status(200).json('hello Ed!'));
 
   app.use(authMiddleware)
-  app.use(api.versionString + '/users', usersRouter)
-  app.use(api.versionString + '/orgs', orgsRouter)
-  app.use(api.versionString + '/notifs', notifsRouter)
+  app.use(apiVersionString + '/users', usersRouter)
+  app.use(apiVersionString + '/orgs', orgsRouter)
+  app.use(apiVersionString + '/notifs', notifsRouter)
 }
