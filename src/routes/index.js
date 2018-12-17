@@ -4,8 +4,9 @@ import authMiddleware from '../middleware/auth';
 import cors from 'cors';
 import usersRouter from './usersRouter'
 import orgsRouter from './orgsRouter'
+import notifsRouter from './notifsRouter'
 
-const versionString = '/v1'
+import { api } from '../config/env'
 
 export default function (app) {
   app.use(cors());
@@ -13,9 +14,9 @@ export default function (app) {
   app.use(bodyParser.json());  
 
   app.get('/', (req, res) => res.status(200).json('hello Ed!'));
-  
-  app.use(authMiddleware)
-  app.use(versionString + '/users', usersRouter)
-  app.use(versionString + '/orgs', orgsRouter)
-}
 
+  app.use(authMiddleware)
+  app.use(api.versionString + '/users', usersRouter)
+  app.use(api.versionString + '/orgs', orgsRouter)
+  app.use(api.versionString + '/notifs', notifsRouter)
+}
