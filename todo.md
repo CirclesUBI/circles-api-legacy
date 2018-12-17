@@ -1,3 +1,5 @@
-[ ] - any reason to use Objection transactions instead of knex ones?
 [ ] - error responses are always blank
 [ ] - validation not running on queries?
+[ ] - where is snake case applied?
+[ ] - usage of version string?
+[ ] - DELETE post instead of url
