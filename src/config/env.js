@@ -1,3 +1,5 @@
+import { APIGateway } from "aws-sdk";
+
 const port = process.env.PORT || 8080;
 
 const defaultAppMsg = {
@@ -17,7 +19,12 @@ const postgres = {
   database: process.env.PGDATABASE || 'postgres'
 };
 
+const api = {
+  versionString: process.env.API_VERSION
+}
+
 export {
+  api,
   port,
   defaultAppMsg,
   cognitoPoolId,
