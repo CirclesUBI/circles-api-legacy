@@ -2,4 +2,4 @@
 [*] - validation not running on queries?
 [*] - where is snake case applied?
 [*] - usage of version string?
-[ ] - DELETE post instead of url
+[*] - DELETE post instead of url

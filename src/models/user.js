@@ -19,7 +19,11 @@ export default class User extends CirclesModel {
         deviceId: { type: 'string' },
         deviceEndpoint: { type: 'string' },
         phoneNumber: { type: 'string' },
+<<<<<<< HEAD
         // notifications: { type: 'object' }
+=======
+        notifications: { type: 'object' }
+>>>>>>> d144b1030977f0387d7f47d0b45dd648e5ae34c1
       }
     }
   }
