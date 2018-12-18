@@ -18,21 +18,12 @@ export default class User extends CirclesModel {
         profilePicUrl: { type: 'string' },
         deviceId: { type: 'string' },
         deviceEndpoint: { type: 'string' },
-        phoneNumber: { type: 'string' },
-<<<<<<< HEAD
-        // notifications: { type: 'object' }
-=======
-        notifications: { type: 'object' }
->>>>>>> d144b1030977f0387d7f47d0b45dd648e5ae34c1
+        phoneNumber: { type: 'string' }        
       }
     }
   }
 
   static get relationMappings () {
-    // Import models here to prevent require loops.
-    // const Organization = require('./organization')
-    // const Notification = require('./notification')
-
     return {
       organizations: {
         relation: CirclesModel.ManyToManyRelation,

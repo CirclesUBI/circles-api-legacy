@@ -40,6 +40,10 @@ async function findOne (req, res) {
   try {
     let result = await User.query(trx).where({ id: req.params.id })
     let user = (result.length) ? result[0] : null
+    if (user instanceof User) {
+      user.notifications = await user.$relatedQuery('notifications')
+      user.organizations = await user.$relatedQuery('organizations')
+    }
     await trx.commit();
     res.status(200).send(user);
   } catch (error) {    

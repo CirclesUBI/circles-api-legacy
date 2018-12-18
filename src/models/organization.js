@@ -26,13 +26,10 @@ export default class Organization extends CirclesModel {
   }
 
   static get relationMappings () {
-    // Import models here to prevent require loops.
-    // const User = require('./user')
-
     return {
-      users: {
+      members: {
         relation: CirclesModel.ManyToManyRelation,
-        modelClass: `${__dirname}/user`,
+        modelClass: `${__dirname}/user`, // Import models like this to prevent require loops.
         join: {
           from: 'organization.id',
           // ManyToMany relation needs the `through` object
