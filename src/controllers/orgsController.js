@@ -31,26 +31,18 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
+  let organization
   const trx = await PostgresDB.startTransaction()
   try {
     const orgExists = await Organization.query(trx).where({ id: req.params.id })
-    if (orgExists.length) throw new Error('organization.id exists: ' + req.params.id)
-    const newOrganization = await Organization.query(trx).insert(req.body)
+    if (orgExists.length) {
+      console.log('organization.id exists: ' + req.params.id)      
+      organization = await Organization.query(trx).patchAndFetchById(req.params.id, req.body)
+    } else {
+      organization = await Organization.query(trx).insert(req.body)
+    }
     await trx.commit()
-    res.status(200).send(newOrganization)
-  } catch (error) {
-    console.error(error)
-    await trx.rollback()
-    res.status(500).send(error)
-  }
-}
-
-async function updateOne (req, res) {
-  const trx = await PostgresDB.startTransaction()
-  try {
-    const patchedOrganization = await Organization.query(trx).patchAndFetchById(req.params.id, req.body)
-    await trx.commit()
-    res.status(200).send(patchedOrganization)
+    res.status(200).send(organization)
   } catch (error) {
     console.error(error)
     await trx.rollback()
@@ -61,10 +53,15 @@ async function updateOne (req, res) {
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
-    const result = await Organization.query(trx).delete().where({ id: req.params.id })
-    if (!result) throw new Error('No organization.id: ' + req.params.id)
+    let organization = await Organization.query(trx).where({ id: req.params.id }).first()
+    if (organization instanceof Organization) {
+      await organization.$relatedQuery('users').unrelate()
+      await Organization.query(trx).delete().where({ id: req.params.id })
+    } else {
+      throw new Error('No organization.id: ' + req.params.id)
+    }
     await trx.commit()
-    res.status(200).send()
+    res.status(200).send(organization)
   } catch (error) {
     console.error(error)
     await trx.rollback()
@@ -72,4 +69,4 @@ async function deleteOne (req, res) {
   }
 }
 
-export default {all, findOne, addOne, updateOne, deleteOne}
+export default {all, findOne, addOne, deleteOne}

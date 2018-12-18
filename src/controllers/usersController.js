@@ -50,13 +50,13 @@ async function findOne (req, res) {
 }
 
 async function addOne (req, res) {
+  console.log('addone')
   let user
   const trx = await PostgresDB.startTransaction();
   try {
     const userExists = await User.query(trx).where({ id: req.params.id })
     if (userExists.length) {
-      console.log('user.id exists: ' + req.params.id)
-      // throw new Error('user.id exists: ' + req.params.id)
+      console.log('user.id exists: ' + req.params.id)      
       user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
     } else {
       let circlesUser = convertCognitoToUser(req.body)
@@ -106,19 +106,6 @@ function createSNSEndpoint (circlesUser) {
     })
   })
 }
-
-// async function updateOne (req, res) {
-//   const trx = await PostgresDB.startTransaction();
-//   try {
-//     const patchedUser = await User.query(trx).patchAndFetchById(req.params.id, req.body)
-//     await trx.commit();
-//     res.status(200).send(patchedUser);
-//   } catch (error) {
-//     console.error(error)
-//     await trx.rollback();
-//     res.status(500).send(error);
-//   }
-// }
 
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction();
