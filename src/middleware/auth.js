@@ -1,4 +1,4 @@
-//  https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_198tc9lcH/.well-known/jwks.json
+import * as HttpStatus from 'http-status-codes';
 import { cognitoPoolJWTToken } from '../config/env'
 
 const jwt = require('jsonwebtoken')
@@ -11,14 +11,16 @@ const authMiddleWare = (req, res, next) => {
     const pem = jwkToPem(cognitoPoolJWTToken)
     // verifies secret and checks exp
     jwt.verify(token, pem, { algorithms: ['RS256'] }, function (err, decodedToken) {
-      if (err) return res.status(401).send(err)
+      if (err) {
+        return res.status(HttpStatus.UNAUTHORIZED).send({ error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) })
+      }
       req.decodedToken = decodedToken
       next()
     })
   } else {
     // if there is no token
-    // return an error
-    return res.status(401).send("Must provide accesstoken in header");
+    // return an error()
+    return res.status(HttpStatus.UNAUTHORIZED).send({ error: "Must provide accesstoken in header" });
   }
 }
 

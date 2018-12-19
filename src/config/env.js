@@ -1,5 +1,3 @@
-import { APIGateway } from "aws-sdk";
-
 const port = process.env.PORT || 8080;
 
 const defaultAppMsg = {
@@ -12,6 +10,7 @@ const cognitoPoolId = process.env.COGNITO_POOL_ID;
 const cognitoPoolRegion = process.env.COGNITO_POOL_REGION;
 const androidGCMPlatformArn = process.env.ANDROID_GCM_PLATFORM_ARN;
 
+//  https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_198tc9lcH/.well-known/jwks.json
 const cognitoPoolJWTToken = {
   alg: 'RS256',
   e: 'AQAB',

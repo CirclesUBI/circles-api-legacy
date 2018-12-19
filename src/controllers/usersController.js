@@ -1,9 +1,10 @@
-// import * as HttpStatus from 'http-status-codes';
-// import { findUser, userValidator } from '../validators/userValidator';
+import * as HttpStatus from 'http-status-codes';
 import PostgresDB from '../database';
 import User from '../models/user';
 
 import { androidGCMPlatformArn } from '../config/env';
+
+import logger from '../lib/logger'
 
 var Cognito = require('aws-sdk/clients/cognitoidentityserviceprovider')
 var cognitoISP = new Cognito({apiVersion: '2016-04-18'})
@@ -27,11 +28,12 @@ async function all (req, res) {
   try {
     const users = await trx.select('*').from('user').limit(10);
     await trx.commit();
-    res.status(200).send(users);
+    res.status(HttpStatus.OK).send(users);
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback();
-    res.status(500).send(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
@@ -45,22 +47,22 @@ async function findOne (req, res) {
       user.organizations = await user.$relatedQuery('organizations')
     }
     await trx.commit();
-    res.status(200).send(user);
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {    
-    console.error(error)
+    logger.error(error)
     await trx.rollback();
-    res.status(500).send(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
 async function addOne (req, res) {
-  console.log('addone')
   let user
   const trx = await PostgresDB.startTransaction();
   try {
     const userExists = await User.query(trx).where({ id: req.params.id })
     if (userExists.length) {
-      console.log('user.id exists: ' + req.params.id)      
+      logger.warn('user.id exists: ' + req.params.id)
       user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
     } else {
       let circlesUser = convertCognitoToUser(req.body)
@@ -70,11 +72,12 @@ async function addOne (req, res) {
       user = await User.query(trx).insert(circlesUser)
     }
     await trx.commit();
-    res.status(200).send(user);              
+    res.status(HttpStatus.OK).send(user);              
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback();
-    res.status(500).send(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
@@ -123,11 +126,12 @@ async function deleteOne (req, res) {
       throw new Error('No user.id: ' + req.params.id)
     }
     await trx.commit();
-    res.status(200).send();
+    res.status(HttpStatus.OK).send();
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback();
-    res.status(500).send(error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 

@@ -11,6 +11,6 @@ const transports = [
   new (winston.transports.Console)({ level, formatter, timestamp: true })
 ];
 
-const client = winston.createLogger({ levels, transports });
+const logger = winston.createLogger({ levels, transports });
 
-export default client;
+export default logger;

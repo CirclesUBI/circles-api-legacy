@@ -1,4 +1,4 @@
-[ ] - error responses are always blank
+[*] - error responses are always blank
 [*] - validation not running on queries?
 [*] - where is snake case applied?
 [*] - usage of version string?

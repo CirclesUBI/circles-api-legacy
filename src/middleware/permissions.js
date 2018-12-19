@@ -1,3 +1,4 @@
+import * as HttpStatus from 'http-status-codes';
 import AccessControl from 'role-acl';
 import Permission from '../models/permissions';
 
@@ -25,7 +26,7 @@ const hasPermissionMiddleware = (resource, action) => {
   return (req, res, next) => {
     hasPermission(res.locals.user, resource, action).then((granted) => {
       if (granted) return next();
-      res.status(403).send("Inadequate permissions");
+      res.status(HttpStatus.FORBIDDEN).send({ error: "Inadequate permissions" });
     });
   };
 };

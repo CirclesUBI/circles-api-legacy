@@ -1,18 +1,20 @@
-// import * as HttpStatus from 'http-status-codes';
-// import { findUser, userValidator } from '../validators/userValidator';
+import * as HttpStatus from 'http-status-codes';
 import PostgresDB from '../database'
 import Organization from '../models/organization'
+
+import logger from '../lib/logger'
 
 async function all (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
     const organizations = await trx.select('*').from('organization').limit(10)
     await trx.commit()
-    res.status(200).send(organizations)
+    res.status(HttpStatus.OK).send(organizations)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback()
-    res.status(500).send(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
@@ -25,11 +27,12 @@ async function findOne (req, res) {
       organization.members = await organization.$relatedQuery('members')
     }
     await trx.commit()
-    res.status(200).send(organization)
+    res.status(HttpStatus.OK).send(organization)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback()
-    res.status(500).send(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
@@ -39,17 +42,18 @@ async function addOne (req, res) {
   try {
     const orgExists = await Organization.query(trx).where({ id: req.params.id })
     if (orgExists.length) {
-      console.log('organization.id exists: ' + req.params.id)      
+      logger.warn('organization.id exists: ' + req.params.id)      
       organization = await Organization.query(trx).patchAndFetchById(req.params.id, req.body)
     } else {
       organization = await Organization.query(trx).insert(req.body)
     }
     await trx.commit()
-    res.status(200).send(organization)
+    res.status(HttpStatus.OK).send(organization)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback()
-    res.status(500).send(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
@@ -64,11 +68,12 @@ async function deleteOne (req, res) {
       throw new Error('No organization.id: ' + req.params.id)
     }
     await trx.commit()
-    res.status(200).send(organization)
+    res.status(HttpStatus.OK).send(organization)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     await trx.rollback()
-    res.status(500).send(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
