@@ -14,7 +14,7 @@ const authMiddleWare = (req, res, next) => {
       if (err) {
         return res.status(HttpStatus.UNAUTHORIZED).send({ error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) })
       }
-      req.decodedToken = decodedToken
+      res.locals.user = decodedToken
       next()
     })
   } else {
