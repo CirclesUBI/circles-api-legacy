@@ -6,10 +6,8 @@ import { androidGCMPlatformArn } from '../config/env';
 
 import logger from '../lib/logger'
 
-var Cognito = require('aws-sdk/clients/cognitoidentityserviceprovider')
-var cognitoISP = new Cognito({apiVersion: '2016-04-18'})
-var SNS = require('aws-sdk/clients/sns')
-var sns = new SNS({apiVersion: '2010-03-31'})
+import cognitoISP from '../connections/cognito'
+import sns from '../connections/sns'
 
 function convertCognitoToUser (cognitoUser) {
   return {
@@ -24,14 +22,11 @@ function convertCognitoToUser (cognitoUser) {
 }
 
 async function all (req, res) {
-  const trx = await PostgresDB.startTransaction();
   try {
-    const users = await trx.select('*').from('user').limit(10);
-    await trx.commit();
+    const users = await User.query().limit(10);
     res.status(HttpStatus.OK).send(users);
   } catch (error) {
     logger.error(error)
-    await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }

@@ -5,14 +5,11 @@ import Organization from '../models/organization'
 import logger from '../lib/logger'
 
 async function all (req, res) {
-  const trx = await PostgresDB.startTransaction()
   try {
-    const organizations = await trx.select('*').from('organization').limit(10)
-    await trx.commit()
+    const organizations = await Organization.query().limit(10)
     res.status(HttpStatus.OK).send(organizations)
   } catch (error) {
     logger.error(error)
-    await trx.rollback()
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
@@ -38,20 +35,17 @@ async function findOne (req, res) {
 
 async function addOne (req, res) {
   let organization
-  const trx = await PostgresDB.startTransaction()
   try {
-    const orgExists = await Organization.query(trx).where({ id: req.params.id })
+    const orgExists = await Organization.query().where({ id: req.params.id })
     if (orgExists.length) {
       logger.warn('organization.id exists: ' + req.params.id)      
-      organization = await Organization.query(trx).patchAndFetchById(req.params.id, req.body)
+      organization = await Organization.query().patchAndFetchById(req.params.id, req.body)
     } else {
-      organization = await Organization.query(trx).insert(req.body)
+      organization = await Organization.query().insert(req.body)
     }
-    await trx.commit()
     res.status(HttpStatus.OK).send(organization)
   } catch (error) {
     logger.error(error)
-    await trx.rollback()
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
