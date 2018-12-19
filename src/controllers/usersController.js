@@ -2,7 +2,7 @@ import * as HttpStatus from 'http-status-codes';
 import PostgresDB from '../database';
 import User from '../models/user';
 
-import { androidGCMPlatformArn } from '../config/env';
+import { androidGCMPlatformArn, cognitoPoolId } from '../config/env';
 
 import logger from '../lib/logger'
 
@@ -80,7 +80,7 @@ function addToCognitoGroup (circlesUser) {
   const groupName = 'user'
   var params = {
     GroupName: groupName,
-    UserPoolId: process.env.COGNITO_POOL_ID,
+    UserPoolId: cognitoPoolId,
     Username: circlesUser.id
   }
   return new Promise((resolve, reject) => {
