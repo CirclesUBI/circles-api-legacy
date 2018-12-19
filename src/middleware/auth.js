@@ -1,15 +1,27 @@
-import cognitoExpress from '../connections/cognito';
+import * as HttpStatus from 'http-status-codes';
+import { cognitoPoolJWTToken } from '../config/env'
+
+const jwt = require('jsonwebtoken')
+const jwkToPem = require('jwk-to-pem')
 
 const authMiddleWare = (req, res, next) => {
-  const accessToken = req.headers.accesstoken;
-
-  if (!accessToken) return res.status(401).send("Must provide accesstoken in header");
-
-  cognitoExpress.validate(accessToken, (err, response) => {
-    if (err) return res.status(401).send(err);
-    res.locals.user = response;
-    next();
-  });
+  const token = req.headers['accesstoken']
+  // decode token
+  if (token) {
+    const pem = jwkToPem(cognitoPoolJWTToken)
+    // verifies secret and checks exp
+    jwt.verify(token, pem, { algorithms: ['RS256'] }, function (err, decodedToken) {
+      if (err) {
+        return res.status(HttpStatus.UNAUTHORIZED).send({ error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) })
+      }
+      res.locals.user = decodedToken
+      next()
+    })
+  } else {
+    // if there is no token
+    // return an error()
+    return res.status(HttpStatus.UNAUTHORIZED).send({ error: "Must provide accesstoken in header" });
+  }
 }
 
-export default authMiddleWare;
+export default authMiddleWare

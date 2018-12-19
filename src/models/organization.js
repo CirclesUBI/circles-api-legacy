@@ -1,7 +1,7 @@
 import CirclesModel from '../lib/postgresModels'
 
-export default class User extends CirclesModel {
-  static get tableName () { return 'user' }
+export default class Organization extends CirclesModel {
+  static get tableName () { return 'organization' }
 
   static get name () { return this.displayName }
 
@@ -13,41 +13,35 @@ export default class User extends CirclesModel {
         agreedToDisclaimer: { type: 'boolean' }, // used for legal reasons, and to denote that the user has been fully set up
         createdAt: { type: 'object' },
         updatedAt: { type: 'object' },
-        displayName: { type: 'string' },
+        lastActive: { type: 'object' },
+        organizationName: { type: 'string' },
         email: { type: 'string' },
-        profilePicUrl: { type: 'string' },
-        deviceId: { type: 'string' },
-        deviceEndpoint: { type: 'string' },
-        phoneNumber: { type: 'string' }        
+        profilePicURL: { type: 'string' },        
+        address: { type: 'string' },
+        latitude: { type: 'float' },
+        longitude: { type: 'float' },
+        description: { type: 'string' }
       }
     }
   }
 
   static get relationMappings () {
     return {
-      organizations: {
+      members: {
         relation: CirclesModel.ManyToManyRelation,
-        modelClass: `${__dirname}/organization`,
+        modelClass: `${__dirname}/user`, // Import models like this to prevent require loops.
         join: {
-          from: 'user.id',
+          from: 'organization.id',
           // ManyToMany relation needs the `through` object
           // to describe the join table.
           through: {
             // If you have a model class for the join table
             // you need to specify it like this:
             // modelClass: PersonMovie,
-            from: 'user_organizations.user_id',
-            to: 'user_organizations.organization_id'
+            from: 'user_organizations.organization_id',
+            to: 'user_organizations.user_id'
           },
-          to: 'organization.id'
-        }
-      },
-      notifications: {
-        relation: CirclesModel.HasManyRelation,
-        modelClass: `${__dirname}/notification`,
-        join: {
-          from: 'user.id',
-          to: 'notification.user_id'
+          to: 'user.id'
         }
       }
     }

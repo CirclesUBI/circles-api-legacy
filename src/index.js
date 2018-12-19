@@ -1,8 +1,8 @@
 import express from 'express';
-import routes from './config/routes';
+import routes from './routes';
 import log from './lib/logger';
 import { port } from './config/env';
-import knex from './connections/postgres';
+import { knex } from './database';
 
 const getDBTime = async () => {
   const res = await knex.raw('SELECT NOW()')
