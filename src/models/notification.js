@@ -15,29 +15,4 @@ export default class Notification extends CirclesModel {
       }
     }
   }
-
-  // static get relationMappings () {
-  //   // Import models here to prevent require loops.
-  //   const Organization = require('./organization')
-
-  //   return {
-  //     users: {
-  //       relation: CirclesModel.ManyToManyRelation,
-  //       modelClass: Organization,
-  //       join: {
-  //         from: 'organization.id',
-  //         // ManyToMany relation needs the `through` object
-  //         // to describe the join table.
-  //         through: {
-  //           // If you have a model class for the join table
-  //           // you need to specify it like this:
-  //           // modelClass: PersonMovie,
-  //           from: 'user_organizations.organizationId',
-  //           to: 'user_organizations.userId'
-  //         },
-  //         to: 'users.id'
-  //       }
-  //     }
-  //   }
-  // }
 }
