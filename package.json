@@ -3,6 +3,7 @@
   "version": "1.0.16",
   "description": "CRUD app for user and organization profiles",
   "main": "src/index.js",
+  "preinstall": "nvm use -i 10.15.0 || echo nvm not found: check node version && pause",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r dotenv/config build/index.js",
