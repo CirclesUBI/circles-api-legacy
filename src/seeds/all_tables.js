@@ -1,5 +1,5 @@
-
 import faker from 'faker'
+import { DataPipeline } from 'aws-sdk';
 
 const fakeUsers = []
 const requiredUsers = 5
@@ -11,6 +11,12 @@ var fakeUserOrgs = []
 
 const fakeNotifications = []
 const notificationsPerUser = 3
+
+var fakeOffers = []
+const offersPerUser = 1
+const offersPerOrg = 3
+var offerIndex = 0 
+const offerTypes = ['item', 'percentageItem', 'percentageAll', 'general']
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
@@ -53,6 +59,29 @@ exports.seed = function (knex, Promise) {
       }
       return knex('notification').insert(fakeNotifications)
     })
+    .then(() => {
+      for (let i = 0; i < fakeUsers.length; i++) {
+        for (let j = 0; j < offersPerUser; j++) {     
+          const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
+          const o = createFakeOffer(offerIndex++, type)
+          o.user_id = fakeUsers[i].id
+          fakeOffers.push(o)
+        }
+      }
+      return knex('offer').insert(fakeOffers)
+    })
+    .then(() => {
+      fakeOffers = []
+      for (let i = 0; i < fakeOrganizations.length; i++) {
+        for (let j = 0; j < offersPerOrg; j++) {
+          const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
+          const o = createFakeOffer(offerIndex++, type)
+          o.organization_id = fakeOrganizations[i].id
+          fakeOffers.push(o)
+        }
+      }
+      return knex('offer').insert(fakeOffers)
+    })
 }
 
 const createFakeUser = () => {
@@ -85,4 +114,42 @@ const createFakeNotification = () => {
   return {
     description: faker.lorem.sentence()
   }
+}
+
+const createFakeOffer = (index, type) => {
+  let offer = {
+    id: index,
+    type: type,
+    createdAt: date.now(),
+    public: faker.random.boolean(),
+    category: faker.commerce.department()
+  }
+  switch (type) {
+    case 'item':
+      offer.title = faker.commerce.productName()
+      offer.description = faker.lorem.sentence()
+      offer.amount = faker.random.number(250)
+      offer.price = faker.commerce.price()
+      break;
+    case 'percentageItem':
+      offer.title = faker.commerce.productName()
+      offer.description = faker.lorem.sentence()
+      offer.amount = faker.random.number(250)
+      offer.percentage = faker.random.number(15)
+      break;
+    case 'percentageAll':
+      let percent = faker.random.number(15)
+      offer.title = percent + '% Circles on all ' + faker.commerce.department()
+      offer.description = faker.lorem.sentence()
+      offer.percentage = percent
+      break;
+    case 'general':
+      offer.title = 'We accept Circles here!'
+      offer.description = 'Get ' + faker.commerce.productAdjective + ' ' + faker.commerce.product + ' here with Circles!'
+      break;
+    default:
+      console.error('switch statement fail')
+      break;
+  }
+  return offer
 }

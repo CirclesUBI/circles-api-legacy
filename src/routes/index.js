@@ -23,4 +23,5 @@ export default function (app) {
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
   app.use('/' + apiVersionString + '/notifs', notifsRouter)
+  app.use('/' + apiVersionString + '/offers', offersRouter)
 }

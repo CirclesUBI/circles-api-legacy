@@ -43,6 +43,14 @@ export default class Organization extends CirclesModel {
           },
           to: 'user.id'
         }
+      },
+      offers: {
+        relation: CirclesModel.HasManyRelation,
+        modelClass: `${__dirname}/offer`,
+        join: {
+          from: 'organization.id',
+          to: 'offer.organization_id'
+        }
       }
     }
   }

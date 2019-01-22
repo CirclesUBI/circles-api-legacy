@@ -7,7 +7,7 @@ export default class Offer extends CirclesModel {
     return {
       type: 'object',
       properties: {
-        id: { type: 'integer' },
+        id: { type: 'integer' },        
         itemCode: { type: 'string' },
         type: { type: 'string' },
         title: { type: 'string' },

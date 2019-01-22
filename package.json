@@ -16,7 +16,8 @@
     "win_build:clean": "rimraf build",
     "dev": "babel src -q -d build/ && node -r dotenv/config build/index.js",
     "win_dev": "npm run build && nodemon build/index.js",
-    "dev:tunnel": "sh scripts/tunnel.sh && npm run dev"
+    "dev:tunnel": "sh scripts/tunnel.sh && npm run dev",
+    "seed": "npm run win_migrate:up && knex seed:run"
   },
   "repository": {
     "type": "git",

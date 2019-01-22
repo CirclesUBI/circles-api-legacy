@@ -49,6 +49,14 @@ export default class User extends CirclesModel {
           from: 'user.id',
           to: 'notification.user_id'
         }
+      },
+      offers: {
+        relation: CirclesModel.HasManyRelation,
+        modelClass: `${__dirname}/offer`,
+        join: {
+          from: 'user.id',
+          to: 'offer.user_id'
+        }
       }
     }
   }
