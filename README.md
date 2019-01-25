@@ -1,4 +1,4 @@
-# Circles Api ![Build Status](https://codebuild.eu-central-1.amazon.com/badges?uuid=...&branch=master)
+# Circles Api [![Chat Server](https://chat.joincircles.net/api/v1/shield.svg?type=online&name=circles%20chat)](https://chat.joincircles.net) [![Backers](https://opencollective.com/circles/supporters/badge.svg)](https://opencollective.com/circles)
 
 This holds the offchain components of the circles api
 
