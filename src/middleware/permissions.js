@@ -11,6 +11,7 @@ const getPermissionDocuments = async () => {
 };
 
 const hasPermission = (user, resource, action) => {
+  console.log(user, resource, action)
   return getPermissionDocuments()
     .then(parsePermissions)
     .then((ac) => {

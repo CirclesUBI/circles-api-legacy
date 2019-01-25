@@ -9,7 +9,7 @@ export default class Offer extends CirclesModel {
       properties: {
         id: { type: 'integer' },        
         itemCode: { type: 'string' },
-        type: { type: 'string' },
+        type: { type: 'enum' },
         title: { type: 'string' },
         description: { type: 'string' },
         createdAt: { type: 'object' },
@@ -19,11 +19,7 @@ export default class Offer extends CirclesModel {
         public: { type: 'boolean' },
         price: { type: 'float' },
         percentage: { type: 'float' },
-        category: { type: 'string' },
-        limitType: { type: 'string' },
-        limitAmount: { type: 'integer' },
-        limitPeriod: { type: 'string' },
-        limitAmountSold: { type: 'integer' }
+        category: { type: 'string' }
       }
     }
   }

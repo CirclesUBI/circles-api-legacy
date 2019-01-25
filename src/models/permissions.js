@@ -12,7 +12,7 @@ export default class Permission extends CirclesModel {
         updatedAt: { type: 'object' },
         role: { type: 'string' },
         resource: { type: 'string' },
-        action: { type: 'string' },
+        action: { type: 'string' }
       },
     };
   }

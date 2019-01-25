@@ -8,7 +8,7 @@
     "start": "node -r dotenv/config build/index.js",
     "migrate:up": "npm run build:clean && npm run build && DEBUG=knex:query,knex:bindings ./node_modules/.bin/knex migrate:latest",
     "migrate:down": "npm run build:clean && npm run build && DEBUG=knex:query,knex:bindings ./node_modules/.bin/knex migrate:rollback",
-    "win_migrate:up": "npm run win_build:clean && npm run build && knex migrate:latest",
+    "win_migrate:up": "npm run win_build:clean && npm run build && knex migrate:latest && knex seed:run",
     "win_migrate:down": "npm run win_build:clean && npm run build && knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
     "build": "babel src -q -d build/",

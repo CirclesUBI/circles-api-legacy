@@ -16,7 +16,7 @@ var fakeOffers = []
 const offersPerUser = 1
 const offersPerOrg = 3
 var offerIndex = 0 
-const offerTypes = ['item', 'percentageItem', 'percentageAll', 'general']
+const offerTypes = ['item', 'percentage_item', 'percentage_category']
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
@@ -46,9 +46,9 @@ exports.seed = function (knex, Promise) {
       }
       return knex('organization').insert(fakeOrganizations)
     })
-    .then(() => {
-      return knex('user_organizations').insert(fakeUserOrgs)
-    })
+    // .then(() => {
+    //   return knex('user_organizations').insert(fakeUserOrgs)
+    // })
     .then(() => {
       for (let i = 0; i < fakeUsers.length; i++) {
         for (let j = 0; j < notificationsPerUser; j++) {
@@ -120,7 +120,6 @@ const createFakeOffer = (index, type) => {
   let offer = {
     id: index,
     type: type,
-    createdAt: date.now(),
     public: faker.random.boolean(),
     category: faker.commerce.department()
   }
@@ -131,25 +130,22 @@ const createFakeOffer = (index, type) => {
       offer.amount = faker.random.number(250)
       offer.price = faker.commerce.price()
       break;
-    case 'percentageItem':
+    case 'percentage_item':
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
       offer.percentage = faker.random.number(15)
       break;
-    case 'percentageAll':
+    case 'percentage_category':
       let percent = faker.random.number(15)
       offer.title = percent + '% Circles on all ' + faker.commerce.department()
       offer.description = faker.lorem.sentence()
       offer.percentage = percent
       break;
-    case 'general':
-      offer.title = 'We accept Circles here!'
-      offer.description = 'Get ' + faker.commerce.productAdjective + ' ' + faker.commerce.product + ' here with Circles!'
-      break;
     default:
       console.error('switch statement fail')
       break;
   }
+  console.log(offer)
   return offer
 }
