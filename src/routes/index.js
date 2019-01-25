@@ -7,6 +7,7 @@ import cors from 'cors';
 import usersRouter from './usersRouter'
 import orgsRouter from './orgsRouter'
 import notifsRouter from './notifsRouter'
+import offersRouter from './offersRouter'
 
 import { apiVersionString } from '../config/env'
 

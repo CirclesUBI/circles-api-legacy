@@ -46,9 +46,9 @@ exports.seed = function (knex, Promise) {
       }
       return knex('organization').insert(fakeOrganizations)
     })
-    // .then(() => {
-    //   return knex('user_organizations').insert(fakeUserOrgs)
-    // })
+    .then(() => {
+      return knex('user_organizations').insert(fakeUserOrgs)
+    })
     .then(() => {
       for (let i = 0; i < fakeUsers.length; i++) {
         for (let j = 0; j < notificationsPerUser; j++) {

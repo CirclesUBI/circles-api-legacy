@@ -39,7 +39,8 @@ async function findOne (req, res) {
     let user = (result.length) ? result[0] : null
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
-      user.organizations = await user.$relatedQuery('organizations')
+      user.offers = await user.$relatedQuery('offers')
+      user.organizations = await user.$relatedQuery('organizations')      
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(user);
