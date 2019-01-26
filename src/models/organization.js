@@ -1,6 +1,6 @@
-import CirclesModel from '../lib/postgresModels'
+const CirclesModel = require('../lib/postgresModels');
 
-export default class Organization extends CirclesModel {
+module.exports = class Organization extends CirclesModel {
   static get tableName () { return 'organization' }
 
   static get name () { return this.displayName }

@@ -8,4 +8,4 @@ const levels = {
   emerg: 0
 };
 
-export { level, levels };
+module.exports = { level, levels };

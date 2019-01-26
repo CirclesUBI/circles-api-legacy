@@ -31,7 +31,7 @@ const postgres = {
 // API stuff
 const apiVersionString = process.env.API_VERSION
 
-export {
+module.exports = {
   apiVersionString,
   port,
   defaultAppMsg,

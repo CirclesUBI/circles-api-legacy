@@ -1,4 +1,4 @@
-import knex from 'knex'
+const knex = require('knex');
 
 const basicPermissions = [
   { role: 'user', resource: 'ownUser', action: 'create' },

@@ -1,8 +1,6 @@
-import * as HttpStatus from 'http-status-codes';
-
-import Notification from '../models/notification'
-
-import logger from '../lib/logger'
+const HttpStatus = require('http-status-codes')
+const Notification = require('../models/notification');
+const logger = require('../lib/logger');
 
 async function all (req, res) {
   try {
@@ -15,4 +13,4 @@ async function all (req, res) {
   }
 }
 
-export default {all}
+module.exports = {all}

@@ -1,5 +1,5 @@
-import faker from 'faker'
-import { DataPipeline } from 'aws-sdk';
+
+const faker = require('faker');
 
 const fakeUsers = []
 const requiredUsers = 5

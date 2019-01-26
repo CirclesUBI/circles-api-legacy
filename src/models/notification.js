@@ -1,6 +1,6 @@
-import CirclesModel from '../lib/postgresModels'
+const CirclesModel = require('../lib/postgresModels');
 
-export default class Notification extends CirclesModel {
+module.exports = class Notification extends CirclesModel {
   static get tableName () { return 'notification' }
 
   static get jsonSchema () {
