@@ -1,7 +1,8 @@
-import { Model, snakeCaseMappers } from 'objection';
-import pg from 'pg';
-import BigNumber from 'bignumber.js';
-import { knex } from '../database';
+const Model = require('objection').Model;
+const snakeCaseMappers = require('objection').snakeCaseMappers;
+const pg = require('pg');
+const BigNumber = require('bignumber.js');
+const knex = require('../database').knex;
 
 // Defaults for all models
 class CirclesModel extends Model {
@@ -42,4 +43,4 @@ const parse = (string) => {
 };
 pg.types.setTypeParser(NUMERIC_OID, parse);
 
-export default CirclesModel;
+module.exports = CirclesModel;

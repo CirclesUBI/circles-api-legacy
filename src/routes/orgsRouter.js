@@ -1,5 +1,5 @@
-import { Router } from 'express'
-import orgsController from '../controllers/orgsController'
+const Router = require('express').Router;
+const orgsController = require('../controllers/orgsController');
 
 const router = Router()
 
@@ -8,4 +8,4 @@ router.get('/:id', orgsController.findOne);
 router.post('/:id', orgsController.addOne);
 router.delete('/:id', orgsController.deleteOne);
 
-export default router
+module.exports = router

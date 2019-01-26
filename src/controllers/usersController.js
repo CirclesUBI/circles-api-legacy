@@ -1,13 +1,11 @@
-import * as HttpStatus from 'http-status-codes';
-import PostgresDB from '../database';
-import User from '../models/user';
-
-import { androidGCMPlatformArn, cognitoPoolId } from '../config/env';
-
-import logger from '../lib/logger'
-
-import cognitoISP from '../connections/cognito'
-import sns from '../connections/sns'
+const HttpStatus = require('http-status-codes');
+const PostgresDB = require('../database').postgresDB;
+const User = require('../models/user');
+const androidGCMPlatformArn = require('../config/env').androidGCMPlatformArn;
+const cognitoPoolId = require('../config/env').cognitoPoolId;
+const logger = require('../lib/logger');
+const cognitoISP = require('../connections/cognito');
+const sns = require('../connections/sns');
 
 function convertCognitoToUser (cognitoUser) {
   return {
@@ -130,4 +128,4 @@ async function deleteOne (req, res) {
   }
 }
 
-export default {all, findOne, addOne, deleteOne}
+module.exports = {all, findOne, addOne, deleteOne}
