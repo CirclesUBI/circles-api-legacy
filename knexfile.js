@@ -1,9 +1,9 @@
 require('dotenv').config()
-const { postgres } = require('./build/config/env')
+const { postgres } = require('./src/config/env')
 
 module.exports = {
   client: 'pg',
   connection: postgres,
-  migrations: {directory: './build/migrations'},
-  seeds: {directory: './build/seeds'}
+  migrations: {directory: './src/migrations'},
+  seeds: {directory: './src/seeds'}
 }

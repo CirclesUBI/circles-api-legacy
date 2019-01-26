@@ -1,6 +1,6 @@
-import * as HttpStatus from 'http-status-codes';
-import AccessControl from 'role-acl';
-import Permission from '../models/permissions';
+const HttpStatus = require('http-status-codes');
+const AccessControl = require('role-acl');
+const Permission = require('../models/permissions');
 
 const parsePermissions = perms => new AccessControl(perms);
 
@@ -31,4 +31,4 @@ const hasPermissionMiddleware = (resource, action) => {
   };
 };
 
-export default hasPermissionMiddleware;
+module.exports = hasPermissionMiddleware;

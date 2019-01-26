@@ -1,16 +1,16 @@
-import * as HttpStatus from 'http-status-codes';
-import bodyParser from 'body-parser';
-import authMiddleware from '../middleware/auth';
-import loggingMiddleware from '../middleware/logging';
-// import hasPermissionMiddleware from '../middleware/permissions';
-import cors from 'cors';
-import usersRouter from './usersRouter'
-import orgsRouter from './orgsRouter'
-import notifsRouter from './notifsRouter'
+const HttpStatus = require('http-status-codes');
+const bodyParser = require('body-parser');
+const authMiddleware = require('../middleware/auth');
+const loggingMiddleware = require('../middleware/logging');
+// const hasPermissionMiddleware = require('../middleware/permissions');
+const cors = require('cors');
+const usersRouter = require('./usersRouter');
+const orgsRouter = require('./orgsRouter');
+const notifsRouter = require('./notifsRouter');
 
-import { apiVersionString } from '../config/env'
+const apiVersionString = require('../config/env').apiVersionString;
 
-export default function (app) {
+module.exports = function (app) {
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
