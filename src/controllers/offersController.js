@@ -1,8 +1,7 @@
-import * as HttpStatus from 'http-status-codes';
-import PostgresDB from '../database';
-import Offer from '../models/offer';
-
-import logger from '../lib/logger'
+const HttpStatus = require('http-status-codes');
+const PostgresDB = require('../database').postgresDB;
+const Offer = require('../models/offer');
+const logger = require('../lib/logger');
 
 async function all (req, res) {
   try {
@@ -72,4 +71,4 @@ async function deleteOne (req, res) {
   }
 }
 
-export default {all, findOne, addOne, deleteOne}
+module.exports = {all, findOne, addOne, deleteOne}

@@ -1,6 +1,6 @@
-import CirclesModel from '../lib/postgresModels'
+const CirclesModel = require('../lib/postgresModels');
 
-export default class Offer extends CirclesModel {
+module.exports = class Offer extends CirclesModel {
   static get tableName () { return 'offer' }
 
   static get jsonSchema () {
