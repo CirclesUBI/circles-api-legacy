@@ -1,5 +1,5 @@
 const HttpStatus = require('http-status-codes');
-const PostgresDB = require('../database');
+const PostgresDB = require('../database').postgresDB;
 const User = require('../models/user');
 const androidGCMPlatformArn = require('../config/env').androidGCMPlatformArn;
 const cognitoPoolId = require('../config/env').cognitoPoolId;

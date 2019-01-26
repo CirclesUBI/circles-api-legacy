@@ -10,7 +10,8 @@
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
-    "dev": "nodemon -r dotenv/config src/app.js",    
+    "migrate:seed": "knex seed:run",
+    "dev": "nodemon -r dotenv/config src/app.js",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev"
   },
   "repository": {
@@ -49,7 +50,7 @@
   },
   "nodemonConfig": {
     "events": {
-      "restart": "npm run build"
+      "restart": "&& npm start"
     },
     "watch": [
       "src"
