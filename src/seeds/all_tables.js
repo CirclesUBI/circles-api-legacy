@@ -145,7 +145,6 @@ const createFakeOffer = (index, type) => {
     default:
       console.error('switch statement fail')
       break;
-  }
-  console.log(offer)
+  }  
   return offer
 }
