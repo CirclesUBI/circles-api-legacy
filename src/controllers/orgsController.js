@@ -17,8 +17,8 @@ async function all (req, res) {
 async function findOne (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
-    let result = await Organization.query(trx).where({ id: req.params.id })
-    let organization = (result.length) ? result[0] : null
+    const result = await Organization.query(trx).where({ id: req.params.id })
+    const organization = (result.length) ? result[0] : null
     if (organization instanceof Organization) {
       organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
@@ -55,7 +55,7 @@ async function addOne (req, res) {
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
-    let organization = await Organization.query(trx).where({ id: req.params.id }).first()
+    const organization = await Organization.query(trx).where({ id: req.params.id }).first()
     if (organization instanceof Organization) {
       await organization.$relatedQuery('members').unrelate()
       await organization.$relatedQuery('offers').unrelate()

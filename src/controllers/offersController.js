@@ -17,8 +17,8 @@ async function all (req, res) {
 async function findOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
-    let result = await Offer.query(trx).where({ id: req.params.id })
-    let offer = (result.length) ? result[0] : null
+    const result = await Offer.query(trx).where({ id: req.params.id })
+    const offer = (result.length) ? result[0] : null
     if (offer instanceof Offer) {      
       // offer.owner = await offer.$relatedQuery('owner')      
     }
@@ -53,7 +53,7 @@ async function addOne (req, res) {
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
-    let offer = await Offer.query(trx).where({ id: req.params.id }).first()
+    const offer = await Offer.query(trx).where({ id: req.params.id }).first()
     if (offer instanceof Offer) {
       await Offer.query(trx).delete().where({ id: req.params.id })
     } else {

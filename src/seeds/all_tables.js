@@ -7,15 +7,15 @@ const requiredUsers = 5
 const fakeOrganizations = []
 const requiredOrganizations = 2
 
-var fakeUserOrgs = []
+let fakeUserOrgs = []
 
 const fakeNotifications = []
 const notificationsPerUser = 3
 
-var fakeOffers = []
+let fakeOffers = []
 const offersPerUser = 1
 const offersPerOrg = 3
-var offerIndex = 0 
+let offerIndex = 0 
 const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
 
 exports.seed = function (knex, Promise) {

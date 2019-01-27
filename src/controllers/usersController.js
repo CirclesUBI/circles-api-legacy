@@ -33,8 +33,8 @@ async function all (req, res) {
 async function findOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
-    let result = await User.query(trx).where({ id: req.params.id })
-    let user = (result.length) ? result[0] : null
+    const result = await User.query(trx).where({ id: req.params.id })
+    const user = (result.length) ? result[0] : null
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
@@ -59,7 +59,7 @@ async function addOne (req, res) {
       logger.warn('user.id exists: ' + req.params.id)
       user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
     } else {
-      let circlesUser = convertCognitoToUser(req.body)
+      const circlesUser = convertCognitoToUser(req.body)
       const endpointArn = await createSNSEndpoint(circlesUser)
       await addToCognitoGroup(circlesUser)
       circlesUser.deviceEndpoint = endpointArn
@@ -77,7 +77,7 @@ async function addOne (req, res) {
 
 function addToCognitoGroup (circlesUser) {
   const groupName = 'user'
-  var params = {
+  const params = {
     GroupName: groupName,
     UserPoolId: cognitoPoolId,
     Username: circlesUser.id
@@ -96,7 +96,7 @@ function addToCognitoGroup (circlesUser) {
 }
 
 function createSNSEndpoint (circlesUser) {
-  var snsParams = {
+  const snsParams = {
     PlatformApplicationArn: androidGCMPlatformArn,
     Token: circlesUser.deviceId
   }
@@ -111,7 +111,7 @@ function createSNSEndpoint (circlesUser) {
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
-    let user = await User.query(trx).where({ id: req.params.id }).first()
+    const user = await User.query(trx).where({ id: req.params.id }).first()
     if (user instanceof User) {
       await user.$relatedQuery('organizations').unrelate()
       await user.$relatedQuery('notifications').delete().where({ user_id: req.params.id })
