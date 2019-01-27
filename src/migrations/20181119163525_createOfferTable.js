@@ -12,8 +12,8 @@ exports.up = (knex, Promise) => {
     t.dateTime('updated_at')
     t.integer('amount')
     t.boolean('public').notNullable().defaultTo(false)
-    t.float('price')
-    t.float('percentage')
+    t.decimal('price')
+    t.decimal('percentage')
     t.string('category', 50)
   })
 }

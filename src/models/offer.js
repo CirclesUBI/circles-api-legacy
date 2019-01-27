@@ -18,8 +18,8 @@ module.exports = class Offer extends CirclesModel {
         updatedAt: { type: 'object' },
         amount: { type: 'integer' },
         public: { type: 'boolean' },
-        price: { type: 'float' },
-        percentage: { type: 'float' },
+        price: { type: 'number', multipleOf: 0.01 },
+        percentage: { type: 'number', multipleOf: 0.1 },
         category: { type: 'string' }
       }
     }

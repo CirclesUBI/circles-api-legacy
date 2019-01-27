@@ -7,6 +7,7 @@ const cors = require('cors');
 const usersRouter = require('./usersRouter');
 const orgsRouter = require('./orgsRouter');
 const notifsRouter = require('./notifsRouter');
+const offersRouter = require('./offersRouter');
 
 const apiVersionString = require('../config/env').apiVersionString;
 
