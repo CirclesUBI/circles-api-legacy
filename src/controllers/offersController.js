@@ -19,10 +19,8 @@ async function findOne (req, res) {
   try {
     let result = await Offer.query(trx).where({ id: req.params.id })
     let offer = (result.length) ? result[0] : null
-    if (offer instanceof Offer) {
-      // load joins here
-      // user.notifications = await user.$relatedQuery('notifications')
-      // user.organizations = await user.$relatedQuery('organizations')
+    if (offer instanceof Offer) {      
+      // offer.owner = await offer.$relatedQuery('owner')      
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(offer);

@@ -55,7 +55,7 @@ module.exports = class User extends CirclesModel {
         modelClass: `${__dirname}/offer`,
         join: {
           from: 'user.id',
-          to: 'offer.user_id'
+          to: 'offer.owner_id'
         }
       }
     }

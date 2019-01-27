@@ -2,10 +2,9 @@
 exports.up = (knex, Promise) => {
   return knex.schema.createTable('offer', (t) => {
     t.increments('id').primary()
-    t.string('user_id', 50)
-    t.string('organization_id', 50)
+    t.string('owner_id', 50)
     t.string('item_code', 50)
-    t.enu('type', ['item', 'percentage_item', 'percentage_category']).notNullable()
+    t.enu('type', ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']).notNullable()
     t.string('title', 50).notNullable()
     t.string('description', 250).notNullable()
     t.dateTime('created_at').notNullable().defaultTo(knex.fn.now())

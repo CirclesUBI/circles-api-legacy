@@ -22,6 +22,7 @@ async function findOne (req, res) {
     if (organization instanceof Organization) {
       organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
+      // organization.owner = await organization.$relatedQuery('owner')
     }
     await trx.commit()
     res.status(HttpStatus.OK).send(organization)
@@ -56,7 +57,8 @@ async function deleteOne (req, res) {
   try {
     let organization = await Organization.query(trx).where({ id: req.params.id }).first()
     if (organization instanceof Organization) {
-      await organization.$relatedQuery('users').unrelate()
+      await organization.$relatedQuery('members').unrelate()
+      await organization.$relatedQuery('offers').unrelate()
       await Organization.query(trx).delete().where({ id: req.params.id })
     } else {
       throw new Error('No organization.id: ' + req.params.id)

@@ -10,6 +10,7 @@ module.exports = class Organization extends CirclesModel {
       type: 'object',
       properties: {
         id: { type: 'string' },
+        ownerId: { type: 'string' },
         agreedToDisclaimer: { type: 'boolean' }, // used for legal reasons, and to denote that the user has been fully set up
         createdAt: { type: 'object' },
         updatedAt: { type: 'object' },
@@ -26,7 +27,15 @@ module.exports = class Organization extends CirclesModel {
   }
 
   static get relationMappings () {
-    return {
+     return {
+      offers: {
+        relation: CirclesModel.HasManyRelation,
+        modelClass: `${__dirname}/offer`,
+        join: {
+          from: 'organization.id',
+          to: 'offer.owner_id'
+        }
+      },      
       members: {
         relation: CirclesModel.ManyToManyRelation,
         modelClass: `${__dirname}/user`, // Import models like this to prevent require loops.
@@ -44,14 +53,14 @@ module.exports = class Organization extends CirclesModel {
           to: 'user.id'
         }
       },
-      offers: {
-        relation: CirclesModel.HasManyRelation,
-        modelClass: `${__dirname}/offer`,
-        join: {
-          from: 'organization.id',
-          to: 'offer.organization_id'
-        }
-      }
+      // owner: {
+      //   relation: Model.BelongsToOneRelation,
+      //   modelClass: `${__dirname}/user`,
+      //   join: {
+      //     from: 'organization.owner_id',
+      //     to: 'user.id'
+      //   }
+      // }
     }
   }
 }

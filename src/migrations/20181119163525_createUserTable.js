@@ -13,6 +13,7 @@ exports.up = (knex, Promise) => {
     t.string('phone_number').notNullable()
   }).createTable('organization', (t) => {
     t.string('id').primary()
+    t.string('owner_id', 50).notNullable()
     t.string('organization_name', 100).notNullable()
     t.string('email', 50).notNullable()
     t.string('profile_pic_url', 500).notNullable()
