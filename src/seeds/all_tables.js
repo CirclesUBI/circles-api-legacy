@@ -16,7 +16,7 @@ var fakeOffers = []
 const offersPerUser = 1
 const offersPerOrg = 3
 var offerIndex = 0 
-const offerTypes = ['item', 'percentage_item', 'percentage_category']
+const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
@@ -41,6 +41,7 @@ exports.seed = function (knex, Promise) {
     .then(() => {
       for (let i = 0; i < requiredOrganizations; i++) {
         const o = createFakeOrganization()
+        o.owner_id = fakeUsers[i].id
         fakeUserOrgs[i].organization_id = o.id
         fakeOrganizations.push(o)
       }
@@ -64,7 +65,7 @@ exports.seed = function (knex, Promise) {
         for (let j = 0; j < offersPerUser; j++) {     
           const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
           const o = createFakeOffer(offerIndex++, type)
-          o.user_id = fakeUsers[i].id
+          o.owner_id = fakeUsers[i].id
           fakeOffers.push(o)
         }
       }
@@ -76,7 +77,7 @@ exports.seed = function (knex, Promise) {
         for (let j = 0; j < offersPerOrg; j++) {
           const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
           const o = createFakeOffer(offerIndex++, type)
-          o.organization_id = fakeOrganizations[i].id
+          o.owner_id = fakeOrganizations[i].id
           fakeOffers.push(o)
         }
       }
@@ -124,19 +125,19 @@ const createFakeOffer = (index, type) => {
     category: faker.commerce.department()
   }
   switch (type) {
-    case 'item':
+    case 'ITEM':
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
       offer.price = faker.commerce.price()
       break;
-    case 'percentage_item':
+    case 'PERCENTAGE_ITEM':
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
       offer.percentage = faker.random.number(15)
       break;
-    case 'percentage_category':
+    case 'PERCENTAGE_CATEGORY':
       let percent = faker.random.number(15)
       offer.title = percent + '% Circles on all ' + faker.commerce.department()
       offer.description = faker.lorem.sentence()

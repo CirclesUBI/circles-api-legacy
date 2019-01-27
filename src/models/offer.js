@@ -7,9 +7,10 @@ module.exports = class Offer extends CirclesModel {
     return {
       type: 'object',
       properties: {
-        id: { type: 'integer' },        
+        id: { type: 'integer' },
+        ownerId: { type: 'string' },    
         itemCode: { type: 'string' },
-        type: { type: 'enum' },
+        type: { type: 'string', enum: ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY'] },
         title: { type: 'string' },
         description: { type: 'string' },
         createdAt: { type: 'object' },
