@@ -4,20 +4,15 @@ const AWS = require('aws-sdk-mock')
 
 const versionString = '/' + process.env.API_VERSION
 
-var _test = {
-  users: [],
-  orgs: [],
-  members: [],
-  randomUser: () => {
-    return _test.users[Math.floor(Math.random()*_test.users.length)]
-  },
-  randomOrg: () => {
-    return _test.orgs[Math.floor(Math.random()*_test.orgs.length)]
-  },
-  randomMember: () => {
-    return _test.members[Math.floor(Math.random()*_test.members.length)]
-  }
+let _testUsers, _testOrgs, _testMembers
 
+class RandItems {
+  constructor(items) {
+      this.items = items
+  }
+  random() {
+      return this.items[Math.floor(Math.random()*this.items.length)]
+  }
 }
     
 describe('Integration Tests', () => {
@@ -30,15 +25,15 @@ describe('Integration Tests', () => {
 
   describe('User API', () => {
 
-    it('It should return all /users', async () => {
+    it('It should return all /users on GET', async () => {
       const { res, req } = await request(app).get(versionString + '/users')      
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
-      _test.users = JSON.parse(res.text)
+      _testUsers = new RandItems(JSON.parse(res.text))
     });
 
-    it('It should return a specific /users/userId', async () => {
-      let testUser = _test.randomUser()    
+    it('It should return a specific /users/userId on GET', async () => {
+      let testUser = _testUsers.random()    
       const { res, req } = await request(app).get(versionString + '/users/' + testUser.id)      
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -46,8 +41,22 @@ describe('Integration Tests', () => {
       expect(user.id).toEqual(testUser.id)
     });
 
-    it('It should update a specific /users/userId', async () => {  
-      let testUser = _test.randomUser()    
+    it('It should create a specific /users on POST', async () => {  
+      let testUser = _testUsers.random()      
+      let email = 'user@test.com'    
+      const { res, req } = await request(app)
+        .post(versionString + '/users/' + testUser.id)
+        .send({email: email})
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.text).toBeDefined()    
+      let user = JSON.parse(res.text)
+      expect(user.email).toEqual(email)
+    });
+
+    it('It should update a specific /users/userId on PUT', async () => {  
+      let testUser = _testUsers.random()    
       let email = 'user@test.com'    
       const { res, req } = await request(app)
         .post(versionString + '/users/' + testUser.id)
@@ -69,11 +78,11 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app).get(versionString + '/orgs')      
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
-      _test.orgs = JSON.parse(res.text)
+      _testOrgs = new RandItems(JSON.parse(res.text))
     });
 
     it('It should return a specific /orgs/userId', async () => {
-      let testOrg = _test.randomOrg()    
+      let testOrg = _testOrgs.random()    
       const { res, req } = await request(app).get(versionString + '/orgs/' + testOrg.id)      
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -82,7 +91,7 @@ describe('Integration Tests', () => {
     });
 
     it('It should update a specific /orgs/orgId', async () => {  
-      let testOrg = _test.randomOrg()    
+      let testOrg = _testOrgs.random()  
       let email = 'org@test.com'    
       const { res, req } = await request(app)
         .post(versionString + '/orgs/' + testOrg.id)
@@ -96,15 +105,15 @@ describe('Integration Tests', () => {
     });
 
     it('Orgs should have members who exist', async () => {  
-      let testOrg = _test.randomOrg() 
+      let testOrg = _testOrgs.random()
       let response = await request(app).get(versionString + '/orgs/' + testOrg.id)
       const orgRes = response.res 
       expect(orgRes.statusCode).toEqual(200);        
       let org = JSON.parse(orgRes.text)
       expect(org.members).toBeDefined()
-      _test.members = org.members      
+      _testMembers = new RandItems(org.members)
       
-      let testMember = _test.randomMember()      
+      let testMember = _testMembers.random()      
       response = await request(app).get(versionString + '/users/' + testMember.id)
       const userRes = response.res
       expect(userRes.statusCode).toEqual(200);        
