@@ -17,7 +17,7 @@ module.exports = class Organization extends CirclesModel {
         lastActive: { type: 'object' },
         organizationName: { type: 'string' },
         email: { type: 'string' },
-        profilePicURL: { type: 'string' },        
+        profilePicUrl: { type: 'string' },        
         address: { type: 'string' },
         latitude: { type: 'float' },
         longitude: { type: 'float' },

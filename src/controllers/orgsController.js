@@ -37,12 +37,29 @@ async function findOne (req, res) {
 async function addOne (req, res) {
   let organization
   try {
-    const orgExists = await Organization.query().where({ id: req.params.id })
+    const orgExists = await Organization.query().where({ id: req.body.id })
     if (orgExists.length) {
-      logger.warn('organization.id exists: ' + req.params.id)      
-      organization = await Organization.query().patchAndFetchById(req.params.id, req.body)
+      throw new Error('organization.id already exists: ' + req.body.id)            
     } else {
+      console.log(req.body)
       organization = await Organization.query().insert(req.body)
+    }
+    res.status(HttpStatus.OK).send(organization)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+  }
+}
+
+async function updateOne (req, res) {
+  let organization
+  try {
+    const orgExists = await Organization.query().where({ id: req.body.id })
+    if (!orgExists.length) {
+      throw new Error('organization.id does not exist: ' + req.body.id)      
+    } else {
+      organization = await Organization.query().patchAndFetchById(req.body.id, req.body)
     }
     res.status(HttpStatus.OK).send(organization)
   } catch (error) {
@@ -73,4 +90,4 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = {all, findOne, addOne, deleteOne}
+module.exports = {all, findOne, addOne, updateOne, deleteOne}

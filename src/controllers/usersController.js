@@ -54,16 +54,35 @@ async function addOne (req, res) {
   let user
   const trx = await PostgresDB.startTransaction();
   try {
-    const userExists = await User.query(trx).where({ id: req.params.id })
-    if (userExists.length) {
-      logger.warn('user.id exists: ' + req.params.id)
-      user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
+    const userExists = await User.query(trx).where({ id: req.body.id })
+    if (userExists.length) {      
+      throw new Error('user.id already exists: ' + req.body.id)
     } else {
       const circlesUser = convertCognitoToUser(req.body)
       const endpointArn = await createSNSEndpoint(circlesUser)
       await addToCognitoGroup(circlesUser)
       circlesUser.deviceEndpoint = endpointArn
       user = await User.query(trx).insert(circlesUser)
+    }
+    await trx.commit();
+    res.status(HttpStatus.OK).send(user);              
+  } catch (error) {
+    logger.error(error)
+    await trx.rollback();
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+  }
+}
+
+async function updateOne (req, res) {
+  let user
+  const trx = await PostgresDB.startTransaction();
+  try {
+    const userExists = await User.query(trx).where({ id: req.params.id })
+    if (!userExists.length) {
+      throw error('user.id does not exist: ' + req.params.id)      
+    } else {
+      user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(user);              
@@ -129,4 +148,4 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = {all, findOne, addOne, deleteOne}
+module.exports = {all, findOne, addOne, updateOne, deleteOne}
