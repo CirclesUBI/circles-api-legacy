@@ -12,11 +12,9 @@ let fakeUserOrgs = []
 const fakeNotifications = []
 const notificationsPerUser = 3
 
-let fakeOffers = []
+const fakeOffers = []
 const offersPerUser = 1
 const offersPerOrg = 3
-let offerIndex = 0 
-const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
@@ -63,9 +61,8 @@ exports.seed = function (knex, Promise) {
     })
     .then(() => {
       for (let i = 0; i < fakeUsers.length; i++) {
-        for (let j = 0; j < offersPerUser; j++) {     
-          const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
-          const o = createFakeOffer(offerIndex++, type)
+        for (let j = 0; j < offersPerUser; j++) {
+          const o = createFakeOffer()
           o.owner_id = fakeUsers[i].id
           fakeOffers.push(o)
         }
@@ -76,8 +73,7 @@ exports.seed = function (knex, Promise) {
       fakeOffers = []
       for (let i = 0; i < fakeOrganizations.length; i++) {
         for (let j = 0; j < offersPerOrg; j++) {
-          const type = offerTypes[Math.floor(Math.random()*offerTypes.length)]
-          const o = createFakeOffer(offerIndex++, type)
+          const o = createFakeOffer()
           o.owner_id = fakeOrganizations[i].id
           fakeOffers.push(o)
         }

@@ -1,4 +1,6 @@
 const faker = require('faker')
+const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
+let offerIndex = 0
 
 const createFakeUser = () => {
   return {
@@ -32,19 +34,19 @@ const createFakeNotification = () => {
   }
 }
 
-const createFakeOffer = (index, type) => {
+const createFakeOffer = () => {
   let offer = {
-    id: index,
-    type: type,
+    id: offerIndex++,
+    type: offerTypes[Math.floor(Math.random()*offerTypes.length)],
     public: faker.random.boolean(),
     category: faker.commerce.department()
   }
-  switch (type) {
+  switch (offer.type) {
     case 'ITEM':
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
-      offer.price = faker.commerce.price()
+      offer.price = Number(faker.random.number(250) + '.' + faker.random.number(99))
       break;
     case 'PERCENTAGE_ITEM':
       offer.title = faker.commerce.productName()

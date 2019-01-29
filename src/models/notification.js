@@ -9,8 +9,8 @@ module.exports = class Notification extends CirclesModel {
       properties: {
         id: { type: 'integer' },
         description: { type: 'string' },
-        createdAt: { type: 'object' },
-        updatedAt: { type: 'object' },
+        created_at: { type: 'object' },
+        updated_at: { type: 'object' },
         dismissed: { type: 'boolean' }
       }
     }

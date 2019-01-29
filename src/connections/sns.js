@@ -5,7 +5,7 @@ const sns = new SNS({apiVersion: '2010-03-31'})
 sns.createSNSEndpoint = (circlesUser) => {
   const snsParams = {
     PlatformApplicationArn: androidGCMPlatformArn,
-    Token: circlesUser.deviceId
+    Token: circlesUser.device_id
   }  
   return new Promise((resolve, reject) => {
     sns.createPlatformEndpoint(snsParams, (err, data) => {

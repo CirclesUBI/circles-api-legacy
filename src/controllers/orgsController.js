@@ -41,7 +41,6 @@ async function addOne (req, res) {
     if (orgExists.length) {
       throw new Error('organization.id already exists: ' + req.body.id)            
     } else {
-      console.log(req.body)
       organization = await Organization.query().insert(req.body)
     }
     res.status(HttpStatus.OK).send(organization)
@@ -55,11 +54,11 @@ async function addOne (req, res) {
 async function updateOne (req, res) {
   let organization
   try {
-    const orgExists = await Organization.query().where({ id: req.body.id })
+    const orgExists = await Organization.query().where({ id: req.params.id })
     if (!orgExists.length) {
-      throw new Error('organization.id does not exist: ' + req.body.id)      
+      throw new Error('organization.id does not exist: ' + req.params.id)      
     } else {
-      organization = await Organization.query().patchAndFetchById(req.body.id, req.body)
+      organization = await Organization.query().patchAndFetchById(req.params.id, req.body)
     }
     res.status(HttpStatus.OK).send(organization)
   } catch (error) {
