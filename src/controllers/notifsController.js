@@ -7,7 +7,7 @@ async function all (req, res) {
     const notifications = await Notification.query().limit(10)
     res.status(HttpStatus.OK).send(notifications)
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }

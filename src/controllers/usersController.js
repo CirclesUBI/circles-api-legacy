@@ -7,6 +7,11 @@ const logger = require('../lib/logger');
 const cognitoISP = require('../connections/cognito');
 const sns = require('../connections/sns');
 
+// const AWS = require('aws-sdk')
+// const SNS = new AWS.SNS({apiVersion: '2010-03-31'})
+
+
+// todo: move this to FE
 function convertCognitoToUser (cognitoUser) {
   return {
     agreedToDisclaimer: false,
@@ -24,7 +29,7 @@ async function all (req, res) {
     const users = await User.query().limit(10);
     res.status(HttpStatus.OK).send(users);
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
@@ -43,31 +48,43 @@ async function findOne (req, res) {
     await trx.commit();
     res.status(HttpStatus.OK).send(user);
   } catch (error) {    
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
+const userExample = { 
+  id: 'da6c3e88-ff2d-49ce-a0b4-89f16029619b',
+  agreedToDisclaimer: true,
+  displayName: 'Rosina',
+  email: 'Conner68@gmail.com',
+  profilePicUrl: 'https://s3.amazonaws.com/uifaces/faces/twitter/haruintesettden/128.jpg',
+  deviceId: '4',
+  phoneNumber: '248.852.9171 x97910',
+  deviceEndpoint: 'arn:aws:sns:eu-west-1:12345:endpoint/APNS_SANDBOX/blah-app/c08d3ccd-3e07-328c-a77d-20b2a790122f' 
+}
+
 async function addOne (req, res) {
   let user
   const trx = await PostgresDB.startTransaction();
   try {
-    const userExists = await User.query(trx).where({ id: req.body.id })
+    const circlesUser = req.body
+    const userExists = await User.query(trx).where({ id: circlesUser.id })
     if (userExists.length) {      
-      throw new Error('user.id already exists: ' + req.body.id)
+      throw new Error('user.id already exists: ' + circlesUser.id)
     } else {
-      const circlesUser = convertCognitoToUser(req.body)
-      const endpointArn = await createSNSEndpoint(circlesUser)
-      await addToCognitoGroup(circlesUser)
+      const endpointArn = await sns.createSNSEndpoint(circlesUser)
       circlesUser.deviceEndpoint = endpointArn
-      user = await User.query(trx).insert(circlesUser)
+      // await addToCognitoGroup(circlesUser)
+      console.log(userExample)
+      user = await User.query(trx).insert(userExample)
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(user);              
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
@@ -87,7 +104,7 @@ async function updateOne (req, res) {
     await trx.commit();
     res.status(HttpStatus.OK).send(user);              
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
@@ -114,19 +131,6 @@ function addToCognitoGroup (circlesUser) {
   })
 }
 
-function createSNSEndpoint (circlesUser) {
-  const snsParams = {
-    PlatformApplicationArn: androidGCMPlatformArn,
-    Token: circlesUser.deviceId
-  }
-  return new Promise((resolve, reject) => {
-    sns.createPlatformEndpoint(snsParams, (err, data) => {
-      if (err) reject(err)
-      else resolve(data.EndpointArn)
-    })
-  })
-}
-
 async function deleteOne (req, res) {
   const trx = await PostgresDB.startTransaction();
   try {
@@ -141,7 +145,7 @@ async function deleteOne (req, res) {
     await trx.commit();
     res.status(HttpStatus.OK).send();
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })

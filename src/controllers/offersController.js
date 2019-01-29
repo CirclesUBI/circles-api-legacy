@@ -8,7 +8,7 @@ async function all (req, res) {
     const offers = await Offer.query().limit(25);
     res.status(HttpStatus.OK).send(offers);
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
@@ -27,7 +27,7 @@ async function findOne (req, res) {
     await trx.commit();
     res.status(HttpStatus.OK).send(offer);
   } catch (error) {    
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
@@ -46,7 +46,7 @@ async function addOne (req, res) {
     }
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
@@ -64,7 +64,7 @@ async function deleteOne (req, res) {
     await trx.commit();
     res.status(HttpStatus.OK).send();
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
