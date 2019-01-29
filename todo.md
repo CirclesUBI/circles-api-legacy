@@ -3,6 +3,8 @@
 [*] - where is snake case applied?
 [*] - usage of version string?
 [*] - DELETE post instead of url
+[ ] - Is it ok to have serial tests (tests cant be run separately)?
+[ ] - plurals for table names?
 
 PUT
 
@@ -12,6 +14,5 @@ An endpoint with a PUT request is accessed by sending HTTP PUT to /employees/:id
 
 Ps: I’ve seen some (very few) APIs implementing the HTTP PATCH method to allow the partial update of a resource, so from experience, that’s not much used. If you need to update your resource only partially, though, then use PATCH instead.
 
-* Is it ok to have serial tests (tests cant be run separately)?
-* plurals for table names?
+
 
