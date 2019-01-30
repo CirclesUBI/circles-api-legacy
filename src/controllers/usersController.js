@@ -105,7 +105,8 @@ async function deleteOne (req, res) {
     const user = await User.query(trx).where({ id: req.params.id }).first()
     if (user instanceof User) {
       await user.$relatedQuery('organizations').unrelate()
-      await user.$relatedQuery('notifications').delete().where({ user_id: req.params.id })
+      await user.$relatedQuery('notifications').delete()
+      await user.$relatedQuery('offers').delete()
       await User.query(trx).delete().where({ id: req.params.id })
     } else {
       throw new Error('No user.id: ' + req.params.id)

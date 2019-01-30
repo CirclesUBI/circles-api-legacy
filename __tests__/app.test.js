@@ -106,12 +106,12 @@ describe('Integration Tests', () => {
     });
 
     it('It should delete a specific /users/user_id on DELETE', async () => {  
-      const testUser = _dbUsers.random()    
+      const testUser = _dbUsers.random()   
       const { res, req } = await request(app)
         .delete(versionString + '/users/' + testUser.id)
         .set('Accept', 'application/json')
 
-      expect(res.statusCode).toEqual(200); 
+      expect(res.statusCode).toEqual(200);     
     });
   })
 
@@ -189,7 +189,6 @@ describe('Integration Tests', () => {
 
     it('It should delete a specific /orgs/org_id on DELETE', async () => {  
       const testOrg = _dbOrgs.random()   
-      console.log(testOrg) 
       const { res, req } = await request(app)
         .delete(versionString + '/orgs/' + testOrg.id)
         .set('Accept', 'application/json')
