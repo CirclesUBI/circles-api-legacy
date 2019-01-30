@@ -12,7 +12,7 @@ let fakeUserOrgs = []
 const fakeNotifications = []
 const notificationsPerUser = 3
 
-const fakeOffers = []
+let fakeOffers = []
 const offersPerUser = 1
 const offersPerOrg = 3
 

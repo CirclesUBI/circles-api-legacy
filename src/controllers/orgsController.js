@@ -73,9 +73,9 @@ async function deleteOne (req, res) {
   try {
     const organization = await Organization.query(trx).where({ id: req.params.id }).first()
     if (organization instanceof Organization) {
-      await organization.$relatedQuery('members').unrelate()
-      await organization.$relatedQuery('offers').unrelate()
-      await Organization.query(trx).delete().where({ id: req.params.id })
+      await organization.$relatedQuery('members').unrelate()      
+      await organization.$relatedQuery('offers').delete()      
+      await Organization.query(trx).delete().where({ id: req.params.id })      
     } else {
       throw new Error('No organization.id: ' + req.params.id)
     }

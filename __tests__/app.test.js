@@ -57,7 +57,10 @@ describe('Integration Tests', () => {
   describe('User API', () => {
 
     it('It should return all /users on GET', async () => {
-      const { res, req } = await request(app).get(versionString + '/users')      
+      const { res, req } = await request(app)
+        .get(versionString + '/users')      
+        .set('Accept', 'application/json')
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
       _dbUsers = new RandItems(JSON.parse(res.text))
@@ -65,7 +68,10 @@ describe('Integration Tests', () => {
 
     it('It should return a specific /users/user_id on GET', async () => {
       const testUser = _dbUsers.random()    
-      const { res, req } = await request(app).get(versionString + '/users/' + testUser.id)      
+      const { res, req } = await request(app)
+        .get(versionString + '/users/' + testUser.id)      
+        .set('Accept', 'application/json')
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
       const user = JSON.parse(res.text)    
@@ -99,7 +105,14 @@ describe('Integration Tests', () => {
       expect(user.email).toEqual(email)
     });
 
-    // todo: destoy user record
+    it('It should delete a specific /users/user_id on DELETE', async () => {  
+      const testUser = _dbUsers.random()    
+      const { res, req } = await request(app)
+        .delete(versionString + '/users/' + testUser.id)
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200); 
+    });
   })
 
   describe('Org API', () => {    
@@ -113,7 +126,10 @@ describe('Integration Tests', () => {
 
     it('It should return a specific /orgs/user_id on GET', async () => {
       const testOrg = _dbOrgs.random()    
-      const { res, req } = await request(app).get(versionString + '/orgs/' + testOrg.id)      
+      const { res, req } = await request(app)
+        .get(versionString + '/orgs/' + testOrg.id)      
+        .set('Accept', 'application/json')
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
       const org = JSON.parse(res.text)    
@@ -150,7 +166,10 @@ describe('Integration Tests', () => {
 
     it('Orgs should have members who exist', async () => {  
       const testOrg = _dbOrgs.random()
-      let response = await request(app).get(versionString + '/orgs/' + testOrg.id)
+      let response = await request(app)
+        .get(versionString + '/orgs/' + testOrg.id)
+        .set('Accept', 'application/json')
+
       const orgRes = response.res 
       expect(orgRes.statusCode).toEqual(200);        
       const org = JSON.parse(orgRes.text)
@@ -158,14 +177,25 @@ describe('Integration Tests', () => {
       _dbMembers = new RandItems(org.members)
       
       const testMember = _dbMembers.random()
-      response = await request(app).get(versionString + '/users/' + testMember.id)
+      response = await request(app)
+        .get(versionString + '/users/' + testMember.id)
+        .set('Accept', 'application/json')
+
       const userRes = response.res
       expect(userRes.statusCode).toEqual(200)
       const user = JSON.parse(userRes.text)
       expect(testMember.id).toEqual(user.id)      
     });
 
-    // todo: destoy orgs record
+    it('It should delete a specific /orgs/org_id on DELETE', async () => {  
+      const testOrg = _dbOrgs.random()   
+      console.log(testOrg) 
+      const { res, req } = await request(app)
+        .delete(versionString + '/orgs/' + testOrg.id)
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200); 
+    });
   })
 
   describe('Notification API', () => {    
@@ -181,7 +211,10 @@ describe('Integration Tests', () => {
   describe('Offer API', () => {    
 
     it('It should return all /offers on GET', async () => {
-      const { res, req } = await request(app).get(versionString + '/offers')      
+      const { res, req } = await request(app)
+        .get(versionString + '/offers')      
+        .set('Accept', 'application/json')
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()
       _dbOffers = new RandItems(JSON.parse(res.text))
@@ -189,7 +222,10 @@ describe('Integration Tests', () => {
 
     it('It should return a specific /offers/offer_id on GET', async () => {
       const testOffer = _dbOffers.random()
-      const { res, req } = await request(app).get(versionString + '/offers/' + testOffer.id)      
+      const { res, req } = await request(app)
+        .get(versionString + '/offers/' + testOffer.id)      
+        .set('Accept', 'application/json')
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
       const offer = JSON.parse(res.text)    
@@ -222,6 +258,15 @@ describe('Integration Tests', () => {
       expect(res.text).toBeDefined()    
       const offer = JSON.parse(res.text)
       expect(offer.title).toEqual(title)
+    });
+
+    it('It should delete a specific /offers/offer_id on DELETE', async () => {  
+      const testOffer = _dbOffers.random()  
+      const { res, req } = await request(app)
+        .delete(versionString + '/offers/' + testOffer.id)
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200); 
     });
   })
 })
