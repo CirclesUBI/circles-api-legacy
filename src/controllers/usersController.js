@@ -1,6 +1,8 @@
 import * as HttpStatus from 'http-status-codes';
 import PostgresDB from '../database';
 import User from '../models/user';
+import { HubContract } from '../connections/blockchain'
+
 
 import { androidGCMPlatformArn, cognitoPoolId } from '../config/env';
 
@@ -43,7 +45,7 @@ async function findOne (req, res) {
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(user);
-  } catch (error) {    
+  } catch (error) {
     logger.error(error)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -67,7 +69,7 @@ async function addOne (req, res) {
       user = await User.query(trx).insert(circlesUser)
     }
     await trx.commit();
-    res.status(HttpStatus.OK).send(user);              
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {
     logger.error(error)
     await trx.rollback();
@@ -125,6 +127,17 @@ async function deleteOne (req, res) {
   } catch (error) {
     logger.error(error)
     await trx.rollback();
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+  }
+}
+
+async function createToken (req, res) {
+  try {
+    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
+    res.status(HttpStatus.OK).send();
+  } catch (error) {
+    logger.error(error)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
