@@ -40,7 +40,7 @@ describe('Setup', () => {
 
   it('It has to mock cognito', () => {            
     cognitoISP.addToCognitoGroup().then( res => {
-      console.info('cognitoISP', res)      
+      console.info('cognitoISP')      
     })
     expect(cognitoISP.addToCognitoGroup).toHaveBeenCalled();
   }) 
@@ -60,6 +60,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/users')      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -71,6 +72,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/users/' + testUser.id)      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -84,6 +86,7 @@ describe('Integration Tests', () => {
         .post(versionString + '/users')
         .send(testUser)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -98,6 +101,7 @@ describe('Integration Tests', () => {
         .put(versionString + '/users/' + testUser.id)
         .send({email: email})
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -110,6 +114,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .delete(versionString + '/users/' + testUser.id)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);     
     });
@@ -118,7 +123,10 @@ describe('Integration Tests', () => {
   describe('Org API', () => {    
 
     it('It should return all /orgs on GET', async () => {
-      const { res, req } = await request(app).get(versionString + '/orgs')      
+      const { res, req } = await request(app)
+        .get(versionString + '/orgs')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
+
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
       _dbOrgs = new RandItems(JSON.parse(res.text))
@@ -129,6 +137,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/orgs/' + testOrg.id)      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -143,6 +152,7 @@ describe('Integration Tests', () => {
         .post(versionString + '/orgs')
         .send(testOrg)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -157,6 +167,7 @@ describe('Integration Tests', () => {
         .put(versionString + '/orgs/' + testOrg.id)
         .send({email: email})
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -169,6 +180,7 @@ describe('Integration Tests', () => {
       let response = await request(app)
         .get(versionString + '/orgs/' + testOrg.id)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       const orgRes = response.res 
       expect(orgRes.statusCode).toEqual(200);        
@@ -179,7 +191,8 @@ describe('Integration Tests', () => {
       const testMember = _dbMembers.random()
       response = await request(app)
         .get(versionString + '/users/' + testMember.id)
-        .set('Accept', 'application/json')
+        .set('Accept', 'application/json')         
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       const userRes = response.res
       expect(userRes.statusCode).toEqual(200)
@@ -192,6 +205,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .delete(versionString + '/orgs/' + testOrg.id)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200); 
     });
@@ -203,6 +217,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/notifs')
         .set('Accept', 'application/json') 
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()
@@ -214,6 +229,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/notifs/' + testNotif.id)      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -229,6 +245,7 @@ describe('Integration Tests', () => {
         .post(versionString + '/notifs')
         .send(testNotif)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -243,6 +260,7 @@ describe('Integration Tests', () => {
         .put(versionString + '/notifs/' + testNotif.id)
         .send({title: title})
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -255,6 +273,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .delete(versionString + '/notifs/' + testNotif.id)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200); 
     });
@@ -267,6 +286,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/offers')      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()
@@ -278,6 +298,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .get(versionString + '/offers/' + testOffer.id)      
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -292,6 +313,7 @@ describe('Integration Tests', () => {
         .post(versionString + '/offers')
         .send(testOffer)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -306,6 +328,7 @@ describe('Integration Tests', () => {
         .put(versionString + '/offers/' + testOffer.id)
         .send({title: title})
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200);
       expect(res.text).toBeDefined()    
@@ -318,6 +341,7 @@ describe('Integration Tests', () => {
       const { res, req } = await request(app)
         .delete(versionString + '/offers/' + testOffer.id)
         .set('Accept', 'application/json')
+        .set('accesstoken', process.env.AUTH_ACCESS_TOKEN)
 
       expect(res.statusCode).toEqual(200); 
     });

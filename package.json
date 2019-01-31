@@ -12,8 +12,9 @@
     "migrate:seed": "knex seed:run",
     "dev": "nodemon -r dotenv/config src/app.js",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev",
-    "test": "jest --setupFiles dotenv/config",
-    "coverage": "jest --collectCoverageFrom=src/**.js --coverage"
+    "test": "npm run token && jest --setupFiles dotenv/config",
+    "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
+    "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js"
   },
   "repository": {
     "type": "git",
