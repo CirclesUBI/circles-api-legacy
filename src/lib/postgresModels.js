@@ -7,11 +7,6 @@ const knex = require('../database').knex;
 // Defaults for all models
 class CirclesModel extends Model {
 
-  // map camelCase attributes to snake_case db fields
-  static get columnNameMappers() {
-    return snakeCaseMappers();
-  }
-
   // On insert/update, ignore properties on a Model that aren't defined in the schema
   static get pickJsonSchemaProperties() {
     return true;
@@ -24,12 +19,12 @@ class CirclesModel extends Model {
   }
 
   $beforeUpdate() {
-    this.updatedAt = new Date().toISOString();
+    this.updated_at = new Date().toISOString();
   }
 
   $beforeInsert() {
-    this.createdAt = new Date().toISOString();
-    this.updatedAt = new Date().toISOString();
+    this.created_at = new Date().toISOString();
+    this.updated_at = new Date().toISOString();
   }
 }
 

@@ -4,8 +4,9 @@ const usersController = require('../controllers/usersController');
 const router = Router();
 
 router.get('/', usersController.all);
+router.post('/', usersController.addOne);
 router.get('/:id', usersController.findOne);
-router.post('/:id', usersController.addOne);
+router.put('/:id', usersController.updateOne);
 router.delete('/:id', usersController.deleteOne);
 router.post('/createToken', usersController.createToken);
 
