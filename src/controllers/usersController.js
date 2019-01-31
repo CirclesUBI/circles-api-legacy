@@ -6,6 +6,8 @@ const cognitoPoolId = require('../config/env').cognitoPoolId;
 const logger = require('../lib/logger');
 const cognitoISP = require('../connections/cognito');
 const sns = require('../connections/sns');
+const HubContract = require('../connections/blockchain').HubCOntract;
+
 
 function convertCognitoToUser (cognitoUser) {
   return {
@@ -41,7 +43,7 @@ async function findOne (req, res) {
     }
     await trx.commit();
     res.status(HttpStatus.OK).send(user);
-  } catch (error) {    
+  } catch (error) {
     logger.error(error)
     await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -65,7 +67,7 @@ async function addOne (req, res) {
       user = await User.query(trx).insert(circlesUser)
     }
     await trx.commit();
-    res.status(HttpStatus.OK).send(user);              
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {
     logger.error(error)
     await trx.rollback();
@@ -128,4 +130,16 @@ async function deleteOne (req, res) {
   }
 }
 
+async function createToken (req, res) {
+  try {
+    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
+    res.status(HttpStatus.OK).send();
+  } catch (error) {
+    logger.error(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+  }
+}
+
 module.exports = {all, findOne, addOne, deleteOne}
+
