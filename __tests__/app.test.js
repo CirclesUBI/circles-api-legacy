@@ -2,10 +2,10 @@ const request = require('supertest')
 const app = require('../src/app')
 const sns = require('../src/connections/sns');
 const cognitoISP = require('../src/connections/cognito');
-const { createFakeUser, createFakeOrganization, createFakeOffer } = require('../src/seeds/helpers/fakers');
+const { createFakeUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('../src/seeds/helpers/fakers');
 
 const versionString = '/' + process.env.API_VERSION
-let _dbUsers, _dbOrgs, _dbMembers, _dbOffers
+let _dbUsers, _dbOrgs, _dbMembers, _dbOffers, _dbNotifs
 
 class RandItems {
   constructor(items) {
@@ -200,9 +200,63 @@ describe('Integration Tests', () => {
   describe('Notification API', () => {    
 
     it('It should return all /notifs on GET', async () => {
-      const { res, req } = await request(app).get(versionString + '/notifs')      
+      const { res, req } = await request(app)
+        .get(versionString + '/notifs')
+        .set('Accept', 'application/json') 
+
       expect(res.statusCode).toEqual(200);
-      expect(res.text).toBeDefined()      
+      expect(res.text).toBeDefined()
+      _dbNotifs = new RandItems(JSON.parse(res.text))
+    });
+
+    it('It should return a specific /notifs/{notification_id} on GET', async () => {
+      const testNotif = _dbNotifs.random()
+      const { res, req } = await request(app)
+        .get(versionString + '/notifs/' + testNotif.id)      
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.text).toBeDefined()    
+      const notification = JSON.parse(res.text)    
+      expect(notification.id).toEqual(testNotif.id)
+    });
+
+    it('It should create a specific /notifs/ on POST', async () => {  
+      let testNotif = createFakeNotification()
+      testNotif.id = Math.floor(100 + Math.random() * 10000)
+      testNotif.user_id = _dbUsers.random().id
+      const { res, req } = await request(app)
+        .post(versionString + '/notifs')
+        .send(testNotif)
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.text).toBeDefined()    
+      const notification = JSON.parse(res.text)
+      expect(notification.id).toEqual(testNotif.id)
+    });
+
+    it('It should update a specific /notifs/{notification_id} on PUT', async () => {  
+      const testNotif = _dbNotifs.random()  
+      const title = 'notif@test.com'
+      const { res, req } = await request(app)
+        .put(versionString + '/notifs/' + testNotif.id)
+        .send({title: title})
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.text).toBeDefined()    
+      const notification = JSON.parse(res.text)
+      expect(notification.title).toEqual(title)
+    });
+
+    it('It should delete a specific /notifs/{notification_id} on DELETE', async () => {  
+      const testNotif = _dbNotifs.random()  
+      const { res, req } = await request(app)
+        .delete(versionString + '/notifs/' + testNotif.id)
+        .set('Accept', 'application/json')
+
+      expect(res.statusCode).toEqual(200); 
     });
 
   })

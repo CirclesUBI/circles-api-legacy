@@ -8,7 +8,6 @@ exports.up = (knex, Promise) => {
     t.string('title', 50).notNullable()
     t.string('description', 250).notNullable()
     t.dateTime('created_at').notNullable().defaultTo(knex.fn.now())
-    t.dateTime('published_at')
     t.dateTime('updated_at')
     t.integer('amount')
     t.boolean('public').notNullable().defaultTo(false)

@@ -14,7 +14,6 @@ module.exports = class Offer extends CirclesModel {
         title: { type: 'string' },
         description: { type: 'string' },
         created_at: { type: 'object' },
-        published_at: { type: 'object' },
         updated_at: { type: 'object' },
         amount: { type: 'integer' },
         public: { type: 'boolean' },

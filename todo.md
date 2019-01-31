@@ -5,6 +5,8 @@
 [*] - DELETE post instead of url
 [ ] - Is it ok to have serial tests (tests cant be run separately)?
 [ ] - plurals for table names?
+[ ] - decide which controllers need trx and which don't
+
 
 PUT
 
