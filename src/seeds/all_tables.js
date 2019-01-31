@@ -1,5 +1,5 @@
 
-import faker from 'faker'
+const faker = require('faker');
 
 const fakeUsers = []
 const requiredUsers = 5

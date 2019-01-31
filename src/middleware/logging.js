@@ -1,4 +1,4 @@
-import logger from '../lib/logger'
+const logger = require('../lib/logger');
 
 const loggingMiddleware = (req, res, next) => {  
   let logString = '[' + req.method + '] ' + req.url
@@ -6,4 +6,4 @@ const loggingMiddleware = (req, res, next) => {
   next()
 }
 
-export default loggingMiddleware
+module.exports = loggingMiddleware
