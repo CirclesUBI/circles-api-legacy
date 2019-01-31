@@ -27,7 +27,7 @@ module.exports = class Organization extends CirclesModel {
   }
 
   static get relationMappings () {
-     return {
+    return {
       offers: {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/offer`,

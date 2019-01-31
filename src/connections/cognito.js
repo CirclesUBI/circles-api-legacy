@@ -2,6 +2,8 @@ const Cognito = require('aws-sdk/clients/cognitoidentityserviceprovider')
 
 const cognitoISP = new Cognito({apiVersion: '2016-04-18'})
 
+const cognitoPoolId = require('../config/env').cognitoPoolId;
+
 cognitoISP.addToCognitoGroup = (circlesUser) => {
   const groupName = 'user'
   const params = {

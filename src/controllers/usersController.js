@@ -1,15 +1,9 @@
 const HttpStatus = require('http-status-codes');
 const PostgresDB = require('../database').postgresDB;
 const User = require('../models/user');
-const androidGCMPlatformArn = require('../config/env').androidGCMPlatformArn;
-const cognitoPoolId = require('../config/env').cognitoPoolId;
 const logger = require('../lib/logger');
 const cognitoISP = require('../connections/cognito');
 const sns = require('../connections/sns');
-
-// const AWS = require('aws-sdk')
-// const SNS = new AWS.SNS({apiVersion: '2010-03-31'})
-
 
 // todo: move this to FE
 function convertCognitoToUser (cognitoUser) {
@@ -36,20 +30,17 @@ async function all (req, res) {
 }
 
 async function findOne (req, res) {
-  const trx = await PostgresDB.startTransaction();
   try {
-    const result = await User.query(trx).where({ id: req.params.id })
+    const result = await User.query().where({ id: req.params.id })
     const user = (result.length) ? result[0] : null
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
       user.organizations = await user.$relatedQuery('organizations')      
     }
-    await trx.commit();
     res.status(HttpStatus.OK).send(user);
   } catch (error) {    
     logger.error(error.message)
-    await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
@@ -81,19 +72,16 @@ async function addOne (req, res) {
 
 async function updateOne (req, res) {
   let user
-  const trx = await PostgresDB.startTransaction();
   try {
-    const userExists = await User.query(trx).where({ id: req.params.id })
+    const userExists = await User.query().where({ id: req.params.id })
     if (!userExists.length) {
       throw new Error('user.id does not exist: ' + req.params.id)      
     } else {
-      user = await User.query(trx).patchAndFetchById(req.params.id, req.body)
+      user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    await trx.commit();
     res.status(HttpStatus.OK).send(user);              
   } catch (error) {
     logger.error(error.message)
-    await trx.rollback();
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }

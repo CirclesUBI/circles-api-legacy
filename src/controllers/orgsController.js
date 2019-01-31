@@ -15,20 +15,17 @@ async function all (req, res) {
 }
 
 async function findOne (req, res) {
-  const trx = await PostgresDB.startTransaction()
   try {
-    const result = await Organization.query(trx).where({ id: req.params.id })
+    const result = await Organization.query().where({ id: req.params.id })
     const organization = (result.length) ? result[0] : null
     if (organization instanceof Organization) {
       organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
       // organization.owner = await organization.$relatedQuery('owner')
     }
-    await trx.commit()
     res.status(HttpStatus.OK).send(organization)
   } catch (error) {
     logger.error(error.message)
-    await trx.rollback()
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
