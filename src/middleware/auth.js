@@ -6,7 +6,7 @@ const jwkToPem = require('jwk-to-pem')
 
 const authMiddleWare = (req, res, next) => {
   const token = req.headers['accesstoken']
-  // decode token
+  
   if (token) {
     const pem = jwkToPem(cognitoPoolJWTToken)
     // verifies secret and checks exp
@@ -16,11 +16,8 @@ const authMiddleWare = (req, res, next) => {
       }
       res.locals.user = decodedToken
       next()
-    })
-  } else if (process.env.NODE_ENV === 'test') {
-    next()
-  }
-  else {
+    })  
+  } else {
     // if there is no token
     // return an error()
     return res.status(HttpStatus.UNAUTHORIZED).send({ error: "Must provide accesstoken in header" });
