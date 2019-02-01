@@ -28,7 +28,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run format",
-      "pre-push": "(git-branch-is master && npm test) && exit 0"
+      "pre-push": "(git-branch-is master && npm test) || exit 0"
     }
   },
   "repository": {
