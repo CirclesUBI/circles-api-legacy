@@ -5,4 +5,4 @@ module.exports = Knex({
   client: 'pg',
   connection: postgres,
   searchPath: ['knex', 'public']
-});
+})

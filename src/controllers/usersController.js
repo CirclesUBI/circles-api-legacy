@@ -1,9 +1,9 @@
-const HttpStatus = require('http-status-codes');
-const PostgresDB = require('../database').postgresDB;
-const User = require('../models/user');
-const logger = require('../lib/logger');
-const cognitoISP = require('../connections/cognito');
-const sns = require('../connections/sns');
+const HttpStatus = require('http-status-codes')
+const PostgresDB = require('../database').postgresDB
+const User = require('../models/user')
+const logger = require('../lib/logger')
+const cognitoISP = require('../connections/cognito')
+const sns = require('../connections/sns')
 
 // todo: move this to FE
 function convertCognitoToUser (cognitoUser) {
@@ -20,39 +20,45 @@ function convertCognitoToUser (cognitoUser) {
 
 async function all (req, res) {
   try {
-    const users = await User.query().limit(10);
-    res.status(HttpStatus.OK).send(users);
+    const users = await User.query().limit(10)
+    res.status(HttpStatus.OK).send(users)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({
+        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      })
   }
 }
 
 async function findOne (req, res) {
   try {
     const result = await User.query().where({ id: req.params.id })
-    const user = (result.length) ? result[0] : null
+    const user = result.length ? result[0] : null
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
-      user.organizations = await user.$relatedQuery('organizations')      
+      user.organizations = await user.$relatedQuery('organizations')
     }
-    res.status(HttpStatus.OK).send(user);
-  } catch (error) {    
+    res.status(HttpStatus.OK).send(user)
+  } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({
+        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      })
   }
 }
 
 async function addOne (req, res) {
   let user
-  const trx = await PostgresDB.startTransaction();
+  const trx = await PostgresDB.startTransaction()
   try {
     const circlesUser = req.body
     const userExists = await User.query(trx).where({ id: circlesUser.id })
-    if (userExists.length) {      
+    if (userExists.length) {
       throw new Error('user.id already exists: ' + circlesUser.id)
     } else {
       const endpointArn = await sns.createSNSEndpoint(circlesUser)
@@ -60,13 +66,16 @@ async function addOne (req, res) {
       await cognitoISP.addToCognitoGroup(circlesUser)
       user = await User.query(trx).insert(circlesUser)
     }
-    await trx.commit();
-    res.status(HttpStatus.OK).send(user);              
+    await trx.commit()
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
-    await trx.rollback();
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+    await trx.rollback()
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({
+        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      })
   }
 }
 
@@ -75,38 +84,48 @@ async function updateOne (req, res) {
   try {
     const userExists = await User.query().where({ id: req.params.id })
     if (!userExists.length) {
-      throw new Error('user.id does not exist: ' + req.params.id)      
+      throw new Error('user.id does not exist: ' + req.params.id)
     } else {
       user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    res.status(HttpStatus.OK).send(user);              
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({
+        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      })
   }
 }
 
 async function deleteOne (req, res) {
-  const trx = await PostgresDB.startTransaction();
+  const trx = await PostgresDB.startTransaction()
   try {
-    const user = await User.query(trx).where({ id: req.params.id }).first()
+    const user = await User.query(trx)
+      .where({ id: req.params.id })
+      .first()
     if (user instanceof User) {
       await user.$relatedQuery('organizations').unrelate()
       await user.$relatedQuery('notifications').delete()
       await user.$relatedQuery('offers').delete()
-      await User.query(trx).delete().where({ id: req.params.id })
+      await User.query(trx)
+        .delete()
+        .where({ id: req.params.id })
     } else {
       throw new Error('No user.id: ' + req.params.id)
     }
-    await trx.commit();
-    res.status(HttpStatus.OK).send();
+    await trx.commit()
+    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    await trx.rollback();
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+    await trx.rollback()
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({
+        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      })
   }
 }
 
-module.exports = {all, findOne, addOne, updateOne, deleteOne}
+module.exports = { all, findOne, addOne, updateOne, deleteOne }

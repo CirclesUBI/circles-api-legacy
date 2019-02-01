@@ -1,4 +1,4 @@
-const knex = require('knex');
+const knex = require('knex')
 
 const basicPermissions = [
   { role: 'user', resource: 'ownUser', action: 'create' },
@@ -25,10 +25,10 @@ const basicPermissions = [
   { role: 'api', resource: 'allNotifs', action: 'read' }
 ]
 
-// ownUser / allUsers / ownOffers / ownNotifs / ownOrgs / 
+// ownUser / allUsers / ownOffers / ownNotifs / ownOrgs /
 
 exports.up = async (knex, Promise) => {
-  await knex.schema.createTable('permission', (t) => {
+  await knex.schema.createTable('permission', t => {
     t.increments('id')
     t.string('role', 100).notNullable()
     t.string('resource', 100).notNullable()
@@ -36,12 +36,14 @@ exports.up = async (knex, Promise) => {
     t.dateTime('created_at').notNullable()
     t.dateTime('updated_at')
   })
-  return knex('permission').insert(basicPermissions.map((p) => {
-    p.created_at = new Date().toISOString() 
-    return p
-  }))
-};
+  return knex('permission').insert(
+    basicPermissions.map(p => {
+      p.created_at = new Date().toISOString()
+      return p
+    })
+  )
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTable('permission')
-};
+}

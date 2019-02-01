@@ -37,7 +37,7 @@ const createFakeNotification = () => {
 const createFakeOffer = () => {
   let offer = {
     id: offerIndex++,
-    type: offerTypes[Math.floor(Math.random()*offerTypes.length)],
+    type: offerTypes[Math.floor(Math.random() * offerTypes.length)],
     public: faker.random.boolean(),
     category: faker.commerce.department()
   }
@@ -46,25 +46,32 @@ const createFakeOffer = () => {
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
-      offer.price = Number(faker.random.number(250) + '.' + faker.random.number(99))
-      break;
+      offer.price = Number(
+        faker.random.number(250) + '.' + faker.random.number(99)
+      )
+      break
     case 'PERCENTAGE_ITEM':
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
       offer.percentage = faker.random.number(15)
-      break;
+      break
     case 'PERCENTAGE_CATEGORY':
       let percent = faker.random.number(15)
       offer.title = percent + '% Circles on all ' + faker.commerce.department()
       offer.description = faker.lorem.sentence()
       offer.percentage = percent
-      break;
+      break
     default:
       console.error('switch statement fail')
-      break;
-  }  
+      break
+  }
   return offer
 }
 
-module.exports = { createFakeUser, createFakeOrganization, createFakeOffer, createFakeNotification }
+module.exports = {
+  createFakeUser,
+  createFakeOrganization,
+  createFakeOffer,
+  createFakeNotification
+}

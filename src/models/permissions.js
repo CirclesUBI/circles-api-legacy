@@ -1,9 +1,11 @@
-const CirclesModel = require('../lib/postgresModels');
+const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class Permission extends CirclesModel {
-  static get tableName() { return 'permission'; }
+  static get tableName () {
+    return 'permission'
+  }
 
-  static get jsonSchema() {
+  static get jsonSchema () {
     return {
       type: 'object',
       properties: {
@@ -13,7 +15,7 @@ module.exports = class Permission extends CirclesModel {
         role: { type: 'string' },
         resource: { type: 'string' },
         action: { type: 'string' }
-      },
-    };
+      }
+    }
   }
 }

@@ -1,5 +1,10 @@
-const faker = require('faker');
-const { createFakeUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('./helpers/fakers')
+const faker = require('faker')
+const {
+  createFakeUser,
+  createFakeOrganization,
+  createFakeOffer,
+  createFakeNotification
+} = require('./helpers/fakers')
 
 const fakeUsers = []
 const requiredUsers = 5
@@ -31,7 +36,7 @@ exports.seed = function (knex, Promise) {
         // saving enough userIds so I can associate each
         // org with a user in the 'user_organizations' join table
         if (i < requiredOrganizations) {
-          fakeUserOrgs.push({user_id: u.id})
+          fakeUserOrgs.push({ user_id: u.id })
         }
         fakeUsers.push(u)
       }
