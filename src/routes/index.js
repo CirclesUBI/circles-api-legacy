@@ -21,6 +21,9 @@ module.exports = function (app) {
   app.use(loggingMiddleware)
   app.use(authMiddleware)
 
+  //linting test
+  console.log('this' + ' is a test')
+
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
   app.use('/' + apiVersionString + '/notifs', notifsRouter)

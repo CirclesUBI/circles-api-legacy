@@ -9,11 +9,9 @@ async function all (req, res) {
     res.status(HttpStatus.OK).send(offers)
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
@@ -29,11 +27,9 @@ async function findOne (req, res) {
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
@@ -49,11 +45,9 @@ async function addOne (req, res) {
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
@@ -69,11 +63,9 @@ async function updateOne (req, res) {
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
@@ -92,11 +84,9 @@ async function deleteOne (req, res) {
     res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
