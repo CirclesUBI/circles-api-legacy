@@ -4,6 +4,7 @@ const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
+const HubContract = require('../connections/blockchain').HubCOntract
 
 // todo: move this to FE
 function convertCognitoToUser (cognitoUser) {
@@ -118,4 +119,15 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = { all, findOne, addOne, updateOne, deleteOne }
+async function createToken (req, res) {
+  try {
+    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
+    res.status(HttpStatus.OK).send();
+  } catch (error) {
+    logger.error(error)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+  }
+}
+
+module.exports = {all, findOne, addOne, updateOne, deleteOne}
