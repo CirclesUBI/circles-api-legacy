@@ -1,16 +1,17 @@
-import * as HttpStatus from 'http-status-codes';
-import bodyParser from 'body-parser';
-import authMiddleware from '../middleware/auth';
-import loggingMiddleware from '../middleware/logging';
-// import hasPermissionMiddleware from '../middleware/permissions';
-import cors from 'cors';
-import usersRouter from './usersRouter'
-import orgsRouter from './orgsRouter'
-import notifsRouter from './notifsRouter'
+const HttpStatus = require('http-status-codes');
+const bodyParser = require('body-parser');
+const authMiddleware = require('../middleware/auth');
+const loggingMiddleware = require('../middleware/logging');
+// const hasPermissionMiddleware = require('../middleware/permissions');
+const cors = require('cors');
+const usersRouter = require('./usersRouter');
+const orgsRouter = require('./orgsRouter');
+const notifsRouter = require('./notifsRouter');
+const offersRouter = require('./offersRouter');
 
-import { apiVersionString } from '../config/env'
+const apiVersionString = require('../config/env').apiVersionString;
 
-export default function (app) {
+module.exports = function (app) {
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -23,5 +24,6 @@ export default function (app) {
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
   app.use('/' + apiVersionString + '/notifs', notifsRouter)
+  app.use('/' + apiVersionString + '/offers', offersRouter)
   app.use('/' + apiVersionString + '/relayer', relayerRouter)
 }

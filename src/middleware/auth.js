@@ -1,12 +1,12 @@
-import * as HttpStatus from 'http-status-codes';
-import { cognitoPoolJWTToken } from '../config/env'
+const HttpStatus = require('http-status-codes');
+const cognitoPoolJWTToken = require('../config/env').cognitoPoolJWTToken;
 
 const jwt = require('jsonwebtoken')
 const jwkToPem = require('jwk-to-pem')
 
 const authMiddleWare = (req, res, next) => {
   const token = req.headers['accesstoken']
-  // decode token
+  
   if (token) {
     const pem = jwkToPem(cognitoPoolJWTToken)
     // verifies secret and checks exp
@@ -16,7 +16,7 @@ const authMiddleWare = (req, res, next) => {
       }
       res.locals.user = decodedToken
       next()
-    })
+    })  
   } else {
     // if there is no token
     // return an error()
@@ -24,4 +24,4 @@ const authMiddleWare = (req, res, next) => {
   }
 }
 
-export default authMiddleWare
+module.exports = authMiddleWare
