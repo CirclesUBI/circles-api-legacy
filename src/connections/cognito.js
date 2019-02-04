@@ -1,12 +1,12 @@
 const Cognito = require('aws-sdk/clients/cognitoidentityserviceprovider')
 
-const cognitoISP = new Cognito({apiVersion: '2016-04-18'})
+const cognitoISP = new Cognito({ apiVersion: '2016-04-18' })
 
-const cognitoPoolId = require('../config/env').cognitoPoolId;
+const cognitoPoolId = require('../config/env').cognitoPoolId
 
 let cognito = {}
 
-cognito.addToCognitoGroup = (circlesUser) => {
+cognito.addToCognitoGroup = circlesUser => {
   const groupName = 'user'
   const params = {
     GroupName: groupName,
@@ -26,11 +26,11 @@ cognito.addToCognitoGroup = (circlesUser) => {
   })
 }
 
-cognito.initAuth = (authRequest) => {
+cognito.initAuth = authRequest => {
   return new Promise((resolve, reject) => {
     cognitoISP.adminInitiateAuth(authRequest, (err, data) => {
       if (err) reject(err)
-      else resolve(data)      
+      else resolve(data)
     })
   })
 }

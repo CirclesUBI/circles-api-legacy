@@ -1,13 +1,13 @@
-const Router = require('express').Router;
-const usersController = require('../controllers/usersController');
+const Router = require('express').Router
+const usersController = require('../controllers/usersController')
 
-const router = Router();
+const router = Router()
 
-router.get('/', usersController.all);
-router.post('/', usersController.addOne);
-router.get('/:id', usersController.findOne);
-router.put('/:id', usersController.updateOne);
-router.delete('/:id', usersController.deleteOne);
-router.post('/createToken', usersController.createToken);
+router.get('/', usersController.all)
+router.post('/', usersController.addOne)
+router.get('/:id', usersController.findOne)
+router.put('/:id', usersController.updateOne)
+router.delete('/:id', usersController.deleteOne)
+router.post('/createToken', usersController.createToken)
 
-module.exports = router;
+module.exports = router

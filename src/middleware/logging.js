@@ -1,6 +1,6 @@
-const logger = require('../lib/logger');
+const logger = require('../lib/logger')
 
-const loggingMiddleware = (req, res, next) => {  
+const loggingMiddleware = (req, res, next) => {
   logger.info('[' + req.method + '] ' + req.url)
   next()
 }

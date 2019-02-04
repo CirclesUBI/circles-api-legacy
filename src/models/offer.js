@@ -1,16 +1,21 @@
-const CirclesModel = require('../lib/postgresModels');
+const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class Offer extends CirclesModel {
-  static get tableName () { return 'offer' }
+  static get tableName () {
+    return 'offer'
+  }
 
   static get jsonSchema () {
     return {
       type: 'object',
       properties: {
         id: { type: 'integer' },
-        owner_id: { type: 'string' },    
+        owner_id: { type: 'string' },
         item_code: { type: 'string' },
-        type: { type: 'string', enum: ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY'] },
+        type: {
+          type: 'string',
+          enum: ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
+        },
         title: { type: 'string' },
         description: { type: 'string' },
         created_at: { type: 'object' },
@@ -26,4 +31,4 @@ module.exports = class Offer extends CirclesModel {
 }
 
 // regex for prices
-// [0-9]+(\.[0-9][0-9]?)? 
+// [0-9]+(\.[0-9][0-9]?)?

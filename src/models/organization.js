@@ -1,9 +1,13 @@
-const CirclesModel = require('../lib/postgresModels');
+const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class Organization extends CirclesModel {
-  static get tableName () { return 'organization' }
+  static get tableName () {
+    return 'organization'
+  }
 
-  static get name () { return this.display_name }
+  static get name () {
+    return this.display_name
+  }
 
   static get jsonSchema () {
     return {
@@ -17,7 +21,7 @@ module.exports = class Organization extends CirclesModel {
         last_active: { type: 'object' },
         organization_name: { type: 'string' },
         email: { type: 'string' },
-        profile_pic_url: { type: 'string' },        
+        profile_pic_url: { type: 'string' },
         address: { type: 'string' },
         latitude: { type: 'float' },
         longitude: { type: 'float' },
@@ -35,7 +39,7 @@ module.exports = class Organization extends CirclesModel {
           from: 'organization.id',
           to: 'offer.owner_id'
         }
-      },      
+      },
       members: {
         relation: CirclesModel.ManyToManyRelation,
         modelClass: `${__dirname}/user`, // Import models like this to prevent require loops.
@@ -52,7 +56,7 @@ module.exports = class Organization extends CirclesModel {
           },
           to: 'user.id'
         }
-      },
+      }
       // owner: {
       //   relation: Model.BelongsToOneRelation,
       //   modelClass: `${__dirname}/user`,
