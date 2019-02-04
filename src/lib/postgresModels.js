@@ -1,15 +1,11 @@
-import { Model, snakeCaseMappers } from 'objection';
-import pg from 'pg';
-import BigNumber from 'bignumber.js';
-import { knex } from '../database';
+const Model = require('objection').Model;
+const snakeCaseMappers = require('objection').snakeCaseMappers;
+const pg = require('pg');
+const BigNumber = require('bignumber.js');
+const knex = require('../database').knex;
 
 // Defaults for all models
 class CirclesModel extends Model {
-
-  // map camelCase attributes to snake_case db fields
-  static get columnNameMappers() {
-    return snakeCaseMappers();
-  }
 
   // On insert/update, ignore properties on a Model that aren't defined in the schema
   static get pickJsonSchemaProperties() {
@@ -23,12 +19,12 @@ class CirclesModel extends Model {
   }
 
   $beforeUpdate() {
-    this.updatedAt = new Date().toISOString();
+    this.updated_at = new Date().toISOString();
   }
 
   $beforeInsert() {
-    this.createdAt = new Date().toISOString();
-    this.updatedAt = new Date().toISOString();
+    this.created_at = new Date().toISOString();
+    this.updated_at = new Date().toISOString();
   }
 }
 
@@ -42,4 +38,4 @@ const parse = (string) => {
 };
 pg.types.setTypeParser(NUMERIC_OID, parse);
 
-export default CirclesModel;
+module.exports = CirclesModel;

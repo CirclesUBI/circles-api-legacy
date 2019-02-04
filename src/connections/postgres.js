@@ -1,7 +1,7 @@
-import Knex from 'knex';
-import { postgres } from '../config/env';
+const Knex = require('knex')(require('../../knexfile'))
+const postgres = require('../config/env')
 
-export default Knex({
+module.exports = Knex({
   client: 'pg',
   connection: postgres,
   searchPath: ['knex', 'public']

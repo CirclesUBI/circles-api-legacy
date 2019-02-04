@@ -1,8 +1,8 @@
-import express from 'express';
-import routes from './routes';
-import log from './lib/logger';
-import { port } from './config/env';
-import { knex } from './database';
+const express = require('express')
+const routes = require('./routes')
+const log = require('./lib/logger')
+const port = require('./config/env').port
+const knex = require('./database').knex
 
 const getDBTime = async () => {
   const res = await knex.raw('SELECT NOW()')
@@ -20,3 +20,5 @@ app.listen(port, async (err) => {
   const dbTime = await getDBTime();
   log.info(`Database time is ${dbTime}`);
 });
+
+module.exports = app

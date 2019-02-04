@@ -1,6 +1,6 @@
-import CirclesModel from '../lib/postgresModels';
+const CirclesModel = require('../lib/postgresModels');
 
-export default class Permission extends CirclesModel {
+module.exports = class Permission extends CirclesModel {
   static get tableName() { return 'permission'; }
 
   static get jsonSchema() {
@@ -8,11 +8,11 @@ export default class Permission extends CirclesModel {
       type: 'object',
       properties: {
         id: { type: 'integer' },
-        createdAt: { type: 'object' },
-        updatedAt: { type: 'object' },
+        created_at: { type: 'object' },
+        updated_at: { type: 'object' },
         role: { type: 'string' },
         resource: { type: 'string' },
-        action: { type: 'string' },
+        action: { type: 'string' }
       },
     };
   }

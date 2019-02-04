@@ -1,5 +1,6 @@
-import winston from 'winston';
-import { level, levels } from '../config/logging';
+const winston = require('winston');
+const level = require('../config/logging').level;
+const levels = require('../config/logging').levels;
 
 const formatter = (opt) => {
   const message = `[${Date.now().toISOString()}] [PID:${process.pid}] [${opt.level.toUpperCase()}] ${opt.message || ''}`;
@@ -13,4 +14,4 @@ const transports = [
 
 const logger = winston.createLogger({ levels, transports });
 
-export default logger;
+module.exports = logger;

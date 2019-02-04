@@ -1,6 +1,6 @@
-import Knex from 'knex';
-import { transaction } from 'objection';
-import { postgres } from '../config/env';
+const Knex = require('knex');
+const transaction = require('objection').transaction;
+const postgres = require('../config/env').postgres;
 
 const postgresConfig = {
   client: 'pg',
@@ -8,9 +8,9 @@ const postgresConfig = {
   searchPath: ['knex', 'public']
 }
 
-export const knex = Knex(postgresConfig);
+const knex = Knex(postgresConfig);
 
-export default class PostgresDB {
+const postgresDB = class PostgresDB {
 
   static get Connection() {
     if (!this.connection) {
@@ -40,3 +40,5 @@ export default class PostgresDB {
     return Knex(migrationConfig);
   }
 }
+
+module.exports = { postgresDB, knex }
