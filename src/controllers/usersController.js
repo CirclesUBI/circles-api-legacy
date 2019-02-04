@@ -38,10 +38,10 @@ async function findOne (req, res) {
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
-      user.organizations = await user.$relatedQuery('organizations')      
+      user.organizations = await user.$relatedQuery('organizations')
     }
     res.status(HttpStatus.OK).send(user);
-  } catch (error) {    
+  } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
@@ -54,7 +54,7 @@ async function addOne (req, res) {
   try {
     const circlesUser = req.body
     const userExists = await User.query(trx).where({ id: circlesUser.id })
-    if (userExists.length) {      
+    if (userExists.length) {
       throw new Error('user.id already exists: ' + circlesUser.id)
     } else {
       const endpointArn = await sns.createSNSEndpoint(circlesUser)
@@ -77,11 +77,11 @@ async function updateOne (req, res) {
   try {
     const userExists = await User.query().where({ id: req.params.id })
     if (!userExists.length) {
-      throw new Error('user.id does not exist: ' + req.params.id)      
+      throw new Error('user.id does not exist: ' + req.params.id)
     } else {
       user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    res.status(HttpStatus.OK).send(user);              
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -106,17 +106,6 @@ async function deleteOne (req, res) {
   } catch (error) {
     logger.error(error.message)
     await trx.rollback();
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
-  }
-}
-
-async function createToken (req, res) {
-  try {
-    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
-    res.status(HttpStatus.OK).send();
-  } catch (error) {
-    logger.error(error)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }

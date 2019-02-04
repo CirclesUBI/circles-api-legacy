@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import FuelProvider from 'web3-fuel-provider';
+import FuelProvider from 'fuel-web3-provider';
 import HubContractABI from '../../contracts/build/contracts/Hub.json';
 
 const fuelProvider = new FuelProvider(

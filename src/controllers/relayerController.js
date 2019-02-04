@@ -8,7 +8,7 @@ import logger from '../lib/logger'
 
 async function signup (req, res) {
   try {
-    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
+    let receipt = await HubContract.methods.signup(req.body.address, req.body.name)
     res.status(HttpStatus.OK).send();
   } catch (error) {
     logger.error(error)
