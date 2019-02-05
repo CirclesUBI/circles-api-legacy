@@ -8,6 +8,5 @@ router.post('/', usersController.addOne);
 router.get('/:id', usersController.findOne);
 router.put('/:id', usersController.updateOne);
 router.delete('/:id', usersController.deleteOne);
-router.post('/createToken', usersController.createToken);
 
 module.exports = router;

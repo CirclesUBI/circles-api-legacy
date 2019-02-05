@@ -1,10 +1,10 @@
-import Web3 from 'web3';
-import FuelProvider from 'fuel-web3-provider';
-import HubContractABI from '../../contracts/build/contracts/Hub.json';
+const Web3 = require('web3');
+const FuelProvider = require('fuel-web3-provider');
+const HubContractABI = require('../../contracts/build/contracts/Hub.json');
 
 const fuelProvider = new FuelProvider(
   {
-    privateKey: process.env.PRIVATE_KEY,
+    privateKey: process.env.PRIVATE_KEY.slice(2),
     rpcUrl: process.env.RPC_URL,
     fuelUrl: process.env.FUEL_URL,
     network: process.env.NETWORK,
@@ -14,10 +14,13 @@ const fuelProvider = new FuelProvider(
   }
 )
 
-const web3 = new Web3(fuelProvider.start());
+console.log(fuelProvider.start)
+let provider = fuelProvider.start()
+
+const web3 = new Web3(provider);
 const HubContract = new web3.eth.Contract(
   HubContractABI,
   process.env.HUB_CONTRACT_ADDRESS
 );
 
-export default { HubContract }
+module.exports = HubContract

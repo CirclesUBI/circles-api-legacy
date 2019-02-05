@@ -8,6 +8,7 @@ const usersRouter = require('./usersRouter');
 const orgsRouter = require('./orgsRouter');
 const notifsRouter = require('./notifsRouter');
 const offersRouter = require('./offersRouter');
+const relayerRouter = require('./relayerRouter');
 
 const apiVersionString = require('../config/env').apiVersionString;
 

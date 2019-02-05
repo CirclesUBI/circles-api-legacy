@@ -1,10 +1,7 @@
-import * as HttpStatus from 'http-status-codes';
-
-import PostgresDB from '../database';
-
-import { HubContract } from '../connections/blockchain'
-
-import logger from '../lib/logger'
+const HttpStatus = require('http-status-codes');
+const PostgresDB = require('../database').postgresDB;
+const HubContract = require('../connections/blockchain')
+const logger = require('../lib/logger');
 
 async function signup (req, res) {
   try {
@@ -17,4 +14,6 @@ async function signup (req, res) {
   }
 }
 
-export default {signup}
+module.exports = {
+  signup
+}
