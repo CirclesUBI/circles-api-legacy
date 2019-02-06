@@ -1,8 +1,8 @@
 const CirclesModel = require('../lib/postgresModels')
 
-module.exports = class Permission extends CirclesModel {
+module.exports = class Notification extends CirclesModel {
   static get tableName () {
-    return 'permission'
+    return 'notification'
   }
 
   static get jsonSchema () {
@@ -10,11 +10,11 @@ module.exports = class Permission extends CirclesModel {
       type: 'object',
       properties: {
         id: { type: 'integer' },
+        user_id: { type: 'string' },
+        description: { type: 'string' },
         created_at: { type: 'object' },
         updated_at: { type: 'object' },
-        role: { type: 'string' },
-        resource: { type: 'string' },
-        action: { type: 'string' }
+        dismissed: { type: 'boolean' }
       }
     }
   }
