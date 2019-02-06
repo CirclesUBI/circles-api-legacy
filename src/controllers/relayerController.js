@@ -5,7 +5,7 @@ const logger = require('../lib/logger');
 
 async function signup (req, res) {
   try {
-    let receipt = await HubContract.methods.signup(req.body.address, req.body.name)
+    const receipt = await HubContract.methods.signup(req.body.address, req.body.name)
     res.status(HttpStatus.OK).send();
   } catch (error) {
     logger.error(error)

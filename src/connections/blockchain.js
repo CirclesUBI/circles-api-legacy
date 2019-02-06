@@ -1,6 +1,7 @@
 const Web3 = require('web3');
 const FuelProvider = require('fuel-web3-provider');
 const HubContractABI = require('../../contracts/build/contracts/Hub.json');
+const logger = require('../lib/logger');
 
 const fuelProvider = new FuelProvider(
   {
@@ -14,8 +15,8 @@ const fuelProvider = new FuelProvider(
   }
 )
 
-console.log(fuelProvider.start)
-let provider = fuelProvider.start()
+logger.info(fuelProvider.start)
+const provider = fuelProvider.start()
 
 const web3 = new Web3(provider);
 const HubContract = new web3.eth.Contract(
