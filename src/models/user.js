@@ -1,9 +1,13 @@
-const CirclesModel = require('../lib/postgresModels');
+const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class User extends CirclesModel {
-  static get tableName () { return 'user' }
+  static get tableName () {
+    return 'user'
+  }
 
-  static get name () { return this.display_name }
+  static get name () {
+    return this.display_name
+  }
 
   static get jsonSchema () {
     return {
@@ -18,7 +22,7 @@ module.exports = class User extends CirclesModel {
         profile_pic_url: { type: 'string' },
         device_id: { type: 'string' },
         device_endpoint: { type: 'string' },
-        phone_number: { type: 'string' }        
+        phone_number: { type: 'string' }
       }
     }
   }
