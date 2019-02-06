@@ -4,9 +4,9 @@ const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
-const HubContract = require('../connections/blockchain').HubCOntract
+const HubContract = require('../connections/blockchain').HubContract
 
-// todo: move this to FE
+// todo: move this to FE (Sarah says this should become a utility in /lib)
 function convertCognitoToUser (cognitoUser) {
   return {
     agreed_to_disclaimer: false,
@@ -40,7 +40,7 @@ async function findOne (req, res) {
       user.offers = await user.$relatedQuery('offers')
       user.organizations = await user.$relatedQuery('organizations')
     }
-    res.status(HttpStatus.OK).send(user)
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -83,7 +83,7 @@ async function updateOne (req, res) {
     } else {
       user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    res.status(HttpStatus.OK).send(user)
+    res.status(HttpStatus.OK).send(user);
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -116,17 +116,6 @@ async function deleteOne (req, res) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
       error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
     })
-  }
-}
-
-async function createToken (req, res) {
-  try {
-    await let receipt = HubContract.methods.signup(req.body.address, req.body.name)
-    res.status(HttpStatus.OK).send();
-  } catch (error) {
-    logger.error(error)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({ error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
   }
 }
 
