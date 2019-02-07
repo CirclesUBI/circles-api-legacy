@@ -34,4 +34,31 @@ cognito.initAuth = authRequest => {
   })
 }
 
+cognito.getUser = getUserRequest => {
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminGetUser(getUserRequest, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
+cognito.createUser = createUserRequest => {
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminCreateUser(createUserRequest, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
+cognito.confirmAuth = authConfirmRequest => {
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminRespondToAuthChallenge(authConfirmRequest, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
 module.exports = cognito

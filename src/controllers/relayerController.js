@@ -1,6 +1,6 @@
 const HttpStatus = require('http-status-codes');
 const PostgresDB = require('../database').postgresDB;
-const HubContract = require('../connections/blockchain')
+// const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger');
 
 async function signup (req, res) {

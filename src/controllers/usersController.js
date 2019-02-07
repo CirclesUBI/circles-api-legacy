@@ -4,7 +4,7 @@ const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
-const HubContract = require('../connections/blockchain').HubContract
+// const HubContract = require('../connections/blockchain').HubContract
 
 // todo: move this to FE (Sarah says this should become a utility in /lib)
 function convertCognitoToUser (cognitoUser) {

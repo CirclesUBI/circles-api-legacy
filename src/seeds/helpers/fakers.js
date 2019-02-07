@@ -10,7 +10,17 @@ const createFakeUser = () => {
     email: faker.internet.email(),
     profile_pic_url: faker.image.avatar(),
     device_id: faker.random.alphaNumeric(),
-    phone_number: faker.phone.phoneNumber()
+    phone_number: faker.helpers.replaceSymbolWithNumber('+49###########')
+  }
+}
+
+const createFakeCognitoUser = () => {
+  return {  
+    name: faker.name.firstName(),
+    email: faker.internet.email(),
+    picture: faker.image.avatar(),
+    'custom:deviceId': faker.random.alphaNumeric(),
+    phone_number: faker.helpers.replaceSymbolWithNumber('+49###########')
   }
 }
 
@@ -71,6 +81,7 @@ const createFakeOffer = () => {
 
 module.exports = {
   createFakeUser,
+  createFakeCognitoUser,
   createFakeOrganization,
   createFakeOffer,
   createFakeNotification
