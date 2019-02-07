@@ -17,6 +17,10 @@
     "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
     "format": "prettier-standard src/**/*.js"
   },
+  "jest": {
+    "verbose": true,
+    "testMatch": ["**/__tests__/**/*.[jt]s?(x)"]
+  },
   "lint-staged": {
     "linters": {
       "src/**/*.js": [
