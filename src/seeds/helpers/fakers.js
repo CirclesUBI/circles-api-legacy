@@ -19,7 +19,7 @@ const createFakeCognitoUser = () => {
     name: faker.name.firstName(),
     email: faker.internet.email(),
     picture: faker.image.avatar(),
-    'custom:deviceId': faker.random.alphaNumeric(),
+    'custom:device_id': faker.random.uuid(),
     phone_number: faker.helpers.replaceSymbolWithNumber('+49###########')
   }
 }

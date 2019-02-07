@@ -53,7 +53,7 @@ async function addOne (req, res) {
   let user
   const trx = await PostgresDB.startTransaction()
   try {
-    const circlesUser = req.body
+    const circlesUser = convertCognitoToUser(req.body)
     const userExists = await User.query(trx).where({ id: circlesUser.id })
     if (userExists.length) {
       throw new Error('user.id already exists: ' + circlesUser.id)
