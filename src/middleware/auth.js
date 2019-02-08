@@ -7,6 +7,8 @@ const jwkToPem = require('jwk-to-pem')
 const authMiddleWare = (req, res, next) => {
   const token = req.headers['accesstoken']
 
+  console.log('HEREREEREREEREREEHREEHREHREHEHRERE')
+
   if (token) {
     const pem = jwkToPem(cognitoPoolJWTToken)
     // verifies secret and checks exp
