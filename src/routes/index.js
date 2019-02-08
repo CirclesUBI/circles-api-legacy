@@ -20,8 +20,12 @@ module.exports = function (app) {
 
   app.get('/', (req, res) => res.status(HttpStatus.OK).json('hello Ed!'))
 
+  console.log('before middleware')
+
   app.use(loggingMiddleware)
   app.use(authMiddleware)
+
+  console.log('after middleware')
 
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
