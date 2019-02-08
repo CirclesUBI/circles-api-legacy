@@ -1,9 +1,9 @@
 const request = require('supertest')
 const app = require('../src/app')
 const cognito = require('../src/connections/cognito');
-const { createFakeUser, createFakeCognitoUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('../src/seeds/helpers/fakers');
+const { createFakeCognitoUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('../src/seeds/helpers/fakers');
 
-const versionString = '/' + process.env.API_VERSION
+const versionString = '/v' + process.env.npm_package_version
 
 convertToObjectProperties = array => {
   let obj = {}
@@ -94,7 +94,7 @@ describe('Setup', () => {
   })
 })
     
-describe('Integration Tests', () => {
+describe('Integration Tests: Circles API ' + versionString, () => {
 
   it('It should respond to the base route on GET', async () => {
     const result = await request(app).get('/');

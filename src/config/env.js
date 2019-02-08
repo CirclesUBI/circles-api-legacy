@@ -43,7 +43,7 @@ const fuelConfig = {
 }
 
 // API stuff
-const apiVersionString = process.env.API_VERSION
+const apiVersionString = 'v' + process.env.npm_package_version
 
 module.exports = {
   apiVersionString,
