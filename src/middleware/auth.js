@@ -10,6 +10,7 @@ const authMiddleWare = (req, res, next) => {
   console.log('auth.js')
 
   if (token) {
+    console.log('cognitoPoolJWTToken', cognitoPoolJWTToken)
     const pem = jwkToPem(cognitoPoolJWTToken)
     console.log('pem', pem)
     // verifies secret and checks exp
