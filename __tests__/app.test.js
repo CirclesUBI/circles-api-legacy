@@ -390,6 +390,7 @@ describe('Integration Tests: Circles API ' + versionString, () => {
   afterAll(async () => {
     if (app) {
       await app.close()
+      process.exit(0)
     }
   })
 
