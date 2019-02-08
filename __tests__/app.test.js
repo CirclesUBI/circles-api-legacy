@@ -381,9 +381,16 @@ describe('Integration Tests: Circles API ' + versionString, () => {
     });    
   })  
 
-  afterAll((done) => {
+  // afterAll((done) => {
+  //   if (app) {
+  //     app.close(done);
+  //   }
+  // })
+
+  afterAll(async () => {
     if (app) {
-      app.close(done);
+      await app.close()
     }
   })
+
 })
