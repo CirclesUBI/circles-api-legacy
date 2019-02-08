@@ -1,6 +1,5 @@
 const request = require('supertest')
 const app = require('../src/app')
-const sns = require('../src/connections/sns');
 const cognito = require('../src/connections/cognito');
 const { createFakeUser, createFakeCognitoUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('../src/seeds/helpers/fakers');
 
@@ -381,4 +380,10 @@ describe('Integration Tests', () => {
       expect(res.statusCode).toEqual(200);     
     });    
   })  
+
+  afterAll((done) => {
+    if (app) {
+      app.close(done);
+    }
+  })
 })
