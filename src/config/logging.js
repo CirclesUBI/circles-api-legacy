@@ -1,4 +1,4 @@
-const level = process.env.LOG_LEVEL || 'debug'
+const level = 'debug'
 
 const levels = {
   debug: 4,
