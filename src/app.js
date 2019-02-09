@@ -12,7 +12,7 @@ const getDBTime = async () => {
 const app = express()
 routes(app)
 
-app.listen(port, async err => {
+const server = app.listen(port, async err => {
   if (err) log.error(err)
   else log.info(`Ed Julio & Sarah are listening on :${port}`)
 
@@ -22,3 +22,4 @@ app.listen(port, async err => {
 })
 
 module.exports = app
+module.exports.server = server

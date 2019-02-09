@@ -1,5 +1,6 @@
 const request = require('supertest')
 const app = require('../src/app')
+const server = require('../src/app').server
 const cognito = require('../src/connections/cognito');
 const { createFakeCognitoUser, createFakeOrganization, createFakeOffer, createFakeNotification } = require('../src/seeds/helpers/fakers');
 
@@ -381,17 +382,12 @@ describe('Integration Tests: Circles API ' + versionString, () => {
     });    
   })  
 
-  afterAll((done) => {
-    if (app) {
-      app.close(done);
+  afterAll(async () => {  
+    try {
+      await server.close()      
+    } catch (error) {
+      console.error(error)
+      throw error;
     }
   })
-
-  // afterAll(async () => {
-  //   if (app) {
-  //     await app.close()
-  //     process.exit(0)
-  //   }
-  // })
-
 })
