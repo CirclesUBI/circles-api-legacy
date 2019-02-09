@@ -14,6 +14,7 @@ const authRequest = {
 let saveFile = ''
 
 cognito.initAuth(authRequest).then( res => {
+  console.log('accesstoken:', res.AuthenticationResult.AccessToken)
   let modified = false
   fs.readFileSync('.env').toString().split("\n").forEach( (line) => {  
     if (line.startsWith('AUTH_ACCESS_TOKEN')) {

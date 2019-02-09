@@ -6,7 +6,7 @@ const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
 // const HubContract = require('../connections/blockchain').HubContract
 
-// todo: move this to FE (Sarah says this should become a utility in /lib)
+// todo: (Sarah says this should become a utility in /lib)
 function convertCognitoToUser (cognitoUser) {
   return {
     agreed_to_disclaimer: false,
@@ -38,7 +38,7 @@ async function findOne (req, res) {
     if (user instanceof User) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
-      // user.organizations = await user.$relatedQuery('organizations')
+      user.organizations = await user.$relatedQuery('organizations')
     }
     res.status(HttpStatus.OK).send(user);
   } catch (error) {
@@ -99,7 +99,7 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (user instanceof User) {
-      // await user.$relatedQuery('organizations').unrelate()
+      await user.$relatedQuery('organizations').unrelate()
       await user.$relatedQuery('notifications').delete()
       await user.$relatedQuery('offers').delete()
       await User.query(trx)

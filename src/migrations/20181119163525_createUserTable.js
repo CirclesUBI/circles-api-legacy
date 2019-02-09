@@ -1,6 +1,6 @@
 exports.up = (knex, Promise) => {
-  return knex.schema
-    .createTable('user', t => {
+  return Promise.all([
+    knex.schema.createTable('user', t => {
       t.string('id').primary()
       t.string('display_name', 100).notNullable()
       t.string('email', 50).notNullable()
@@ -15,8 +15,8 @@ exports.up = (knex, Promise) => {
       t.string('device_id').notNullable()
       t.string('device_endpoint')
       t.string('phone_number').notNullable()
-    })
-    .createTable('organization', t => {
+    }),
+    knex.schema.createTable('organization', t => {
       t.string('id').primary()
       t.string('owner_id', 50).notNullable()
       t.string('organization_name', 100).notNullable()
@@ -34,8 +34,8 @@ exports.up = (knex, Promise) => {
       t.float('latitude')
       t.float('longitude')
       t.text('description')
-    })
-    .createTable('user_organizations', t => {
+    }),
+    knex.schema.createTable('user_organizations', t => {
       t.increments('id').primary()
       t.string('user_id')
         .references('id')
@@ -44,6 +44,7 @@ exports.up = (knex, Promise) => {
         .references('id')
         .inTable('organization')
     })
+  ])
 }
 
 exports.down = (knex, Promise) => {
