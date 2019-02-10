@@ -4,20 +4,8 @@ const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
+const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
 // const HubContract = require('../connections/blockchain').HubContract
-
-// todo: (Sarah says this should become a utility in /lib)
-function convertCognitoToUser (cognitoUser) {
-  return {
-    agreed_to_disclaimer: false,
-    id: cognitoUser.sub,
-    device_id: cognitoUser['custom:device_id'],
-    email: cognitoUser.email,
-    display_name: cognitoUser.name,
-    phone_number: cognitoUser.phone_number,
-    profile_pic_url: cognitoUser.picture
-  }
-}
 
 async function all (req, res) {
   try {
@@ -53,7 +41,7 @@ async function addOne (req, res) {
   let user
   const trx = await PostgresDB.startTransaction()
   try {
-    const circlesUser = convertCognitoToUser(req.body)
+    const circlesUser = convertCognitoToCirclesUser(req.body)
     const userExists = await User.query(trx).where({ id: circlesUser.id })
     if (userExists.length) {
       throw new Error('user.id already exists: ' + circlesUser.id)
