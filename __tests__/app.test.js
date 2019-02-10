@@ -384,6 +384,7 @@ describe('Integration Tests: Circles API ' + versionString, () => {
 
   afterAll(async () => {  
     try {
+      console.log('Closing server ...')
       await server.close()      
     } catch (error) {
       console.error(error)
