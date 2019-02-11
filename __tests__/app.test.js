@@ -391,7 +391,6 @@ describe('Integration Tests: Circles API ' + versionString, () => {
         .set('accesstoken', testUserAccessToken)
 
       expect(res.statusCode).toEqual(500); 
-      console.log(res.error)
     });
   })
   
