@@ -12,11 +12,9 @@ async function callContract (req, res) {
     res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res
-      .status(HttpStatus.INTERNAL_SERVER_ERROR)
-      .send({
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
   }
 }
 
