@@ -6,6 +6,8 @@ const { createFakeCognitoUser, createFakeOrganization, createFakeOffer, createFa
 
 const versionString = '/v' + process.env.npm_package_version
 
+const HubContract = require('../src/connections/blockchain')
+
 convertToObjectProperties = array => {
   let obj = {}
   array.map( keyval => {
@@ -367,6 +369,29 @@ describe('Integration Tests: Circles API ' + versionString, () => {
         .set('accesstoken', testUserAccessToken)
 
       expect(res.statusCode).toEqual(200); 
+    });
+  })
+
+  describe('Relayer API', () => {
+    it('It should call a specific contract on POST', async () => {  
+      // const spyFn = jest.spyOn(HubContract, signup)
+      const { res, req } = await request(app)
+        .post(versionString + '/relayer/signup')
+        .set('Accept', 'application/json')
+        .set('accesstoken', testUserAccessToken)
+
+      expect(res.statusCode).toEqual(200); 
+      // expect(spyFn).toHaveBeenCalled()
+    });
+
+    it('It should error if non-existant contract called on POST', async () => {  
+      const { res, req } = await request(app)
+        .post(versionString + '/relayer/banana')
+        .set('Accept', 'application/json')
+        .set('accesstoken', testUserAccessToken)
+
+      expect(res.statusCode).toEqual(500); 
+      console.log(res.error)
     });
   })
   

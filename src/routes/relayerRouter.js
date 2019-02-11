@@ -3,6 +3,6 @@ const relayerController = require('../controllers/relayerController');
 
 const router = Express.Router();
 
-router.post('/signup', relayerController.signup);
+router.post('/:contractName', relayerController.callContract);
 
 module.exports = router;
