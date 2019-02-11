@@ -1,4 +1,4 @@
-const convertCognitoToCirclesUser = (cognitoUser) => {
+const convertCognitoToCirclesUser = cognitoUser => {
   return {
     agreed_to_disclaimer: false,
     id: cognitoUser.sub,

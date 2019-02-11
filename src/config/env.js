@@ -31,7 +31,7 @@ const postgres = {
   database: process.env.PGDATABASE || 'postgres'
 }
 
-// fuel stuff 
+// fuel stuff
 const fuelConfig = {
   privateKey: process.env.PRIVATE_KEY.slice(2),
   rpcUrl: process.env.RPC_URL,

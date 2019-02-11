@@ -28,7 +28,7 @@ async function findOne (req, res) {
       user.offers = await user.$relatedQuery('offers')
       user.organizations = await user.$relatedQuery('organizations')
     }
-    res.status(HttpStatus.OK).send(user);
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -71,7 +71,7 @@ async function updateOne (req, res) {
     } else {
       user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    res.status(HttpStatus.OK).send(user);
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -107,4 +107,4 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = {all, findOne, addOne, updateOne, deleteOne}
+module.exports = { all, findOne, addOne, updateOne, deleteOne }
