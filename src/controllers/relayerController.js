@@ -1,5 +1,5 @@
 const HttpStatus = require('http-status-codes')
-const ethSigner = require('ethsigner')
+const ethSigner = require('eth-signer')
 const PostgresDB = require('../database').postgresDB
 const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
