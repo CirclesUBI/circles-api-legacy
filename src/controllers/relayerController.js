@@ -5,12 +5,11 @@ const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
 const relayer = require('../lib/relayer')
 
-  console.log('Call relay service')
-
+console.log('Call relay service')
 
 async function callContract (req, res) {
   try {
-    const txHash = await = relayer.handle(req)
+    const txHash = await relayer.handle(req)
     //const txHash = await relayHandler.handle(req)
     logger.info('This the transactionHash', txHash)
     if (req.body.jsonRpcReponse === true) {
@@ -28,18 +27,15 @@ async function callContract (req, res) {
     let message = error
     if (error.message) message = error.message
     if (req.body.jsonRpcReponse === true) {
-      res
-        .satus(code)
-        .json({
-          id: req.body.id,
-          jsonrpc: '2.0',
-          error: { code: -32600, message }
-        })
+      res.satus(code).json({
+        id: req.body.id,
+        jsonrpc: '2.0',
+        error: { code: -32600, message }
+      })
     } else {
       res.satus(code).json({ status: 'error', message })
     }
   }
-
 
   try {
     const method = HubContract.methods[req.params.contractName]
