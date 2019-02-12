@@ -33,7 +33,7 @@ const postgres = {
 
 // fuel stuff
 const fuelConfig = {
-  privateKey: process.env.PRIVATE_KEY.slice(2),
+  privateKey: process.env.PRIVATE_KEY.slice(2), //private key of the user
   rpcUrl: process.env.RPC_URL,
   fuelUrl: process.env.FUEL_URL,
   network: process.env.NETWORK,
@@ -41,6 +41,8 @@ const fuelConfig = {
   txSenderAddress: process.env.GAS_PROVIDER_ADDRESS,
   whiteListAddress: '0x0000000000000000000000000000000000000000'
 }
+
+const rpcUrl = process.env.RPC_URL || 'http://127.0.0.1:8545'
 
 // API stuff
 const apiVersionString = 'v' + process.env.npm_package_version
@@ -54,5 +56,6 @@ module.exports = {
   cognitoPoolRegion,
   androidGCMPlatformArn,
   postgres,
-  fuelConfig
+  fuelConfig,
+  rpcUrl
 }
