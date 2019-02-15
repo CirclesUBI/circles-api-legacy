@@ -5,8 +5,6 @@ const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
 const relayer = require('../lib/relayer')
 
-console.log('Call relay service')
-
 async function callContract (req, res) {
   try {
     const txHash = await relayer.handle(req)
@@ -33,22 +31,22 @@ async function callContract (req, res) {
         error: { code: -32600, message }
       })
     } else {
-      res.satus(code).json({ status: 'error', message })
+      res.status(code).json({ status: 'error', message })
     }
   }
 
-  try {
-    const method = HubContract.methods[req.params.contractName]
-    if (typeof method !== 'function')
-      throw new Error('no method: ' + req.params.contractName)
-    const receipt = await method(req.body.address)
-    res.status(HttpStatus.OK).send()
-  } catch (error) {
-    logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
-  }
+  // try {
+  //   const method = HubContract.methods[req.params.contractName]
+  //   if (typeof method !== 'function')
+  //     throw new Error('no method: ' + req.params.contractName)
+  //   const receipt = await method(req.body.address)
+  //   res.status(HttpStatus.OK).send()
+  // } catch (error) {
+  //   logger.error(error.message)
+  //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+  //     error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+  //   })
+  // }
 }
 
 module.exports = {

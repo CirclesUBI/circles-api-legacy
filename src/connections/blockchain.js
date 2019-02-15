@@ -1,8 +1,7 @@
 const Web3 = require('web3')
-// const FuelProvider = require('fuel-web3-provider')
 const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
+const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
 const logger = require('../lib/logger')
-//const fuelConfig = require('../config/env').fuelConfig
 const rpcUrl = require('../config/env').rpcUrl
 
 // const fuelProvider = new FuelProvider(fuelConfig)
@@ -18,4 +17,12 @@ const HubContract = new web3.eth.Contract(
   process.env.HUB_CONTRACT_ADDRESS
 )
 
-module.exports = { HubContract }
+const TxRelayContract = new web3.eth.Contract(
+  TxRelayContractJSON.abi,
+  process.env.RELAY_CONTRACT_ADDRESS
+)
+
+module.exports = {
+  web3,
+  HubContract,
+  TxRelayContract }
