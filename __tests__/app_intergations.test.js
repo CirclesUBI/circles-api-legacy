@@ -431,6 +431,16 @@ describe(
         expect(res.statusCode).toEqual(200)
       })
     })
+
+    afterAll(async () => {
+      try {
+        console.log('Closing server ...')
+        await server.close()
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    })
   }
 )
 
@@ -807,6 +817,7 @@ describe(
         expect(res.text).toBeDefined()
         const offer = JSON.parse(res.text)
         expect(offer.title).toEqual(testOwnedOffer.title)
+        expect(offer.owner_id).toEqual(testCognitoUser.Username)
       })
 
       it('It should be able to return other /offers/{offer_id} on GET', async () => {

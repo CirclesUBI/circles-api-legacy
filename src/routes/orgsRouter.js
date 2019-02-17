@@ -29,7 +29,6 @@ const determineResourceType = async (req, res, next) => {
     type = req.method === 'POST' ? 'ownOrg' : 'allOrgs'
   }
   res.locals.resourceType = type
-  console.log('orgs', req.method, res.locals.resourceType)
   next()
 }
 

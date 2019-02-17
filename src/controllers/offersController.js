@@ -19,11 +19,6 @@ async function findOne (req, res) {
   try {
     const result = await Offer.query().where({ id: req.params.id })
     const offer = result.length ? result[0] : null
-    if (offer instanceof Offer) {
-      // if (offer.price.c.length === 1)
-      //   console.log('we have a round num')
-      // offer.owner = await offer.$relatedQuery('owner')
-    }
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)

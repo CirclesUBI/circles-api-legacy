@@ -29,8 +29,6 @@ const determineResourceType = async (req, res, next) => {
         : await Organization.query()
             .where({ owner_id: req.body.owner_id })
             .first()
-      console.log('offerOwner', offerOwner)
-      console.log('res.locals.user.username', res.locals.user.username)
       type =
         offerOwner && offerOwner.owner_id === res.locals.user.username
           ? 'ownOffer'
@@ -43,7 +41,6 @@ const determineResourceType = async (req, res, next) => {
     }
   }
   res.locals.resourceType = type
-  console.log('offers', req.method, res.locals.resourceType)
   next()
 }
 

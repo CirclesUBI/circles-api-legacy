@@ -1,6 +1,5 @@
 const faker = require('faker')
 const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
-let offerIndex = 0
 
 const createFakeUser = () => {
   return {

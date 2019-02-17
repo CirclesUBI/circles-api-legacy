@@ -16,11 +16,11 @@ const getPermissionDocuments = async () => {
 
 const hasPermission = async (user, resource, action) => {
   try {
-    let r
+    let chosenRole
     let permissionGranted = false
     let ac = await getPermissionDocuments().then(parsePermissions)
     user['cognito:groups'].forEach(role => {
-      r = role
+      chosenRole = role
       permissionGranted = ac
         .can(role)
         .execute(action)
@@ -28,7 +28,11 @@ const hasPermission = async (user, resource, action) => {
         ? true
         : false
     })
-    if (!permissionGranted) console.log('not granted', r, action, resource)
+    logger.info(
+      `Permissions: ${chosenRole} ${action} on ${resource} : ${
+        permissionGranted ? '[GRANTED]' : '[FORBIDDEN]'
+      }`
+    )
     return permissionGranted
   } catch (error) {
     logger.error(error.message)

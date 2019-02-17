@@ -9,7 +9,6 @@ const determineResourceType = (req, res, next) => {
     req.params.id === res.locals.user.username || req.method === 'POST'
       ? 'ownUser'
       : 'allUsers'
-  console.log('users', req.method, res.locals.resourceType)
   next()
 }
 
