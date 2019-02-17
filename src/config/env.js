@@ -31,7 +31,7 @@ const postgres = {
   database: process.env.PGDATABASE || 'postgres'
 }
 
-// fuel stuff 
+// fuel stuff
 const fuelConfig = {
   privateKey: process.env.PRIVATE_KEY.slice(2),
   rpcUrl: process.env.RPC_URL,
@@ -43,7 +43,9 @@ const fuelConfig = {
 }
 
 // API stuff
-const apiVersionString = 'v' + process.env.npm_package_version
+const apiVersionString = process.env.npm_package_version
+  ? 'v' + process.env.npm_package_version
+  : process.env.API_VERSION
 
 module.exports = {
   apiVersionString,
