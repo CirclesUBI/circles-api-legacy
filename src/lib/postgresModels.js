@@ -1,5 +1,4 @@
 const Model = require('objection').Model
-const snakeCaseMappers = require('objection').snakeCaseMappers
 const pg = require('pg')
 const BigNumber = require('bignumber.js')
 const knex = require('../database').knex
