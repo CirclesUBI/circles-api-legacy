@@ -2,14 +2,14 @@ const HttpStatus = require('http-status-codes')
 const bodyParser = require('body-parser')
 const authMiddleware = require('../middleware/auth')
 const loggingMiddleware = require('../middleware/logging')
-// const hasPermissionMiddleware = require('../middleware/permissions');
+const hasPermissionMiddleware = require('../middleware/permissions')
 
-const cors = require('cors');
-const usersRouter = require('./usersRouter');
-const orgsRouter = require('./orgsRouter');
-const notifsRouter = require('./notifsRouter');
-const offersRouter = require('./offersRouter');
-const relayerRouter = require('./relayerRouter');
+const cors = require('cors')
+const usersRouter = require('./usersRouter')
+const orgsRouter = require('./orgsRouter')
+const notifsRouter = require('./notifsRouter')
+const offersRouter = require('./offersRouter')
+const relayerRouter = require('./relayerRouter')
 
 const apiVersionString = require('../config/env').apiVersionString
 
