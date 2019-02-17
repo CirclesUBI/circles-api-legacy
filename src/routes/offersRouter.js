@@ -15,18 +15,26 @@ const determineResourceType = async (req, res, next) => {
   let offerOwnerId
   if (req.method === 'GET') {
     type = 'allOffers'
-  }
-  else if (req.method === 'POST' && req.body.owner_id === res.locals.user.username) {
+  } else if (
+    req.method === 'POST' &&
+    req.body.owner_id === res.locals.user.username
+  ) {
     type = 'ownOffer'
-  }
-  else {
+  } else {
     try {
-      offerOwner = (req.params.id)
-        ? await Offer.query().where({ id: req.params.id }).first()
-        : await Organization.query().where({ owner_id: req.body.owner_id }).first()
+      offerOwner = req.params.id
+        ? await Offer.query()
+            .where({ id: req.params.id })
+            .first()
+        : await Organization.query()
+            .where({ owner_id: req.body.owner_id })
+            .first()
       console.log('offerOwner', offerOwner)
       console.log('res.locals.user.username', res.locals.user.username)
-      type = offerOwner && offerOwner.owner_id === res.locals.user.username ? 'ownOffer' : 'allOffers'
+      type =
+        offerOwner && offerOwner.owner_id === res.locals.user.username
+          ? 'ownOffer'
+          : 'allOffers'
     } catch (error) {
       logger.error(error.message)
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
