@@ -28,7 +28,7 @@ async function findOne (req, res) {
       user.offers = await user.$relatedQuery('offers')
       user.organizations = await user.$relatedQuery('organizations')
     }
-    res.status(HttpStatus.OK).send(user);
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -48,7 +48,7 @@ async function addOne (req, res) {
     } else {
       const endpointArn = await sns.createSNSEndpoint(circlesUser)
       circlesUser.device_endpoint = endpointArn
-      await cognitoISP.addToCognitoGroup(circlesUser)
+      let response = await cognitoISP.addToCognitoGroup(circlesUser)
       user = await User.query(trx).insert(circlesUser)
     }
     await trx.commit()
@@ -71,7 +71,7 @@ async function updateOne (req, res) {
     } else {
       user = await User.query().patchAndFetchById(req.params.id, req.body)
     }
-    res.status(HttpStatus.OK).send(user);
+    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -87,9 +87,9 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (user instanceof User) {
-      await user.$relatedQuery('organizations').unrelate()
-      await user.$relatedQuery('notifications').delete()
-      await user.$relatedQuery('offers').delete()
+      // await user.$relatedQuery('organizations').unrelate()
+      // await user.$relatedQuery('notifications').delete()
+      // await user.$relatedQuery('offers').delete()
       await User.query(trx)
         .delete()
         .where({ id: req.params.id })
@@ -107,4 +107,4 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = {all, findOne, addOne, updateOne, deleteOne}
+module.exports = { all, findOne, addOne, updateOne, deleteOne }

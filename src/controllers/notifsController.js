@@ -30,14 +30,7 @@ async function findOne (req, res) {
 async function addOne (req, res) {
   let notification
   try {
-    const notificationExists = await Notification.query().where({
-      id: req.body.id
-    })
-    if (notificationExists.length) {
-      throw new Error('notification.id already exists: ' + req.body.id)
-    } else {
-      notification = await Notification.query().insert(req.body)
-    }
+    notification = await Notification.query().insert(req.body)
     res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)

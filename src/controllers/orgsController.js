@@ -20,9 +20,9 @@ async function findOne (req, res) {
     const result = await Organization.query().where({ id: req.params.id })
     const organization = result.length ? result[0] : null
     if (organization instanceof Organization) {
-      organization.members = await organization.$relatedQuery('members')
+      // organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
-      // organization.owner = await organization.$relatedQuery('owner')
+      organization.owner = await organization.$relatedQuery('owner')
     }
     res.status(HttpStatus.OK).send(organization)
   } catch (error) {
@@ -40,6 +40,7 @@ async function addOne (req, res) {
     if (orgExists.length) {
       throw new Error('organization.id already exists: ' + req.body.id)
     } else {
+      req.body.owner_id = res.locals.user.username
       organization = await Organization.query().insert(req.body)
     }
     res.status(HttpStatus.OK).send(organization)
@@ -79,7 +80,7 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (organization instanceof Organization) {
-      await organization.$relatedQuery('members').unrelate()
+      // await organization.$relatedQuery('members').unrelate()
       await organization.$relatedQuery('offers').delete()
       await Organization.query(trx)
         .delete()

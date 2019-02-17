@@ -1,6 +1,7 @@
 const HttpStatus = require('http-status-codes')
 const AccessControl = require('role-acl')
 const Permission = require('../models/permissions')
+const logger = require('../lib/logger')
 
 const parsePermissions = perms => new AccessControl(perms)
 
@@ -13,32 +14,46 @@ const getPermissionDocuments = async () => {
   })
 }
 
-const hasPermission = (user, resource, action) => {
-  return getPermissionDocuments()
-    .then(parsePermissions)
-    .then(ac => {
-      let permissionGranted = false
-      user['cognito:groups'].forEach(role => {
-        if (
-          ac
-            .can(role)
-            .execute(action)
-            .on(resource).granted
-        ) {
-          permissionGranted = true
-        }
-      })
-      return permissionGranted
+const hasPermission = async (user, resource, action) => {
+  try {
+    let r
+    let permissionGranted = false
+    let ac = await getPermissionDocuments().then(parsePermissions)
+    user['cognito:groups'].forEach(role => {
+      r = role
+      permissionGranted = ac
+        .can(role)
+        .execute(action)
+        .on(resource).granted
+        ? true
+        : false
     })
+    if (!permissionGranted) console.log('not granted', r, action, resource)
+    return permissionGranted
+  } catch (error) {
+    logger.error(error.message)
+    throw error
+  }
 }
 
-const hasPermissionMiddleware = (resource, action) => {
-  return (req, res, next) => {
-    hasPermission(res.locals.user, resource, action).then(granted => {
-      if (granted) return next()
-      res.status(HttpStatus.FORBIDDEN).send({ error: 'Inadequate permissions' })
+const hasPermissionMiddlewareAsync = async (req, res, next) => {
+  try {
+    const granted = await hasPermission(
+      res.locals.user,
+      res.locals.resourceType,
+      req.method
+    )
+    if (granted) next()
+    else {
+      res.status(HttpStatus.FORBIDDEN).send({
+        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+      })
+    }
+  } catch (error) {
+    res.status(HttpStatus.FORBIDDEN).send({
+      error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
     })
   }
 }
 
-module.exports = hasPermissionMiddleware
+module.exports = hasPermissionMiddlewareAsync

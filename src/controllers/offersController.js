@@ -36,12 +36,7 @@ async function findOne (req, res) {
 async function addOne (req, res) {
   let offer
   try {
-    const offerExists = await Offer.query().where({ id: req.body.id })
-    if (offerExists.length) {
-      throw new Error('offer.id already exists: ' + req.body.id)
-    } else {
-      offer = await Offer.query().insert(req.body)
-    }
+    offer = await Offer.query().insert(req.body)
     res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
