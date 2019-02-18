@@ -3,6 +3,7 @@ const TxRelaySigner = signers.TxRelaySigner
 const web3 = require('../connections/blockchain').web3
 const TxRelayerContract = require('../connections/blockchain').TxRelayContract
 const secretSeed = require('../config/env').secretSeed
+const Transaction = require('ethereumjs-tx')
 
 const HDSigner = signers.HDSigner
 
@@ -10,22 +11,22 @@ const getRelayerAddress = () => {
   return TxRelayContract.address
 }
 
-const getRelayNonce = async (address) => {
+const getRelayNonce = async address => {
   if (!address) throw new Error('no address')
   const nonce = await TxRelayContract.getNonce(address)
   return nonce.toString(16)
 }
 
-const initSigner = (secretSeed) => {
+const initSigner = secretSeed => {
   const hdPrivKey = generators.Phrase.toHDPrivateKey(secretSeed)
   signer = new HDSigner(hdPrivKey)
   return signer
 }
 
-const estimateGas = (tx, from) => {
+const estimateGas = async (tx, from) => {
   if (!tx) throw new Error('no tx object')
 
-  let txCopy = {
+  const txCopy = {
     nonce: '0x' + (tx.nonce.toString('hex') || 0),
     gasPrice: '0x' + tx.gasPrice.toString('hex'),
     to: '0x' + tx.to.toString('hex'),
@@ -36,6 +37,8 @@ const estimateGas = (tx, from) => {
   let price = 3000000
   try {
     price = await web3.eth.estimateGasAsync(txCopy)
+  } catch (err) {
+    throw err
   }
   return price
 }
@@ -83,17 +86,13 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
   }
 }
 
-const signTx = ({ txHex }) => {
+const signTx = async ({ txHex }) => {
   if (!txHex) throw new Error('no txHex')
   const tx = new Transaction(Buffer.from(txHex, 'hex'))
-  const signer = initSigner();
+  const signer = initSigner()
   tx.gasPrice = await web3.eth.getGasPriceAsync()
   tx.nonce = await web3.eth.getTransactionCountAsync(signer.getAddress())
-  const estimatedGas = await estimateGas(
-    tx,
-    signer.getAddress(),
-    blockchain
-  )
+  const estimatedGas = await estimateGas(tx, signer.getAddress(), blockchain)
   // add some buffer to the limit
   tx.gasLimit = estimatedGas + 1000
 
@@ -108,15 +107,13 @@ const signTx = ({ txHex }) => {
   })
 }
 
-const sendRawTransaction = (signedRawTx) => {
+const sendRawTransaction = async signedRawTx => {
   if (!signedRawTx) throw new Error('no signedRawTx')
 
   if (!signedRawTx.startsWith('0x')) {
     signedRawTx = '0x' + signedRawTx
   }
-  const txHash = await web3.eth.sendRawTransactionAsync(
-    signedRawTx
-  )
+  const txHash = await web3.eth.sendRawTransactionAsync(signedRawTx)
 
   // let txObj = Wallet.parseTransaction(signedRawTx)
   // txObj.gasLimit = txObj.gasLimit.toString(16)
@@ -128,7 +125,7 @@ const sendRawTransaction = (signedRawTx) => {
   return txHash
 }
 
-const handle = async (event) => {
+const handle = async event => {
   let body
 
   if (event && event.body) {
@@ -168,10 +165,7 @@ const handle = async (event) => {
   }
 
   try {
-    const txHash = await sendRawTransaction(
-      signedRawTx,
-      body.blockchain
-    )
+    const txHash = await sendRawTransaction(signedRawTx, body.blockchain)
     return null, txHash
   } catch (error) {
     console.log('Error on this.ethereumMgr.sendRawTransaction')

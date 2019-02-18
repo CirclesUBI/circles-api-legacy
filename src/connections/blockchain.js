@@ -4,25 +4,23 @@ const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.jso
 const logger = require('../lib/logger')
 const rpcUrl = require('../config/env').rpcUrl
 
-// const fuelProvider = new FuelProvider(fuelConfig)
-
-// logger.info(fuelProvider.start)
-// const provider = fuelProvider.start()
-
-//const web3 = new Web3(provider)
 const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
+
+const HubAddress = process.env.HUB_CONTRACT_ADDRESS
+const TxRelayAddress = TxRelayContractJSON.networks[process.env.NETWORK_ID].address || process.env.RELAY_CONTRACT_ADDRESS
 
 const HubContract = new web3.eth.Contract(
   HubContractJSON.abi,
-  process.env.HUB_CONTRACT_ADDRESS
+  HubAddress
 )
 
 const TxRelayContract = new web3.eth.Contract(
   TxRelayContractJSON.abi,
-  process.env.RELAY_CONTRACT_ADDRESS
+  TxRelayAddress
 )
 
 module.exports = {
   web3,
   HubContract,
-  TxRelayContract }
+  TxRelayContract
+}
