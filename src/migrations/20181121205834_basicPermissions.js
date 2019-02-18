@@ -20,10 +20,10 @@ const basicPermissions = [
   { role: 'user', resource: 'allOffers', action: 'GET' },
 
   // API
-  { role: 'api', resource: 'allNotifs', action: 'create' },
-  { role: 'api', resource: 'allNotifs', action: 'update' },
-  { role: 'api', resource: 'allNotifs', action: 'delete' },
-  { role: 'api', resource: 'allNotifs', action: 'read' },
+  { role: 'api', resource: 'allNotifs', action: 'POST' },
+  { role: 'api', resource: 'allNotifs', action: 'PUT' },
+  { role: 'api', resource: 'allNotifs', action: 'DELETE' },
+  { role: 'api', resource: 'allNotifs', action: 'GET' },
 
   // TEST
   { role: 'test', resource: 'allUsers', action: 'POST' },

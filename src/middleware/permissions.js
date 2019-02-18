@@ -16,11 +16,9 @@ const getPermissionDocuments = async () => {
 
 const hasPermission = async (user, resource, action) => {
   try {
-    let chosenRole
     let permissionGranted = false
     let ac = await getPermissionDocuments().then(parsePermissions)
-    user['cognito:groups'].forEach(role => {
-      chosenRole = role
+    user['cognito:groups'].forEach(role => {      
       permissionGranted = ac
         .can(role)
         .execute(action)
@@ -29,7 +27,7 @@ const hasPermission = async (user, resource, action) => {
         : false
     })
     logger.info(
-      `Permissions: ${chosenRole} ${action} on ${resource} : ${
+      `Permissions: ${user['cognito:groups'].join(',')} ${action} on ${resource} : ${
         permissionGranted ? '[GRANTED]' : '[FORBIDDEN]'
       }`
     )
@@ -40,7 +38,7 @@ const hasPermission = async (user, resource, action) => {
   }
 }
 
-const hasPermissionMiddlewareAsync = async (req, res, next) => {
+const hasPermissionMiddleware = async (req, res, next) => {
   try {
     const granted = await hasPermission(
       res.locals.user,
@@ -60,4 +58,4 @@ const hasPermissionMiddlewareAsync = async (req, res, next) => {
   }
 }
 
-module.exports = hasPermissionMiddlewareAsync
+module.exports = hasPermissionMiddleware

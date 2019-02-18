@@ -2,7 +2,7 @@ const Router = require('express').Router
 const usersController = require('../controllers/usersController')
 const router = Router()
 
-const hasPermissionMiddlewareAsync = require('../middleware/permissions')
+const hasPermissionMiddleware = require('../middleware/permissions')
 
 const determineResourceType = (req, res, next) => {
   res.locals.resourceType =
@@ -13,20 +13,20 @@ const determineResourceType = (req, res, next) => {
 }
 
 router.get('/', determineResourceType, [
-  hasPermissionMiddlewareAsync,
+  hasPermissionMiddleware,
   usersController.all
 ])
 router.post('/', determineResourceType, usersController.addOne) // todo: 1. is this correct?
 router.get('/:id', determineResourceType, [
-  hasPermissionMiddlewareAsync,
+  hasPermissionMiddleware,
   usersController.findOne
 ])
 router.put('/:id', determineResourceType, [
-  hasPermissionMiddlewareAsync,
+  hasPermissionMiddleware,
   usersController.updateOne
 ])
 router.delete('/:id', determineResourceType, [
-  hasPermissionMiddlewareAsync,
+  hasPermissionMiddleware,
   usersController.deleteOne
 ])
 

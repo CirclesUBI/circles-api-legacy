@@ -48,7 +48,7 @@ async function addOne (req, res) {
     } else {
       const endpointArn = await sns.createSNSEndpoint(circlesUser)
       circlesUser.device_endpoint = endpointArn
-      let response = await cognitoISP.addToCognitoGroup(circlesUser)
+      await cognitoISP.addToCognitoGroup(circlesUser)
       user = await User.query(trx).insert(circlesUser)
     }
     await trx.commit()
