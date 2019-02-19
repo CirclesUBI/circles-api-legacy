@@ -15,7 +15,8 @@
     "test": "jest --detectOpenHandles --forceExit --setupFiles dotenv/config",
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
     "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
-    "format": "prettier-standard src/**/*.js __tests__/**/*.js"
+    "format": "prettier-standard src/**/*.js __tests__/**/*.js",
+    "signTx": "node -r dotenv/config scripts/signTx.js"
   },
   "jest": {
     "verbose": true,
