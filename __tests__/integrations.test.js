@@ -1,7 +1,9 @@
+const faker = require('faker')
 const request = require('supertest')
 const app = require('../src/app')
 const server = require('../src/app').server
 const cognito = require('../src/connections/cognito')
+
 const {
   createFakeCognitoUser,
   createFakeOrganization,
@@ -10,6 +12,7 @@ const {
 } = require('../src/seeds/helpers/fakers')
 
 const versionString = '/v' + process.env.npm_package_version
+const adminVersionString = versionString + '/admin'
 
 convertToObjectProperties = array => {
   let obj = {}
@@ -140,7 +143,7 @@ describe('Setup', () => {
 })
 
 describe(
-  'Integration Tests: Circles API ' + versionString + ' admin routes',
+  'Integration Tests: Circles API ' + adminVersionString + ' admin routes',
   () => {
     it('It should respond to the base route on GET', async () => {
       const result = await request(app).get('/')
@@ -151,7 +154,7 @@ describe(
     describe('User API', () => {
       it('First it should create a specific /users on POST', async () => {
         const { res, req } = await request(app)
-          .post(versionString + '/users')
+          .post(adminVersionString + '/users')
           .send(adminCognitoUser.UserAttributes)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -164,7 +167,7 @@ describe(
 
       it('It should return all /users on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/users')
+          .get(adminVersionString + '/users')
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -174,7 +177,7 @@ describe(
 
       it('It should return a specific /users/{user_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/users/' + adminCognitoUser.Username)
+          .get(adminVersionString + '/users/' + adminCognitoUser.Username)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -187,7 +190,7 @@ describe(
       it('It should update a specific /users/{user_id} on PUT', async () => {
         const email = 'user@test.com'
         const { res, req } = await request(app)
-          .put(versionString + '/users/' + adminCognitoUser.Username)
+          .put(adminVersionString + '/users/' + adminCognitoUser.Username)
           .send({ email: email })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -202,7 +205,7 @@ describe(
     describe('Org API', () => {
       it('It should return all /orgs on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/orgs')
+          .get(adminVersionString + '/orgs')
           .set('accesstoken', adminUserAccessToken)
 
         expect(res.statusCode).toEqual(200)
@@ -214,7 +217,7 @@ describe(
         // testOrg.owner_id = adminCognitoUser.Username
         // testOrg.members = [adminCognitoUser.Username]
         const { res, req } = await request(app)
-          .post(versionString + '/orgs')
+          .post(adminVersionString + '/orgs')
           .send(testOrg)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -227,7 +230,7 @@ describe(
 
       it('It should return a specific /orgs/{org_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/orgs/' + testOrg.id)
+          .get(adminVersionString + '/orgs/' + testOrg.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -240,7 +243,7 @@ describe(
       it('It should update a specific /orgs/{org_id} on PUT', async () => {
         const email = 'org@test.com'
         const { res, req } = await request(app)
-          .put(versionString + '/orgs/' + testOrg.id)
+          .put(adminVersionString + '/orgs/' + testOrg.id)
           .send({ email: email })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -253,7 +256,7 @@ describe(
 
       it('Orgs should have an owner who exists', async () => {
         let response = await request(app)
-          .get(versionString + '/orgs/' + testOrg.id)
+          .get(adminVersionString + '/orgs/' + testOrg.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -265,7 +268,7 @@ describe(
 
       it('It should delete a specific /orgs/{org_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(versionString + '/orgs/' + testOrg.id)
+          .delete(adminVersionString + '/orgs/' + testOrg.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -276,7 +279,7 @@ describe(
     describe('Notification API', () => {
       it('It should return all /notifs on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/notifs')
+          .get(adminVersionString + '/notifs')
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -288,7 +291,7 @@ describe(
         testNotif = createFakeNotification()
         testNotif.owner_id = adminCognitoUser.Username
         const { res, req } = await request(app)
-          .post(versionString + '/notifs')
+          .post(adminVersionString + '/notifs')
           .send(testNotif)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -297,12 +300,12 @@ describe(
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
         expect(notification.description).toEqual(testNotif.description)
-        testNotif.id = notification.id
+        expect(testNotif.id).toEqual(notification.id)
       })
 
       it('It should return a specific /notifs/{notification_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/notifs/' + testNotif.id)
+          .get(adminVersionString + '/notifs/' + testNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -315,7 +318,7 @@ describe(
       it('It should update a specific /notifs/{notification_id} on PUT', async () => {
         const description = 'notif@test.com'
         const { res, req } = await request(app)
-          .put(versionString + '/notifs/' + testNotif.id)
+          .put(adminVersionString + '/notifs/' + testNotif.id)
           .send({ description: description })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -328,7 +331,7 @@ describe(
 
       it('It should delete a specific /notifs/{notification_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(versionString + '/notifs/' + testNotif.id)
+          .delete(adminVersionString + '/notifs/' + testNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -339,7 +342,7 @@ describe(
     describe('Offer API', () => {
       it('It should return all /offers on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/offers')
+          .get(adminVersionString + '/offers')
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -351,7 +354,7 @@ describe(
         testOffer = createFakeOffer()
         testOffer.owner_id = adminCognitoUser.Username
         const { res, req } = await request(app)
-          .post(versionString + '/offers')
+          .post(adminVersionString + '/offers')
           .send(testOffer)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -360,12 +363,12 @@ describe(
         expect(res.text).toBeDefined()
         const offer = JSON.parse(res.text)
         expect(offer.title).toEqual(testOffer.title)
-        testOffer.id = offer.id
+        expect(testOffer.id).toEqual(offer.id)
       })
 
       it('It should return a specific /offers/{offer_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/offers/' + testOffer.id)
+          .get(adminVersionString + '/offers/' + testOffer.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -378,7 +381,7 @@ describe(
       it('It should update a specific /offers/{offer_id} on PUT', async () => {
         const title = 'offer@test.com'
         const { res, req } = await request(app)
-          .put(versionString + '/offers/' + testOffer.id)
+          .put(adminVersionString + '/offers/' + testOffer.id)
           .send({ title: title })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -391,7 +394,7 @@ describe(
 
       it('It should delete a specific /offers/{offer_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(versionString + '/offers/' + testOffer.id)
+          .delete(adminVersionString + '/offers/' + testOffer.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -403,7 +406,7 @@ describe(
       it('It should call a specific contract on POST', async () => {
         // const spyFn = jest.spyOn(HubContract, signup)
         const { res, req } = await request(app)
-          .post(versionString + '/relayer/signup')
+          .post(adminVersionString + '/relayer/signup')
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -413,7 +416,7 @@ describe(
 
       it('It should error if non-existant contract called on POST', async () => {
         const { res, req } = await request(app)
-          .post(versionString + '/relayer/banana')
+          .post(adminVersionString + '/relayer/banana')
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -424,7 +427,7 @@ describe(
     describe('Teardown', () => {
       it('It should delete a specific /users/{user_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(versionString + '/users/' + adminCognitoUser.Username)
+          .delete(adminVersionString + '/users/' + adminCognitoUser.Username)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -506,8 +509,9 @@ describe(
       })
 
       it('It should not able to get other /users/{user_id} on GET', async () => {
+        const userId = faker.random.uuid()
         const { res, req } = await request(app)
-          .get(versionString + '/users/1111111111111111111')
+          .get(versionString + '/users/' + userId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -529,9 +533,10 @@ describe(
       })
 
       it('It should not be able to update other /users/{user_id} on PUT', async () => {
-        const email = 'user@test.com'
+        const userId = faker.random.uuid()
+        const email = "user@test.com"
         const { res, req } = await request(app)
-          .put(versionString + '/users/1111111111111111111')
+          .put(versionString + '/users/' + userId)
           .send({ email: email })
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
@@ -540,8 +545,9 @@ describe(
       })
 
       it('It should not be able to delete other /users/{user_id} on DELETE', async () => {
+        const userId = faker.random.uuid()
         const { res, req } = await request(app)
-          .delete(versionString + '/users/1111111111111111111')
+          .delete(versionString + '/users/' + userId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -585,15 +591,16 @@ describe(
       })
 
       it('It should not be able to get other /orgs/{org_id} on GET', async () => {
+        const orgId = createFakeOrganization().id
         const { res, req } = await request(app)
-          .get(versionString + '/orgs/1111111111111')
+          .get(versionString + '/orgs/' + orgId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
         expect(res.statusCode).toEqual(403)
       })
 
-      it('It should update its own /orgs/{org_id} on PUT', async () => {
+      it('It should update its own /orgs/{org_id} on PUT', async () => {        
         const email = 'org@test.com'
         const { res, req } = await request(app)
           .put(versionString + '/orgs/' + testOrg.id)
@@ -608,10 +615,10 @@ describe(
       })
 
       it('It should not be able to update other /orgs/{org_id} on PUT', async () => {
-        const email = 'org@test.com'
+        const org = createFakeOrganization()        
         const { res, req } = await request(app)
-          .put(versionString + '/orgs/1111111111111')
-          .send({ email: email })
+          .put(versionString + '/orgs/' + org.id)
+          .send({ email: org.email })
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -640,8 +647,9 @@ describe(
       })
 
       it('It should not be able to delete other /orgs/{org_id} on DELETE', async () => {
+        const orgId = createFakeOrganization().id
         const { res, req } = await request(app)
-          .delete(versionString + '/orgs/1111111111111')
+          .delete(versionString + '/orgs/' + orgId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -700,8 +708,9 @@ describe(
       })
 
       it('It should not be able to return other /notifs/{notification_id} on GET', async () => {
+        const notifId = createFakeNotification().id
         const { res, req } = await request(app)
-          .get(versionString + '/notifs/111111111111')
+          .get(versionString + '/notifs/' + notifId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -723,10 +732,10 @@ describe(
       })
 
       it('It should not be able to update othern /notifs/{notification_id} on PUT', async () => {
-        const description = 'notif@test.com'
+        const notif = createFakeNotification()        
         const { res, req } = await request(app)
-          .put(versionString + '/notifs/111111111111')
-          .send({ description: description })
+          .put(versionString + '/notifs/' + notif.id)
+          .send({ description: notif.description })
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -743,8 +752,9 @@ describe(
       })
 
       it('It should not be able to delete other /notifs/{notification_id} on DELETE', async () => {
+        const notifId = createFakeNotification().id
         const { res, req } = await request(app)
-          .delete(versionString + '/notifs/111111111111')
+          .delete(versionString + '/notifs/' + notifId)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 

@@ -39,12 +39,14 @@ const createFakeOrganization = () => {
 
 const createFakeNotification = () => {
   return {
+    id: faker.random.uuid(),
     description: faker.lorem.sentence()
   }
 }
 
 const createFakeOffer = () => {
   let offer = {
+    id: faker.random.uuid(),
     type: offerTypes[Math.floor(Math.random() * offerTypes.length)],
     public: faker.random.boolean(),
     category: faker.commerce.department()

@@ -5,6 +5,7 @@ const loggingMiddleware = require('../middleware/logging')
 const hasPermissionMiddleware = require('../middleware/permissions')
 
 const cors = require('cors')
+const adminRouter = require('./adminRouter')
 const usersRouter = require('./usersRouter')
 const orgsRouter = require('./orgsRouter')
 const notifsRouter = require('./notifsRouter')
@@ -23,6 +24,7 @@ module.exports = function (app) {
   app.use(loggingMiddleware)
   app.use(authMiddleware)
 
+  app.use('/' + apiVersionString + '/admin', adminRouter)
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
   app.use('/' + apiVersionString + '/notifs', notifsRouter)

@@ -4,30 +4,10 @@ const router = Router()
 
 const hasPermissionMiddleware = require('../middleware/permissions')
 
-const determineResourceType = (req, res, next) => {
-  res.locals.resourceType =
-    req.params.id === res.locals.user.username || req.method === 'POST'
-      ? 'ownUser'
-      : 'allUsers'
-  next()
-}
-
-router.get('/', determineResourceType, [
-  hasPermissionMiddleware,
-  usersController.all
-])
-router.post('/', determineResourceType, usersController.addOne) // todo: 1. is this correct?
-router.get('/:id', determineResourceType, [
-  hasPermissionMiddleware,
-  usersController.findOne
-])
-router.put('/:id', determineResourceType, [
-  hasPermissionMiddleware,
-  usersController.updateOne
-])
-router.delete('/:id', determineResourceType, [
-  hasPermissionMiddleware,
-  usersController.deleteOne
-])
+router.get('/', hasPermissionMiddleware('allUsers'), usersController.all)
+router.post('/', usersController.addOne) // question re hasPermissionMiddleware('ownUser')
+router.get('/:id', hasPermissionMiddleware(), usersController.findOne)
+router.put('/:id', hasPermissionMiddleware(), usersController.updateOne)
+router.delete('/:id', hasPermissionMiddleware(), usersController.deleteOne)
 
 module.exports = router

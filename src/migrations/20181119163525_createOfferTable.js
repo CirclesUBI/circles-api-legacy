@@ -1,6 +1,6 @@
 exports.up = (knex, Promise) => {
   return knex.schema.createTable('offer', t => {
-    t.increments('id').primary()
+    t.string('id').primary()
     t.string('owner_id', 50)
     t.string('item_code', 50)
     t.enu('type', [

@@ -9,7 +9,7 @@ module.exports = class Notification extends CirclesModel {
     return {
       type: 'object',
       properties: {
-        id: { type: 'integer' },
+        id: { type: 'string' },
         owner_id: { type: 'string' },
         description: { type: 'string' },
         created_at: { type: 'object' },
