@@ -5,105 +5,98 @@ const orgsController = require('../controllers/orgsController')
 const notifController = require('../controllers/notifsController')
 const relayerController = require('../controllers/relayerController')
 
-const hasPermissionMiddleware = require('../middleware/permissions')
+const ownershipMiddleware = require('../middleware/permissions').ownershipMiddleware 
+const hasPermissionMiddleware = require('../middleware/permissions').hasPermissionMiddleware 
 
 const router = Router()
 
 // Users
-router.get('/users/', hasPermissionMiddleware('allUsers'), usersController.all)
-router.post(
-  '/users/',
-  hasPermissionMiddleware('allUsers'),
+router.get('/users/', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
+  usersController.all
+])
+router.post('/users/', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
   usersController.addOne
-)
-router.get(
-  '/users/:id',
-  hasPermissionMiddleware('allUsers'),
+])
+router.get('/users/:id', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
   usersController.findOne
-)
-router.put(
-  '/users/:id',
-  hasPermissionMiddleware('allUsers'),
+])
+router.put('/users/:id', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
   usersController.updateOne
-)
-router.delete(
-  '/users/:id',
-  hasPermissionMiddleware('allUsers'),
+])
+router.delete('/users/:id', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
   usersController.deleteOne
-)
+])
 
 // Orgs
-router.get('/orgs/', hasPermissionMiddleware('allUsers'), orgsController.all)
-router.post('/orgs/', hasPermissionMiddleware('allOrgs'), orgsController.addOne)
-router.get(
-  '/orgs/:id',
-  hasPermissionMiddleware('allOrgs'),
+router.get('/orgs/', ownershipMiddleware('allUsers'), [
+  hasPermissionMiddleware(),
+  orgsController.all
+])
+router.post('/orgs/', ownershipMiddleware('allOrgs'), [
+  hasPermissionMiddleware(),
+  orgsController.addOne
+])
+router.get('/orgs/:id', ownershipMiddleware('allOrgs'), [
+  hasPermissionMiddleware(),
   orgsController.findOne
-)
-router.put(
-  '/orgs/:id',
-  hasPermissionMiddleware('allOrgs'),
+])
+router.put('/orgs/:id', ownershipMiddleware('allOrgs'), [
+  hasPermissionMiddleware(),
   orgsController.updateOne
-)
-router.delete(
-  '/orgs/:id',
-  hasPermissionMiddleware('allOrgs'),
+])
+router.delete('/orgs/:id', ownershipMiddleware('allOrgs'), [
+  hasPermissionMiddleware(),
   orgsController.deleteOne
-)
+])
 
 // Offers
-router.get(
-  '/offers/',
-  hasPermissionMiddleware('allOffers'),
+router.get('/offers/', ownershipMiddleware('allOffers'), [
+  hasPermissionMiddleware(),
   offersController.all
-)
-router.post(
-  '/offers/',
-  hasPermissionMiddleware('allOffers'),
+])
+router.post('/offers/', ownershipMiddleware('allOffers'), [
+  hasPermissionMiddleware(),
   offersController.addOne
-)
-router.get(
-  '/offers/:id',
-  hasPermissionMiddleware('allOffers'),
+])
+router.get('/offers/:id', ownershipMiddleware('allOffers'), [
+  hasPermissionMiddleware(),
   offersController.findOne
-)
-router.put(
-  '/offers/:id',
-  hasPermissionMiddleware('allOffers'),
+])
+router.put('/offers/:id', ownershipMiddleware('allOffers'), [
+  hasPermissionMiddleware(),
   offersController.updateOne
-)
-router.delete(
-  '/offers/:id',
-  hasPermissionMiddleware('allOffers'),
+])
+router.delete('/offers/:id', ownershipMiddleware('allOffers'), [
+  hasPermissionMiddleware(),
   offersController.deleteOne
-)
+])
 
 // Notifs
-router.get(
-  '/notifs/',
-  hasPermissionMiddleware('allNotifs'),
+router.get('/notifs/', ownershipMiddleware('allNotifs'), [
+  hasPermissionMiddleware(),
   notifController.all
-)
-router.post(
-  '/notifs/',
-  hasPermissionMiddleware('allNotifs'),
+])
+router.post('/notifs/', ownershipMiddleware('allNotifs'), [
+  hasPermissionMiddleware(),
   notifController.addOne
-)
-router.get(
-  '/notifs/:id',
-  hasPermissionMiddleware('allNotifs'),
+])
+router.get('/notifs/:id', ownershipMiddleware('allNotifs'), [
+  hasPermissionMiddleware(),
   notifController.findOne
-)
-router.put(
-  '/notifs/:id',
-  hasPermissionMiddleware('allNotifs'),
+])
+router.put('/notifs/:id', ownershipMiddleware('allNotifs'), [
+  hasPermissionMiddleware(),
   notifController.updateOne
-)
-router.delete(
-  '/notifs/:id',
-  hasPermissionMiddleware('allNotifs'),
+])
+router.delete('/notifs/:id', ownershipMiddleware('allNotifs'), [
+  hasPermissionMiddleware(),
   notifController.deleteOne
-)
+])
 
 // Relayer
 router.post('/relayer/:contractName', relayerController.callContract)

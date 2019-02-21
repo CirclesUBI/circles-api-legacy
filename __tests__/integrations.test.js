@@ -662,7 +662,7 @@ describe(
         testNotif = createFakeNotification()
         testNotif.owner_id = testCognitoUser.Username
         const { res, req } = await request(app)
-          .post(versionString + '/notifs')
+          .post(adminVersionString + '/notifs')
           .send(testNotif)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -767,7 +767,7 @@ describe(
         testOtherOffer = createFakeOffer()
         testOtherOffer.owner_id = process.env.COGNITO_TEST_USERNAME
         const { res, req } = await request(app)
-          .post(versionString + '/offers')
+          .post(adminVersionString + '/offers')
           .send(testOtherOffer)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -803,18 +803,6 @@ describe(
         const offer = JSON.parse(res.text)
         expect(offer.title).toEqual(testOwnedOffer.title)
         testOwnedOffer.id = offer.id
-      })
-
-      it('It should not be able to create other /offers/ on POST', async () => {
-        let offer = createFakeOffer()
-        offer.owner_id = process.env.COGNITO_TEST_USERNAME
-        const { res, req } = await request(app)
-          .post(versionString + '/offers')
-          .send(offer)
-          .set('Accept', 'application/json')
-          .set('accesstoken', testUserAccessToken)
-
-        expect(res.statusCode).toEqual(403)
       })
 
       it('It should return its own /offers/{offer_id} on GET', async () => {

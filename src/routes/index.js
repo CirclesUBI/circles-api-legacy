@@ -2,7 +2,6 @@ const HttpStatus = require('http-status-codes')
 const bodyParser = require('body-parser')
 const authMiddleware = require('../middleware/auth')
 const loggingMiddleware = require('../middleware/logging')
-const hasPermissionMiddleware = require('../middleware/permissions')
 
 const cors = require('cors')
 const adminRouter = require('./adminRouter')
@@ -17,7 +16,7 @@ const apiVersionString = require('../config/env').apiVersionString
 module.exports = function (app) {
   app.use(cors())
   app.use(bodyParser.urlencoded({ extended: true }))
-  app.use(bodyParser.json())
+  app.use(bodyParser.json())  
 
   app.get('/', (req, res) => res.status(HttpStatus.OK).json('hello Ed!'))
 

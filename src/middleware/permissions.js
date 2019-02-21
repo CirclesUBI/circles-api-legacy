@@ -15,37 +15,11 @@ const getPermissionDocuments = async () => {
   })
 }
 
-const getUserOwnership = async (req, res) => {
-  console.log('getUserOwnership')
-  const result = await User.query().where({ id: res.locals.user.username })
-  const user = result.length ? result[0] : null
-  if (!user) throw new Error('missing user ' + res.locals.user.username)
-  user.organizations = await user.$relatedQuery('organizations')
-  user.offers = await user.$relatedQuery('offers')
-  user.notifications = await user.$relatedQuery('notifications')
-  console.log('user.id', user.id)
-  console.log('req.params.id', req.params.id)
-  return await whatOwnedResource(user, req.params.id)
-}
-
-// only works with unique offer and notif ids
-const whatOwnedResource = async (user, paramId) =>
-  user.id === paramId
-    ? 'ownUser'
-    : user.organizations.map(org => org.id).includes(paramId)
-    ? 'ownOrg'
-    : user.notifications.map(notif => notif.id).includes(paramId)
-    ? 'ownNotif'
-    : user.offers.map(offer => offer.id).includes(paramId)
-    ? 'ownOffer'
-    : 'all'
-
 const hasPermission = async (user, resource, action) => {
   try {
     let permissionGranted = false
     let ac = await getPermissionDocuments().then(parsePermissions)
     user['cognito:groups'].forEach(role => {
-      console.log(role, action, resource)
       permissionGranted = ac
         .can(role)
         .execute(action)
@@ -53,7 +27,7 @@ const hasPermission = async (user, resource, action) => {
         ? true
         : false
     })
-    logger.info(
+    logger.info( 
       `Permissions: ${user['cognito:groups'].join(
         ','
       )} ${action} on ${resource} : ${
@@ -67,14 +41,12 @@ const hasPermission = async (user, resource, action) => {
   }
 }
 
-const hasPermissionMiddleware = resource => {
-  return async (req, res, next) => {
+const hasPermissionMiddleware = resourceIfNotOwned => {
+  return (req, res, next) => {
     try {
-      console.log('resouce bfore', resource)
-      if (req.params.id && typeof resource === 'undefined')
-        resource = await getUserOwnership(req, res)
-      console.log('resouce aftr', resource)
-      return hasPermission(res.locals.user, resource, req.method).then(
+      if (typeof res.locals.resource === 'undefined')
+        res.locals.resource = resourceIfNotOwned
+      return hasPermission(res.locals.user, res.locals.resource, req.method).then(
         granted => {
           if (granted) {
             return next()
@@ -94,4 +66,48 @@ const hasPermissionMiddleware = resource => {
   }
 }
 
-module.exports = hasPermissionMiddleware
+const ownershipMiddleware = resource => {
+  return (req, res, next) => {
+    try {
+      if (typeof resource === 'undefined') {
+        return getUserOwnership(req, res).then(ownedResource => {
+          res.locals.resource = ownedResource
+          return next()
+        })
+      }
+      res.locals.resource = resource      
+      return next()
+    } catch (error) {
+      logger.error(error.message)
+      return res.status(HttpStatus.FORBIDDEN).send({
+        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+      })
+    }
+  }
+}
+
+const getUserOwnership = async (req, res) => {
+  const result = await User.query().where({ id: res.locals.user.username })
+  const user = result.length ? result[0] : null
+  if (!user) {
+    throw new Error('missing user ' + res.locals.user.username)
+  }
+  user.organizations = await user.$relatedQuery('organizations')
+  user.offers = await user.$relatedQuery('offers')
+  user.notifications = await user.$relatedQuery('notifications')
+  return await whatOwnedResource(user, req.params.id)
+}
+
+// only works with unique offer and notif ids
+const whatOwnedResource = async (user, paramId) =>
+  user.id === paramId
+    ? 'ownUser'
+    : user.organizations.map(org => org.id).includes(paramId)
+    ? 'ownOrg'
+    : user.notifications.map(notif => notif.id).includes(paramId)
+    ? 'ownNotif'
+    : user.offers.map(offer => offer.id).includes(paramId)
+    ? 'ownOffer'
+    : undefined
+
+module.exports = {hasPermissionMiddleware, ownershipMiddleware}

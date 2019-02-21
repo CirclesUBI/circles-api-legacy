@@ -1,17 +1,15 @@
 const Router = require('express').Router
 const notifsController = require('../controllers/notifsController')
-const User = require('../models/user')
-const logger = require('../lib/logger')
-const HttpStatus = require('http-status-codes')
 
 const router = Router()
 
-const hasPermissionMiddleware = require('../middleware/permissions')
+const ownershipMiddleware = require('../middleware/permissions').ownershipMiddleware 
+const hasPermissionMiddleware = require('../middleware/permissions').hasPermissionMiddleware 
 
-router.get('/', hasPermissionMiddleware('allNotifs'), notifsController.all)
-router.post('/', hasPermissionMiddleware('ownNotif'), notifsController.addOne)
-router.get('/:id', hasPermissionMiddleware(), notifsController.findOne)
-router.put('/:id', hasPermissionMiddleware(), notifsController.updateOne)
-router.delete('/:id', hasPermissionMiddleware(), notifsController.deleteOne)
+router.get('/', ownershipMiddleware('allNotifs'), [hasPermissionMiddleware('allNotifs'), notifsController.all])
+router.post('/', ownershipMiddleware('ownNotif'), [hasPermissionMiddleware('allNotifs'), notifsController.addOne])
+router.get('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allNotifs'), notifsController.findOne])
+router.put('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allNotifs'), notifsController.updateOne])
+router.delete('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allNotifs'), notifsController.deleteOne])
 
 module.exports = router

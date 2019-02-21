@@ -1,17 +1,15 @@
 const Router = require('express').Router
 const orgsController = require('../controllers/orgsController')
-const User = require('../models/user')
-const logger = require('../lib/logger')
-const HttpStatus = require('http-status-codes')
 
 const router = Router()
 
-const hasPermissionMiddleware = require('../middleware/permissions')
+const ownershipMiddleware = require('../middleware/permissions').ownershipMiddleware 
+const hasPermissionMiddleware = require('../middleware/permissions').hasPermissionMiddleware 
 
-router.get('/', hasPermissionMiddleware('allOrgs'), orgsController.all)
-router.post('/', hasPermissionMiddleware('ownOrg'), orgsController.addOne)
-router.get('/:id', hasPermissionMiddleware(), orgsController.findOne)
-router.put('/:id', hasPermissionMiddleware(), orgsController.updateOne)
-router.delete('/:id', hasPermissionMiddleware(), orgsController.deleteOne)
+router.get('/', ownershipMiddleware('allOrgs'), [hasPermissionMiddleware('allOrgs'), orgsController.all])
+router.post('/', ownershipMiddleware('ownOrg'), [hasPermissionMiddleware('allOrgs'), orgsController.addOne])
+router.get('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allOrgs'), orgsController.findOne])
+router.put('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allOrgs'), orgsController.updateOne])
+router.delete('/:id', ownershipMiddleware(), [hasPermissionMiddleware('allOrgs'), orgsController.deleteOne])
 
 module.exports = router
