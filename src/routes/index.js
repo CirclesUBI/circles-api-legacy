@@ -16,7 +16,7 @@ const apiVersionString = require('../config/env').apiVersionString
 module.exports = function (app) {
   app.use(cors())
   app.use(bodyParser.urlencoded({ extended: true }))
-  app.use(bodyParser.json())  
+  app.use(bodyParser.json())
 
   app.get('/', (req, res) => res.status(HttpStatus.OK).json('hello Ed!'))
 

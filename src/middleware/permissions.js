@@ -27,7 +27,7 @@ const hasPermission = async (user, resource, action) => {
         ? true
         : false
     })
-    logger.info( 
+    logger.info(
       `Permissions: ${user['cognito:groups'].join(
         ','
       )} ${action} on ${resource} : ${
@@ -46,17 +46,19 @@ const hasPermissionMiddleware = resourceIfNotOwned => {
     try {
       if (typeof res.locals.resource === 'undefined')
         res.locals.resource = resourceIfNotOwned
-      return hasPermission(res.locals.user, res.locals.resource, req.method).then(
-        granted => {
-          if (granted) {
-            return next()
-          } else {
-            return res.status(HttpStatus.FORBIDDEN).send({
-              error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-            })
-          }
+      return hasPermission(
+        res.locals.user,
+        res.locals.resource,
+        req.method
+      ).then(granted => {
+        if (granted) {
+          return next()
+        } else {
+          return res.status(HttpStatus.FORBIDDEN).send({
+            error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+          })
         }
-      )
+      })
     } catch (error) {
       logger.error(error.message)
       return res.status(HttpStatus.FORBIDDEN).send({
@@ -75,7 +77,7 @@ const ownershipMiddleware = resource => {
           return next()
         })
       }
-      res.locals.resource = resource      
+      res.locals.resource = resource
       return next()
     } catch (error) {
       logger.error(error.message)
@@ -110,4 +112,4 @@ const whatOwnedResource = async (user, paramId) =>
     ? 'ownOffer'
     : undefined
 
-module.exports = {hasPermissionMiddleware, ownershipMiddleware}
+module.exports = { hasPermissionMiddleware, ownershipMiddleware }

@@ -5,8 +5,10 @@ const orgsController = require('../controllers/orgsController')
 const notifController = require('../controllers/notifsController')
 const relayerController = require('../controllers/relayerController')
 
-const ownershipMiddleware = require('../middleware/permissions').ownershipMiddleware 
-const hasPermissionMiddleware = require('../middleware/permissions').hasPermissionMiddleware 
+const ownershipMiddleware = require('../middleware/permissions')
+  .ownershipMiddleware
+const hasPermissionMiddleware = require('../middleware/permissions')
+  .hasPermissionMiddleware
 
 const router = Router()
 
