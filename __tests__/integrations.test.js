@@ -534,7 +534,7 @@ describe(
 
       it('It should not be able to update other /users/{user_id} on PUT', async () => {
         const userId = faker.random.uuid()
-        const email = "user@test.com"
+        const email = 'user@test.com'
         const { res, req } = await request(app)
           .put(versionString + '/users/' + userId)
           .send({ email: email })
@@ -600,7 +600,7 @@ describe(
         expect(res.statusCode).toEqual(403)
       })
 
-      it('It should update its own /orgs/{org_id} on PUT', async () => {        
+      it('It should update its own /orgs/{org_id} on PUT', async () => {
         const email = 'org@test.com'
         const { res, req } = await request(app)
           .put(versionString + '/orgs/' + testOrg.id)
@@ -615,7 +615,7 @@ describe(
       })
 
       it('It should not be able to update other /orgs/{org_id} on PUT', async () => {
-        const org = createFakeOrganization()        
+        const org = createFakeOrganization()
         const { res, req } = await request(app)
           .put(versionString + '/orgs/' + org.id)
           .send({ email: org.email })
@@ -732,7 +732,7 @@ describe(
       })
 
       it('It should not be able to update othern /notifs/{notification_id} on PUT', async () => {
-        const notif = createFakeNotification()        
+        const notif = createFakeNotification()
         const { res, req } = await request(app)
           .put(versionString + '/notifs/' + notif.id)
           .send({ description: notif.description })

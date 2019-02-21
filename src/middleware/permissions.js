@@ -43,7 +43,7 @@ const whatOwnedResource = async (user, paramId) =>
 const hasPermission = async (user, resource, action) => {
   try {
     let permissionGranted = false
-    let ac = await getPermissionDocuments().then(parsePermissions)    
+    let ac = await getPermissionDocuments().then(parsePermissions)
     user['cognito:groups'].forEach(role => {
       console.log(role, action, resource)
       permissionGranted = ac
@@ -71,20 +71,22 @@ const hasPermissionMiddleware = resource => {
   return async (req, res, next) => {
     try {
       console.log('resouce bfore', resource)
-      if (req.params.id && typeof resource === 'undefined') resource = await getUserOwnership(req, res)      
+      if (req.params.id && typeof resource === 'undefined')
+        resource = await getUserOwnership(req, res)
       console.log('resouce aftr', resource)
-      return hasPermission(res.locals.user, resource, req.method).then(granted => {
-        if (granted) {
-          return next()
+      return hasPermission(res.locals.user, resource, req.method).then(
+        granted => {
+          if (granted) {
+            return next()
+          } else {
+            return res.status(HttpStatus.FORBIDDEN).send({
+              error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+            })
+          }
         }
-        else {
-          return res.status(HttpStatus.FORBIDDEN).send({
-            error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-          })
-        }
-      })
+      )
     } catch (error) {
-      logger.error(error.message)      
+      logger.error(error.message)
       return res.status(HttpStatus.FORBIDDEN).send({
         error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
       })
