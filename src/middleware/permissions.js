@@ -29,7 +29,7 @@ const hasPermission = async (user, resource, action) => {
         ? true
         : false
     }
-    
+
     logger.info(
       `Permissions: ${user['cognito:groups'].join(
         ','

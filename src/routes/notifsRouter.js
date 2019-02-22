@@ -5,11 +5,7 @@ const router = Router()
 
 const hasPermissionMiddleware = require('../middleware/permissions')
 
-router.get(
-  '/',
-  hasPermissionMiddleware('ownNotifs'),
-  notifsController.own
-)
+router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.own)
 
 router.put(
   '/:id',

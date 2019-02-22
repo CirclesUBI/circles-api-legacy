@@ -17,7 +17,9 @@ async function all (req, res) {
 
 async function own (req, res) {
   try {
-    const organizations = await Organization.query().where({owner_id: res.locals.user.username})
+    const organizations = await Organization.query().where({
+      owner_id: res.locals.user.username
+    })
     res.status(HttpStatus.OK).send(organizations)
   } catch (error) {
     logger.error(error.message)
@@ -47,7 +49,10 @@ async function findOne (req, res) {
 
 async function findOwn (req, res) {
   try {
-    const result = await Organization.query().where({ id: req.params.id, owner_id: res.locals.user.username })
+    const result = await Organization.query().where({
+      id: req.params.id,
+      owner_id: res.locals.user.username
+    })
     const organization = result.length ? result[0] : null
     if (organization instanceof Organization) {
       // organization.members = await organization.$relatedQuery('members')
@@ -106,9 +111,17 @@ async function updateOne (req, res) {
 async function updateOwn (req, res) {
   let organization
   try {
-    const orgExists = await Organization.query().where({ id: req.params.id, owner_id: res.locals.user.username })
+    const orgExists = await Organization.query().where({
+      id: req.params.id,
+      owner_id: res.locals.user.username
+    })
     if (!orgExists.length) {
-      throw new Error('organization.id ' + req.params.id + ' does not exist or not owned by ' + res.locals.user.username )
+      throw new Error(
+        'organization.id ' +
+          req.params.id +
+          ' does not exist or not owned by ' +
+          res.locals.user.username
+      )
     } else {
       organization = await Organization.query().patchAndFetchById(
         req.params.id,
@@ -150,7 +163,6 @@ async function deleteOne (req, res) {
   }
 }
 
-
 async function deleteOwn (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
@@ -164,7 +176,12 @@ async function deleteOwn (req, res) {
         .delete()
         .where({ id: req.params.id })
     } else {
-      throw new Error('organization.id ' + req.params.id + ' does not exist or not owned by ' + res.locals.user.username )
+      throw new Error(
+        'organization.id ' +
+          req.params.id +
+          ' does not exist or not owned by ' +
+          res.locals.user.username
+      )
     }
     await trx.commit()
     res.status(HttpStatus.OK).send(organization)

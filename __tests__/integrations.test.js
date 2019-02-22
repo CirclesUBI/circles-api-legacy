@@ -515,7 +515,6 @@ describe(
     })
 
     describe('Org API', () => {
-
       it('It should create its own /orgs/ on POST', async () => {
         testOrg = createFakeOrganization()
         const { res, req } = await request(app)
@@ -550,13 +549,13 @@ describe(
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
-        expect(res.statusCode).toEqual(200)        
+        expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const orgs = JSON.parse(res.text)
         for (let i = 0; i < orgs.length; i++) {
           const org = orgs[i]
-          expect(org.owner_id).toEqual(testCognitoUser.Username)          
-        }        
+          expect(org.owner_id).toEqual(testCognitoUser.Username)
+        }
       })
 
       it('It should return a specific owned /orgs/{organization_id} on GET', async () => {
@@ -565,7 +564,7 @@ describe(
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
-        expect(res.statusCode).toEqual(200)        
+        expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const org = JSON.parse(res.text)
         expect(org.id).toEqual(testOrg.id)
@@ -640,10 +639,10 @@ describe(
         const notifications = JSON.parse(res.text)
         for (let i = 0; i < notifications.length; i++) {
           const notif = notifications[i]
-          expect(notif.owner_id).toEqual(testCognitoUser.Username)          
-          if (notif.id === testNotif.id) 
+          expect(notif.owner_id).toEqual(testCognitoUser.Username)
+          if (notif.id === testNotif.id)
             expect(notif.description).toEqual(testNotif.description)
-        }        
+        }
       })
 
       it('It should update its own /notifs on PUT', async () => {

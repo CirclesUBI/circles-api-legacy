@@ -24,8 +24,10 @@ async function own (req, res) {
     const result = await User.query().where({ id: res.locals.user.username })
     const ownUser = result.length ? result[0] : null
     if (!ownUser) {
-      throw new Error('users own record does not exist: ' + res.locals.user.username)
-    }    
+      throw new Error(
+        'users own record does not exist: ' + res.locals.user.username
+      )
+    }
     res.status(HttpStatus.OK).send(ownUser)
   } catch (error) {
     logger.error(error.message)
@@ -99,11 +101,18 @@ async function updateOne (req, res) {
 async function updateOwn (req, res) {
   let user
   try {
-    const userExists = await User.query().where({ id: res.locals.user.username })
+    const userExists = await User.query().where({
+      id: res.locals.user.username
+    })
     if (!userExists.length) {
-      throw new Error('users own record does not exist: ' + res.locals.user.username)
+      throw new Error(
+        'users own record does not exist: ' + res.locals.user.username
+      )
     } else {
-      user = await User.query().patchAndFetchById(res.locals.user.username, req.body)
+      user = await User.query().patchAndFetchById(
+        res.locals.user.username,
+        req.body
+      )
     }
     res.status(HttpStatus.OK).send(user)
   } catch (error) {
@@ -168,4 +177,13 @@ async function deleteOwn (req, res) {
   }
 }
 
-module.exports = { all, own, findOne, addOne, updateOne, updateOwn, deleteOne, deleteOwn }
+module.exports = {
+  all,
+  own,
+  findOne,
+  addOne,
+  updateOne,
+  updateOwn,
+  deleteOne,
+  deleteOwn
+}

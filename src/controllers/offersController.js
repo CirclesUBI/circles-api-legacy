@@ -62,9 +62,17 @@ async function updateOne (req, res) {
 async function updateOwn (req, res) {
   let offer
   try {
-    const offerExists = await Offer.query().where({ id: req.params.id, owner_id: res.locals.user.username})
+    const offerExists = await Offer.query().where({
+      id: req.params.id,
+      owner_id: res.locals.user.username
+    })
     if (!offerExists.length) {
-      throw new Error('Offer.id ' + req.params.id + ' does not exist or is not owned by: ' + res.locals.user.username)
+      throw new Error(
+        'Offer.id ' +
+          req.params.id +
+          ' does not exist or is not owned by: ' +
+          res.locals.user.username
+      )
     } else {
       offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
     }
@@ -108,7 +116,12 @@ async function deleteOwn (req, res) {
         .delete()
         .where({ id: req.params.id })
     } else {
-      throw new Error('Offer.id ' + req.params.id + ' does not exist or is not owned by: ' + res.locals.user.username)
+      throw new Error(
+        'Offer.id ' +
+          req.params.id +
+          ' does not exist or is not owned by: ' +
+          res.locals.user.username
+      )
     }
     res.status(HttpStatus.OK).send()
   } catch (error) {
@@ -119,7 +132,12 @@ async function deleteOwn (req, res) {
   }
 }
 
-module.exports = { all, findOne, addOne,   updateOne,
+module.exports = {
+  all,
+  findOne,
+  addOne,
+  updateOne,
   updateOwn,
   deleteOne,
-  deleteOwn }
+  deleteOwn
+}
