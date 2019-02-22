@@ -37,7 +37,7 @@ const rpcUrl = process.env.RPC_URL || 'http://127.0.0.1:8545'
 const apiVersionString = 'v' + process.env.npm_package_version
 
 // relayer stuff
-const secretSeed = process.env.SEED
+const apiPrivKey = process.env.API_PRIV_KEY
 
 module.exports = {
   apiVersionString,
@@ -48,6 +48,6 @@ module.exports = {
   cognitoPoolRegion,
   androidGCMPlatformArn,
   postgres,
-  secretSeed,
+  apiPrivKey,
   rpcUrl
 }

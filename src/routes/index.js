@@ -21,7 +21,8 @@ module.exports = function (app) {
   app.get('/', (req, res) => res.status(HttpStatus.OK).json('hello Ed!'))
 
   app.use(loggingMiddleware)
-  app.use(authMiddleware)
+  //app.use(authMiddleware)
+  console.log(apiVersionString)
 
   app.use('/' + apiVersionString + '/users', usersRouter)
   app.use('/' + apiVersionString + '/orgs', orgsRouter)

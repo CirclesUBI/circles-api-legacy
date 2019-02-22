@@ -1,25 +1,24 @@
 const { generators, signers } = require('eth-signer')
 const TxRelaySigner = signers.TxRelaySigner
-const web3 = require('../connections/blockchain').web3
-const TxRelayerContract = require('../connections/blockchain').TxRelayContract
-const secretSeed = require('../config/env').secretSeed
+const { web3, TxRelayContract } = require('../connections/blockchain')
+// const TxRelayerContract = require('../connections/blockchain').TxRelayContract
+const apiPrivKey = require('../config/env').apiPrivKey
 const Transaction = require('ethereumjs-tx')
 
-const HDSigner = signers.HDSigner
+const SimpleSigner = signers.SimpleSigner
 
 const getRelayerAddress = () => {
-  return TxRelayContract.address
+  return TxRelayContract.options.address
 }
 
 const getRelayNonce = async address => {
   if (!address) throw new Error('no address')
-  const nonce = await TxRelayContract.getNonce(address)
+  const nonce = await TxRelayContract.methods.getNonce(address).call()
   return nonce.toString(16)
 }
 
-const initSigner = secretSeed => {
-  const hdPrivKey = generators.Phrase.toHDPrivateKey(secretSeed)
-  signer = new HDSigner(hdPrivKey)
+const initSigner = () => {
+  const signer = new SimpleSigner(generators.KeyPair.fromPrivateKey(apiPrivKey))
   return signer
 }
 
@@ -36,7 +35,7 @@ const estimateGas = async (tx, from) => {
   }
   let price = 3000000
   try {
-    price = await web3.eth.estimateGasAsync(txCopy)
+    price = await web3.eth.estimateGas(txCopy)
   } catch (err) {
     throw err
   }
@@ -48,8 +47,8 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
   let decodedTx
   let relayerAddress
   try {
+    relayerAddress = await getRelayerAddress()
     decodedTx = TxRelaySigner.decodeMetaTx(metaSignedTx)
-    relayerAddress = await getRelayerAddress(blockchain)
   } catch (error) {
     console.log('Error on TxRelaySigner.decodeMetaTx or getRelayerAddress')
     console.log(error)
@@ -63,7 +62,7 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
 
   let nonce
   try {
-    nonce = await getRelayNonce(decodedTx.claimedAddress, blockchain)
+    nonce = await getRelayNonce(decodedTx.claimedAddress)
   } catch (error) {
     console.log('Error on getRelayNonce')
     console.log(error)
@@ -73,6 +72,8 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
     nonce = metaNonce.toString()
   }
   try {
+    console.log('trying to validate metasig')
+    console.log(relayerAddress)
     const validMetaSig = TxRelaySigner.isMetaSignatureValid(
       relayerAddress,
       decodedTx,
@@ -90,12 +91,16 @@ const signTx = async ({ txHex }) => {
   if (!txHex) throw new Error('no txHex')
   const tx = new Transaction(Buffer.from(txHex, 'hex'))
   const signer = initSigner()
-  tx.gasPrice = await web3.eth.getGasPriceAsync()
-  tx.nonce = await web3.eth.getTransactionCountAsync(signer.getAddress())
-  const estimatedGas = await estimateGas(tx, signer.getAddress(), blockchain)
+  tx.value = new web3.utils.BN(0)
+  tx.gasPrice = await web3.eth.getGasPrice()
+  console.log('gasPrice' + tx.gasPrice.toString())
+  console.log(signer.getAddress())
+  tx.nonce = await web3.eth.getTransactionCount(signer.getAddress())
+  const estimatedGas = await estimateGas(tx, signer.getAddress())
+  console.log('estimatedgas' + estimatedGas.toString())
   // add some buffer to the limit
-  tx.gasLimit = estimatedGas + 1000
-
+  tx.gasLimit = estimatedGas
+  console.log(tx.value.toString('hex'))
   const rawTx = tx.serialize().toString('hex')
   return new Promise((resolve, reject) => {
     signer.signRawTx(rawTx, (error, signedRawTx) => {
@@ -113,7 +118,7 @@ const sendRawTransaction = async signedRawTx => {
   if (!signedRawTx.startsWith('0x')) {
     signedRawTx = '0x' + signedRawTx
   }
-  const txHash = await web3.eth.sendRawTransactionAsync(signedRawTx)
+  const txHash = await web3.eth.sendSignedTransaction(signedRawTx)
 
   // let txObj = Wallet.parseTransaction(signedRawTx)
   // txObj.gasLimit = txObj.gasLimit.toString(16)
@@ -148,7 +153,7 @@ const handle = async event => {
   }
 
   // Check if metaTx signature is valid
-  if (!(await isMetaSignatureValid(body))) {
+  if (!(await isMetaSignatureValid(body.metaSignedTx, body.metaNonce))) {
     return { code: 403, message: 'MetaTx signature invalid' }
   }
 
@@ -168,10 +173,10 @@ const handle = async event => {
     const txHash = await sendRawTransaction(signedRawTx, body.blockchain)
     return null, txHash
   } catch (error) {
-    console.log('Error on this.ethereumMgr.sendRawTransaction')
+    console.log('Error on sendRawTransaction')
     console.log(error)
     return { code: 500, message: error.message }
   }
 }
 
-module.exports = handle
+module.exports = { handle }

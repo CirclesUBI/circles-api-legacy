@@ -24,14 +24,11 @@ const TxRelayContract = new web3.eth.Contract(
   txRelayAddress
 )
 
-let senderKeyPair;
-let tx;
-let txRelaySigner;
 let HubContract;
 let hubAddress;
 
 const getSender = async () => {
-  senderKeyPair = generators.KeyPair.fromPrivateKey(process.env.PRIV_KEY)
+  return generators.KeyPair.fromPrivateKey(process.env.PRIV_KEY)
 }
 
 const instantiateHub = async () => {
@@ -43,12 +40,15 @@ const instantiateHub = async () => {
   hubAddress = events[0].returnValues.newHub
 }
 
-const sign = async (txParams) => {
-  const txRelayNonce = await TxRelayContract.methods.getNonce(senderKeyPair.address).call()
-  txParams.nonce = Web3.utils.toHex(txRelayNonce)
+const getNonce = async (sender) => {
+  return TxRelayContract.methods.getNonce(sender).call()
+}
+
+const sign = async (txParams, relayNonce, signer) => {
+  txParams.nonce = Web3.utils.toHex(relayNonce)
   const tx = new Transaction(txParams)
   const rawTx = '0x' + tx.serialize().toString('hex')
-  txRelaySigner.signRawTx(rawTx, (err, metaSignedTx) => {
+  signer.signRawTx(rawTx, (err, metaSignedTx) => {
     const params = {
       metaNonce: txParams.nonce,
       metaSignedTx,
@@ -58,19 +58,21 @@ const sign = async (txParams) => {
   })
 }
 
-getSender().then(async () => {
+getSender().then(async (senderKeyPair) => {
   await instantiateHub()
-  txRelaySigner = new TxRelaySigner(
+  const relayNonce = await getNonce(senderKeyPair.address)
+  const txRelaySigner = new TxRelaySigner(
     senderKeyPair,
     txRelayAddress,
     senderKeyPair.address,
-    '0x0'
+    '0x0000000000000000000000000000000000000000'
   )
-  tx = {
+  const tx = {
     from: senderKeyPair.address, 
     to: hubAddress,
     value: 0,
-    data: HubContract.methods.signup('test').encodeABI() 
+    data: HubContract.methods.signup(senderKeyPair.address, 'test').encodeABI() 
   };
-  return sign(tx);
+  console.log(senderKeyPair)
+  return sign(tx, relayNonce, txRelaySigner);
 })
