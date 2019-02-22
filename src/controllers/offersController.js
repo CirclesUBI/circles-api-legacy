@@ -59,6 +59,24 @@ async function updateOne (req, res) {
   }
 }
 
+async function updateOwn (req, res) {
+  let offer
+  try {
+    const offerExists = await Offer.query().where({ id: req.params.id, owner_id: res.locals.user.username})
+    if (!offerExists.length) {
+      throw new Error('Offer.id ' + req.params.id + ' does not exist or is not owned by: ' + res.locals.user.username)
+    } else {
+      offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
+    }
+    res.status(HttpStatus.OK).send(offer)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
 async function deleteOne (req, res) {
   try {
     const offer = await Offer.query()
@@ -80,4 +98,28 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = { all, findOne, addOne, updateOne, deleteOne }
+async function deleteOwn (req, res) {
+  try {
+    const offer = await Offer.query()
+      .where({ id: req.params.id, owner_id: res.locals.user.username })
+      .first()
+    if (offer instanceof Offer) {
+      await Offer.query()
+        .delete()
+        .where({ id: req.params.id })
+    } else {
+      throw new Error('Offer.id ' + req.params.id + ' does not exist or is not owned by: ' + res.locals.user.username)
+    }
+    res.status(HttpStatus.OK).send()
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
+module.exports = { all, findOne, addOne,   updateOne,
+  updateOwn,
+  deleteOne,
+  deleteOwn }

@@ -14,6 +14,22 @@ async function all (req, res) {
   }
 }
 
+async function own (req, res) {
+  try {
+    const notifications = await Notification.query()
+      .where({
+        owner_id: res.locals.user.username
+      })
+      .limit(10)
+    res.status(HttpStatus.OK).send(notifications)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
 async function findOne (req, res) {
   try {
     const result = await Notification.query().where({ id: req.params.id })
@@ -63,6 +79,35 @@ async function updateOne (req, res) {
   }
 }
 
+async function updateOwn (req, res) {
+  let notification
+  try {
+    const notificationExists = await Notification.query().where({
+      id: req.params.id,
+      owner_id: res.locals.user.username
+    })
+    if (!notificationExists.length) {
+      throw new Error(
+        'notification.id ' +
+          req.params.id +
+          ' not owned by: ' +
+          res.locals.user.username
+      )
+    } else {
+      notification = await Notification.query().patchAndFetchById(
+        req.params.id,
+        req.body
+      )
+    }
+    res.status(HttpStatus.OK).send(notification)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
 async function deleteOne (req, res) {
   try {
     const notification = await Notification.query()
@@ -84,4 +129,39 @@ async function deleteOne (req, res) {
   }
 }
 
-module.exports = { all, findOne, addOne, updateOne, deleteOne }
+async function deleteOwn (req, res) {
+  try {
+    const notification = await Notification.query()
+      .where({ id: req.params.id, owner_id: res.locals.user.username })
+      .first()
+    if (notification instanceof Notification) {
+      await Notification.query()
+        .delete()
+        .where({ id: req.params.id })
+    } else {
+      throw new Error(
+        'notification.id: ' +
+          req.params.id +
+          ' not owned by ' +
+          res.locals.user.username
+      )
+    }
+    res.status(HttpStatus.OK).send()
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
+module.exports = {
+  all,
+  own,
+  findOne,
+  addOne,
+  updateOne,
+  updateOwn,
+  deleteOne,
+  deleteOwn
+}

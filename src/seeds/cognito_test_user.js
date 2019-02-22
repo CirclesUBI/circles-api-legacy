@@ -6,7 +6,6 @@ const {
 
 let testUser
 let testOrg
-let userOrgJoin = {}
 let fakeNotifications = []
 let fakeOffers = []
 
@@ -20,7 +19,6 @@ exports.seed = function (knex, Promise) {
     Promise.all([
       knex('organization').del(),
       knex('user').del(),
-      // knex('user_organizations').del(),
       knex('notification').del(),
       knex('offer').del()
     ])
@@ -38,13 +36,9 @@ exports.seed = function (knex, Promise) {
       })
       .then(() => {
         testOrg = createFakeOrganization()
-        // userOrgJoin.organization_id = testOrg.id
-        // userOrgJoin.user_id =  testUser.id
+        testOrg.owner_id = testUser.id
         return knex('organization').insert(testOrg)
       })
-      // .then(() => {
-      //   return knex('user_organizations').insert(userOrgJoin)
-      // })
       .then(() => {
         for (let j = 0; j < notificationsPerUser; j++) {
           const n = createFakeNotification()

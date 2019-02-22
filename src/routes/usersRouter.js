@@ -2,27 +2,20 @@ const Router = require('express').Router
 const usersController = require('../controllers/usersController')
 const router = Router()
 
-const ownershipMiddleware = require('../middleware/permissions')
-  .ownershipMiddleware
 const hasPermissionMiddleware = require('../middleware/permissions')
-  .hasPermissionMiddleware
 
-router.get('/', ownershipMiddleware('allUsers'), [
-  hasPermissionMiddleware('allUsers'),
-  usersController.all
-])
+router.get('/', 
+  hasPermissionMiddleware('ownUser'),
+  usersController.own
+)
 router.post('/', usersController.addOne)
-router.get('/:id', ownershipMiddleware(), [
-  hasPermissionMiddleware('allUsers'),
-  usersController.findOne
-])
-router.put('/:id', ownershipMiddleware(), [
-  hasPermissionMiddleware('allUsers'),
-  usersController.updateOne
-])
-router.delete('/:id', ownershipMiddleware(), [
-  hasPermissionMiddleware('allUsers'),
-  usersController.deleteOne
-])
+router.put('/', 
+  hasPermissionMiddleware('ownUser'),
+  usersController.updateOwn
+)
+router.delete('/', 
+  hasPermissionMiddleware('ownUser'),
+  usersController.deleteOwn
+)
 
 module.exports = router

@@ -18,15 +18,18 @@ const getPermissionDocuments = async () => {
 const hasPermission = async (user, resource, action) => {
   try {
     let permissionGranted = false
+    console.log(user.username, resource, action)
     let ac = await getPermissionDocuments().then(parsePermissions)
-    user['cognito:groups'].forEach(role => {
+    for (let i = 0; i < user['cognito:groups'].length; i++) {
+      const role = user['cognito:groups'][i]
       permissionGranted = ac
         .can(role)
         .execute(action)
         .on(resource).granted
         ? true
         : false
-    })
+    }
+    
     logger.info(
       `Permissions: ${user['cognito:groups'].join(
         ','
@@ -41,11 +44,11 @@ const hasPermission = async (user, resource, action) => {
   }
 }
 
-const hasPermissionMiddleware = resourceIfNotOwned => {
+const hasPermissionMiddleware = resource => {
   return (req, res, next) => {
     try {
       if (typeof res.locals.resource === 'undefined')
-        res.locals.resource = resourceIfNotOwned
+        res.locals.resource = resource
       return hasPermission(
         res.locals.user,
         res.locals.resource,
@@ -105,11 +108,11 @@ const whatOwnedResource = async (user, paramId) =>
   user.id === paramId
     ? 'ownUser'
     : user.organizations.map(org => org.id).includes(paramId)
-    ? 'ownOrg'
+    ? 'ownOrgs'
     : user.notifications.map(notif => notif.id).includes(paramId)
-    ? 'ownNotif'
+    ? 'ownNotifs'
     : user.offers.map(offer => offer.id).includes(paramId)
-    ? 'ownOffer'
+    ? 'ownOffers'
     : undefined
 
-module.exports = { hasPermissionMiddleware, ownershipMiddleware }
+module.exports = hasPermissionMiddleware

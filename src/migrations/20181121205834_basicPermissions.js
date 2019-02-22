@@ -4,26 +4,19 @@ const basicPermissions = [
   { role: 'user', resource: 'ownUser', action: 'DELETE' },
   { role: 'user', resource: 'ownUser', action: 'GET' },
 
-  { role: 'user', resource: 'ownOrg', action: 'POST' },
-  { role: 'user', resource: 'ownOrg', action: 'PUT' },
-  { role: 'user', resource: 'ownOrg', action: 'DELETE' },
-  { role: 'user', resource: 'ownOrg', action: 'GET' },
+  { role: 'user', resource: 'ownOrgs', action: 'POST' },
+  { role: 'user', resource: 'ownOrgs', action: 'PUT' },
+  { role: 'user', resource: 'ownOrgs', action: 'DELETE' },
+  { role: 'user', resource: 'ownOrgs', action: 'GET' },
 
-  { role: 'user', resource: 'ownNotif', action: 'PUT' },
-  { role: 'user', resource: 'ownNotif', action: 'DELETE' },
-  { role: 'user', resource: 'ownNotif', action: 'GET' },
+  { role: 'user', resource: 'ownNotifs', action: 'PUT' },
+  { role: 'user', resource: 'ownNotifs', action: 'DELETE' },
+  { role: 'user', resource: 'ownNotifs', action: 'GET' },
 
-  { role: 'user', resource: 'ownOffer', action: 'POST' },
-  { role: 'user', resource: 'ownOffer', action: 'PUT' },
-  { role: 'user', resource: 'ownOffer', action: 'DELETE' },
-  { role: 'user', resource: 'ownOffer', action: 'GET' },
+  { role: 'user', resource: 'ownOffers', action: 'POST' },
+  { role: 'user', resource: 'ownOffers', action: 'PUT' },
+  { role: 'user', resource: 'ownOffers', action: 'DELETE' },
   { role: 'user', resource: 'allOffers', action: 'GET' },
-
-  // API
-  { role: 'api', resource: 'allNotifs', action: 'POST' },
-  { role: 'api', resource: 'allNotifs', action: 'PUT' },
-  { role: 'api', resource: 'allNotifs', action: 'DELETE' },
-  { role: 'api', resource: 'allNotifs', action: 'GET' },
 
   // TEST
   { role: 'admin', resource: 'allUsers', action: 'POST' },
@@ -41,33 +34,33 @@ const basicPermissions = [
   { role: 'admin', resource: 'allOrgs', action: 'DELETE' },
   { role: 'admin', resource: 'allOrgs', action: 'GET' },
 
-  { role: 'admin', resource: 'ownOrg', action: 'POST' },
-  { role: 'admin', resource: 'ownOrg', action: 'PUT' },
-  { role: 'admin', resource: 'ownOrg', action: 'DELETE' },
-  { role: 'admin', resource: 'ownOrg', action: 'GET' },
+  { role: 'admin', resource: 'ownOrgs', action: 'POST' },
+  { role: 'admin', resource: 'ownOrgs', action: 'PUT' },
+  { role: 'admin', resource: 'ownOrgs', action: 'DELETE' },
+  { role: 'admin', resource: 'ownOrgs', action: 'GET' },
 
   { role: 'admin', resource: 'allOffers', action: 'POST' },
   { role: 'admin', resource: 'allOffers', action: 'PUT' },
   { role: 'admin', resource: 'allOffers', action: 'DELETE' },
   { role: 'admin', resource: 'allOffers', action: 'GET' },
 
-  { role: 'admin', resource: 'ownOffer', action: 'POST' },
-  { role: 'admin', resource: 'ownOffer', action: 'PUT' },
-  { role: 'admin', resource: 'ownOffer', action: 'DELETE' },
-  { role: 'admin', resource: 'ownOffer', action: 'GET' },
+  { role: 'admin', resource: 'ownOffers', action: 'POST' },
+  { role: 'admin', resource: 'ownOffers', action: 'PUT' },
+  { role: 'admin', resource: 'ownOffers', action: 'DELETE' },
+  { role: 'admin', resource: 'ownOffers', action: 'GET' },
 
   { role: 'admin', resource: 'allNotifs', action: 'POST' },
   { role: 'admin', resource: 'allNotifs', action: 'PUT' },
   { role: 'admin', resource: 'allNotifs', action: 'DELETE' },
   { role: 'admin', resource: 'allNotifs', action: 'GET' },
 
-  { role: 'admin', resource: 'ownNotif', action: 'POST' },
-  { role: 'admin', resource: 'ownNotif', action: 'PUT' },
-  { role: 'admin', resource: 'ownNotif', action: 'DELETE' },
-  { role: 'admin', resource: 'ownNotif', action: 'GET' }
+  { role: 'admin', resource: 'ownNotifs', action: 'POST' },
+  { role: 'admin', resource: 'ownNotifs', action: 'PUT' },
+  { role: 'admin', resource: 'ownNotifs', action: 'DELETE' },
+  { role: 'admin', resource: 'ownNotifs', action: 'GET' }
 ]
 
-// ownUser / allUsers / ownOffers / ownNotifs / ownOrg /
+// ownUser / allUsers / ownOfferss / ownNotifss / ownOrgs /
 
 exports.up = async (knex, Promise) => {
   await knex.schema.createTable('permission', t => {

@@ -2,30 +2,24 @@ const Router = require('express').Router
 const offersController = require('../controllers/offersController')
 const router = Router()
 
-const ownershipMiddleware = require('../middleware/permissions')
-  .ownershipMiddleware
 const hasPermissionMiddleware = require('../middleware/permissions')
-  .hasPermissionMiddleware
 
-router.get('/', ownershipMiddleware('allOffers'), [
-  hasPermissionMiddleware('allOffers'),
-  offersController.all
-])
-router.post('/', ownershipMiddleware('ownOffer'), [
-  hasPermissionMiddleware('allOffers'),
-  offersController.addOne
-])
-router.get('/:id', ownershipMiddleware(), [
+router.get('/', hasPermissionMiddleware('allOffers'), offersController.all)
+router.post('/', hasPermissionMiddleware('ownOffers'), offersController.addOne)
+router.get(
+  '/:id',
   hasPermissionMiddleware('allOffers'),
   offersController.findOne
-])
-router.put('/:id', ownershipMiddleware(), [
-  hasPermissionMiddleware('allOffers'),
-  offersController.updateOne
-])
-router.delete('/:id', ownershipMiddleware(), [
-  hasPermissionMiddleware('allOffers'),
-  offersController.deleteOne
-])
+)
+router.put(
+  '/:id',
+  hasPermissionMiddleware('ownOffers'),
+  offersController.updateOwn
+)
+router.delete(
+  '/:id',
+  hasPermissionMiddleware('ownOffers'),
+  offersController.deleteOwn
+)
 
 module.exports = router
