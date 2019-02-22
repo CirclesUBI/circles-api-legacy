@@ -18,7 +18,6 @@ const getPermissionDocuments = async () => {
 const hasPermission = async (user, resource, action) => {
   try {
     let permissionGranted = false
-    console.log(user.username, resource, action)
     let ac = await getPermissionDocuments().then(parsePermissions)
     for (let i = 0; i < user['cognito:groups'].length; i++) {
       const role = user['cognito:groups'][i]
@@ -95,7 +94,7 @@ const getUserOwnership = async (req, res) => {
   const result = await User.query().where({ id: res.locals.user.username })
   const user = result.length ? result[0] : null
   if (!user) {
-    throw new Error('missing user ' + res.locals.user.username)
+    throw new Error('User.id does not exist ' + res.locals.user.username)
   }
   user.organizations = await user.$relatedQuery('organizations')
   user.offers = await user.$relatedQuery('offers')
