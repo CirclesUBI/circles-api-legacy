@@ -46,7 +46,7 @@ async function updateOne (req, res) {
   try {
     const offerExists = await Offer.query().where({ id: req.params.id })
     if (!offerExists.length) {
-      throw new Error('offer.id does not exist: ' + req.params.id)
+      throw new Error('Offer.id does not exist: ' + req.params.id)
     } else {
       offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
     }
@@ -95,7 +95,7 @@ async function deleteOne (req, res) {
         .delete()
         .where({ id: req.params.id })
     } else {
-      throw new Error('No offer.id: ' + req.params.id)
+      throw new Error('Offer.id does not exist: ' + req.params.id)
     }
     res.status(HttpStatus.OK).send()
   } catch (error) {

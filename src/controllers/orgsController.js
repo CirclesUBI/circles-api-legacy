@@ -73,7 +73,7 @@ async function addOne (req, res) {
   try {
     const orgExists = await Organization.query().where({ id: req.body.id })
     if (orgExists.length) {
-      throw new Error('organization.id already exists: ' + req.body.id)
+      throw new Error('Organization.id already exists: ' + req.body.id)
     } else {
       req.body.owner_id = res.locals.user.username
       organization = await Organization.query().insert(req.body)
@@ -92,7 +92,7 @@ async function updateOne (req, res) {
   try {
     const orgExists = await Organization.query().where({ id: req.params.id })
     if (!orgExists.length) {
-      throw new Error('organization.id does not exist: ' + req.params.id)
+      throw new Error('Organization.id does not exist: ' + req.params.id)
     } else {
       organization = await Organization.query().patchAndFetchById(
         req.params.id,
@@ -117,7 +117,7 @@ async function updateOwn (req, res) {
     })
     if (!orgExists.length) {
       throw new Error(
-        'organization.id ' +
+        'Organization.id ' +
           req.params.id +
           ' does not exist or not owned by ' +
           res.locals.user.username
@@ -177,7 +177,7 @@ async function deleteOwn (req, res) {
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        'organization.id ' +
+        'Organization.id ' +
           req.params.id +
           ' does not exist or not owned by ' +
           res.locals.user.username

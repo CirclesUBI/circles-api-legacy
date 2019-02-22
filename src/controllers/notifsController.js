@@ -63,7 +63,7 @@ async function updateOne (req, res) {
       id: req.params.id
     })
     if (!notificationExists.length) {
-      throw new Error('notification.id does not exist: ' + req.params.id)
+      throw new Error('Notification.id does not exist: ' + req.params.id)
     } else {
       notification = await Notification.query().patchAndFetchById(
         req.params.id,
@@ -88,9 +88,9 @@ async function updateOwn (req, res) {
     })
     if (!notificationExists.length) {
       throw new Error(
-        'notification.id ' +
+        'No Notification.id ' +
           req.params.id +
-          ' not owned by: ' +
+          ' or not owned by: ' +
           res.locals.user.username
       )
     } else {
@@ -118,7 +118,7 @@ async function deleteOne (req, res) {
         .delete()
         .where({ id: req.params.id })
     } else {
-      throw new Error('No notification.id: ' + req.params.id)
+      throw new Error('Notification.id does not exist ' + req.params.id)
     }
     res.status(HttpStatus.OK).send()
   } catch (error) {
@@ -140,9 +140,9 @@ async function deleteOwn (req, res) {
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        'notification.id: ' +
+        'No Notification.id ' +
           req.params.id +
-          ' not owned by ' +
+          ' or not owned by: ' +
           res.locals.user.username
       )
     }
