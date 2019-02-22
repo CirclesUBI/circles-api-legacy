@@ -164,7 +164,9 @@ async function deleteOwn (req, res) {
         .delete()
         .where({ id: res.locals.user.username })
     } else {
-      throw new Error('Users own record does not exist: ' + res.locals.user.username)
+      throw new Error(
+        'Users own record does not exist: ' + res.locals.user.username
+      )
     }
     await trx.commit()
     res.status(HttpStatus.OK).send()
