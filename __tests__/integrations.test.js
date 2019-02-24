@@ -252,7 +252,7 @@ describe(
         expect(res.text).toBeDefined()
         const org = JSON.parse(res.text)
         expect(org.email).toEqual(email)
-      })     
+      })
 
       it('It should delete a specific /orgs/{org_id} on DELETE', async () => {
         const { res, req } = await request(app)
