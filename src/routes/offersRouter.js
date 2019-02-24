@@ -5,7 +5,7 @@ const router = Router()
 const hasPermissionMiddleware = require('../middleware/permissions')
 
 router.get('/', hasPermissionMiddleware('allOffers'), offersController.all)
-router.post('/', hasPermissionMiddleware('ownOffers'), offersController.addOne)
+router.post('/', hasPermissionMiddleware('ownOffers'), offersController.addOwn)
 router.get(
   '/:id',
   hasPermissionMiddleware('allOffers'),

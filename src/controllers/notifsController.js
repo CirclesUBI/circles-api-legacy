@@ -88,10 +88,9 @@ async function updateOwn (req, res) {
     })
     if (!notificationExists.length) {
       throw new Error(
-        'No Notification.id ' +
-          req.params.id +
-          ' or not owned by: ' +
+        `No Notification.id ${req.params.id} or not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     } else {
       notification = await Notification.query().patchAndFetchById(
@@ -113,7 +112,7 @@ async function deleteOne (req, res) {
     const notification = await Notification.query()
       .where({ id: req.params.id })
       .first()
-    if (notification instanceof Notification) {
+    if (notification) {
       await Notification.query()
         .delete()
         .where({ id: req.params.id })
@@ -134,16 +133,15 @@ async function deleteOwn (req, res) {
     const notification = await Notification.query()
       .where({ id: req.params.id, owner_id: res.locals.user.username })
       .first()
-    if (notification instanceof Notification) {
+    if (notification) {
       await Notification.query()
         .delete()
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        'No Notification.id ' +
-          req.params.id +
-          ' or not owned by: ' +
+        `No Notification.id ${req.params.id} or not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     }
     res.status(HttpStatus.OK).send()

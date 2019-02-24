@@ -517,6 +517,7 @@ describe(
     describe('Org API', () => {
       it('It should create its own /orgs/ on POST', async () => {
         testOrg = createFakeOrganization()
+        testOrg.owner_id = testCognitoUser.Username
         const { res, req } = await request(app)
           .post(versionString + '/orgs')
           .send(testOrg)
@@ -531,6 +532,7 @@ describe(
 
       it('It should create a second /orgs/ on POST', async () => {
         let secondOrg = createFakeOrganization()
+        secondOrg.owner_id = testCognitoUser.Username
         const { res, req } = await request(app)
           .post(versionString + '/orgs')
           .send(secondOrg)
@@ -693,7 +695,7 @@ describe(
     describe('Offer API', () => {
       it('First it should add an /offers/ on POST with adminUser', async () => {
         testOtherOffer = createFakeOffer()
-        testOtherOffer.owner_id = process.env.COGNITO_TEST_USERNAME
+        testOtherOffer.owner_id = faker.random.uuid()
         const { res, req } = await request(app)
           .post(adminVersionString + '/offers')
           .send(testOtherOffer)

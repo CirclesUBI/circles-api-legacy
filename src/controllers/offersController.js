@@ -41,6 +41,24 @@ async function addOne (req, res) {
   }
 }
 
+async function addOwn (req, res) {
+  if (req.body.owner_id !== res.locals.user.username) {
+    throw new Error(
+      `Not user.id ${res.locals.user.username} own offer.id: ${req.body.id}`
+    )
+  }
+  let offer
+  try {
+    offer = await Offer.query().insert(req.body)
+    res.status(HttpStatus.OK).send(offer)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
 async function updateOne (req, res) {
   let offer
   try {
@@ -68,10 +86,9 @@ async function updateOwn (req, res) {
     })
     if (!offerExists.length) {
       throw new Error(
-        'Offer.id ' +
-          req.params.id +
-          ' does not exist or is not owned by: ' +
+        `Offer.id ${req.params.id} does not exist or is not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     } else {
       offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
@@ -90,7 +107,7 @@ async function deleteOne (req, res) {
     const offer = await Offer.query()
       .where({ id: req.params.id })
       .first()
-    if (offer instanceof Offer) {
+    if (offer) {
       await Offer.query()
         .delete()
         .where({ id: req.params.id })
@@ -111,16 +128,15 @@ async function deleteOwn (req, res) {
     const offer = await Offer.query()
       .where({ id: req.params.id, owner_id: res.locals.user.username })
       .first()
-    if (offer instanceof Offer) {
+    if (offer) {
       await Offer.query()
         .delete()
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        'Offer.id ' +
-          req.params.id +
-          ' does not exist or is not owned by: ' +
+        `Offer.id ${req.params.id} does not exist or is not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     }
     res.status(HttpStatus.OK).send()
@@ -136,6 +152,7 @@ module.exports = {
   all,
   findOne,
   addOne,
+  addOwn,
   updateOne,
   updateOwn,
   deleteOne,

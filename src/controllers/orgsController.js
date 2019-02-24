@@ -33,7 +33,7 @@ async function findOne (req, res) {
   try {
     const result = await Organization.query().where({ id: req.params.id })
     const organization = result.length ? result[0] : null
-    if (organization instanceof Organization) {
+    if (organization) {
       // organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
       organization.owner = await organization.$relatedQuery('owner')
@@ -54,7 +54,7 @@ async function findOwn (req, res) {
       owner_id: res.locals.user.username
     })
     const organization = result.length ? result[0] : null
-    if (organization instanceof Organization) {
+    if (organization) {
       // organization.members = await organization.$relatedQuery('members')
       organization.offers = await organization.$relatedQuery('offers')
       organization.owner = await organization.$relatedQuery('owner')
@@ -75,7 +75,29 @@ async function addOne (req, res) {
     if (orgExists.length) {
       throw new Error('Organization.id already exists: ' + req.body.id)
     } else {
-      req.body.owner_id = res.locals.user.username
+      organization = await Organization.query().insert(req.body)
+    }
+    res.status(HttpStatus.OK).send(organization)
+  } catch (error) {
+    logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
+async function addOwn (req, res) {
+  let organization
+  try {
+    if (req.body.owner_id !== res.locals.user.username) {
+      throw new Error(
+        `Not user ${res.locals.user.username} own org: ${req.body.id}`
+      )
+    }
+    const orgExists = await Organization.query().where({ id: req.body.id })
+    if (orgExists.length) {
+      throw new Error('Organization.id already exists: ' + req.body.id)
+    } else {
       organization = await Organization.query().insert(req.body)
     }
     res.status(HttpStatus.OK).send(organization)
@@ -117,10 +139,9 @@ async function updateOwn (req, res) {
     })
     if (!orgExists.length) {
       throw new Error(
-        'Organization.id ' +
-          req.params.id +
-          ' does not exist or not owned by ' +
+        `Organization.id ${req.params.id} does not exist or is not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     } else {
       organization = await Organization.query().patchAndFetchById(
@@ -143,14 +164,16 @@ async function deleteOne (req, res) {
     const organization = await Organization.query(trx)
       .where({ id: req.params.id })
       .first()
-    if (organization instanceof Organization) {
+    if (organization) {
       // await organization.$relatedQuery('members').unrelate()
-      await organization.$relatedQuery('offers').delete()
+      // await organization.$relatedQuery('owner').unrelate()
+      // await organization.$relatedQuery('offers').delete()
+      // await organization.$relatedQuery('notifications').delete()
       await Organization.query(trx)
         .delete()
         .where({ id: req.params.id })
     } else {
-      throw new Error('No organization.id: ' + req.params.id)
+      throw new Error('No Organization.id: ' + req.params.id)
     }
     await trx.commit()
     res.status(HttpStatus.OK).send(organization)
@@ -169,18 +192,18 @@ async function deleteOwn (req, res) {
     const organization = await Organization.query(trx)
       .where({ id: req.params.id, owner_id: res.locals.user.username })
       .first()
-    if (organization instanceof Organization) {
-      // await organization.$relatedQuery('members').unrelate()
-      await organization.$relatedQuery('offers').delete()
+    if (organization) {
+      //await organization.$relatedQuery('owner').unrelate()
+      //await organization.$relatedQuery('offers').delete()
+      //await organization.$relatedQuery('notifications').delete()
       await Organization.query(trx)
         .delete()
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        'Organization.id ' +
-          req.params.id +
-          ' does not exist or not owned by ' +
+        `Organization.id ${req.params.id} does not exist or is not owned by User.id: ${
           res.locals.user.username
+        }`
       )
     }
     await trx.commit()
@@ -200,6 +223,7 @@ module.exports = {
   findOne,
   findOwn,
   addOne,
+  addOwn,
   updateOne,
   updateOwn,
   deleteOne,

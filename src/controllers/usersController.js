@@ -5,7 +5,6 @@ const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
 const sns = require('../connections/sns')
 const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
-// const HubContract = require('../connections/blockchain').HubContract
 
 async function all (req, res) {
   try {
@@ -41,7 +40,7 @@ async function findOne (req, res) {
   try {
     const result = await User.query().where({ id: req.params.id })
     const user = result.length ? result[0] : null
-    if (user instanceof User) {
+    if (user) {
       user.notifications = await user.$relatedQuery('notifications')
       user.offers = await user.$relatedQuery('offers')
       user.organizations = await user.$relatedQuery('organizations')
@@ -62,7 +61,7 @@ async function addOne (req, res) {
     const circlesUser = convertCognitoToCirclesUser(req.body)
     const userExists = await User.query(trx).where({ id: circlesUser.id })
     if (userExists.length) {
-      throw new Error('Users own record already exists: ' + circlesUser.id)
+      throw new Error('User.id already exists: ' + circlesUser.id)
     } else {
       const endpointArn = await sns.createSNSEndpoint(circlesUser)
       circlesUser.device_endpoint = endpointArn
@@ -92,6 +91,34 @@ async function updateOne (req, res) {
     res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+    })
+  }
+}
+
+async function addOwn (req, res) {
+  let user
+  const trx = await PostgresDB.startTransaction()
+  try {
+    const circlesUser = convertCognitoToCirclesUser(req.body)
+    if (circlesUser.id !== res.locals.user.username) {
+      throw new Error('Not users own record: ' + circlesUser.id)
+    }
+    const userExists = await User.query(trx).where({ id: circlesUser.id })
+    if (userExists.length) {
+      throw new Error('Users own record already exists: ' + circlesUser.id)
+    } else {
+      const endpointArn = await sns.createSNSEndpoint(circlesUser)
+      circlesUser.device_endpoint = endpointArn
+      await cognitoISP.addToCognitoGroup(circlesUser)
+      user = await User.query(trx).insert(circlesUser)
+    }
+    await trx.commit()
+    res.status(HttpStatus.OK).send(user)
+  } catch (error) {
+    logger.error(error.message)
+    await trx.rollback()
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
       error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
     })
@@ -129,7 +156,7 @@ async function deleteOne (req, res) {
     const user = await User.query(trx)
       .where({ id: req.params.id })
       .first()
-    if (user instanceof User) {
+    if (user) {
       await user.$relatedQuery('organizations').delete()
       await user.$relatedQuery('notifications').delete()
       await user.$relatedQuery('offers').delete()
@@ -156,7 +183,7 @@ async function deleteOwn (req, res) {
     const user = await User.query(trx)
       .where({ id: res.locals.user.username })
       .first()
-    if (user instanceof User) {
+    if (user) {
       await user.$relatedQuery('organizations').delete()
       await user.$relatedQuery('notifications').delete()
       await user.$relatedQuery('offers').delete()
@@ -184,6 +211,7 @@ module.exports = {
   own,
   findOne,
   addOne,
+  addOwn,
   updateOne,
   updateOwn,
   deleteOne,
