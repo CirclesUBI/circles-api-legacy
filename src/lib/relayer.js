@@ -1,11 +1,12 @@
 const { generators, signers } = require('eth-signer')
 const TxRelaySigner = signers.TxRelaySigner
 const { web3, TxRelayContract } = require('../connections/blockchain')
-// const TxRelayerContract = require('../connections/blockchain').TxRelayContract
 const apiPrivKey = require('../config/env').apiPrivKey
 const Transaction = require('ethereumjs-tx')
+const logger = require('./logger')
 
 const SimpleSigner = signers.SimpleSigner
+const BN = web3.utils.BN;
 
 const getRelayerAddress = () => {
   return TxRelayContract.options.address
@@ -39,7 +40,7 @@ const estimateGas = async (tx, from) => {
   } catch (err) {
     throw err
   }
-  return price
+  return new BN(price)
 }
 
 const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
@@ -64,16 +65,15 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
   try {
     nonce = await getRelayNonce(decodedTx.claimedAddress)
   } catch (error) {
-    console.log('Error on getRelayNonce')
-    console.log(error)
+    logger.error('Error on getRelayNonce')
+    logger.error(error)
     return false
   }
   if (metaNonce !== undefined && metaNonce > nonce) {
     nonce = metaNonce.toString()
   }
   try {
-    console.log('trying to validate metasig')
-    console.log(relayerAddress)
+    logger.info(`trying to validate metasig, relayerAddress is ${relayerAddress}`)
     const validMetaSig = TxRelaySigner.isMetaSignatureValid(
       relayerAddress,
       decodedTx,
@@ -81,8 +81,8 @@ const isMetaSignatureValid = async (metaSignedTx, metaNonce) => {
     )
     return validMetaSig
   } catch (error) {
-    console.log('Error on TxRelaySigner.isMetaSignatureValid')
-    console.log(error)
+    logger.error('Error on TxRelaySigner.isMetaSignatureValid')
+    logger.error(error)
     return false
   }
 }
@@ -91,16 +91,12 @@ const signTx = async ({ txHex }) => {
   if (!txHex) throw new Error('no txHex')
   const tx = new Transaction(Buffer.from(txHex, 'hex'))
   const signer = initSigner()
-  tx.value = new web3.utils.BN(0)
-  tx.gasPrice = await web3.eth.getGasPrice()
-  console.log('gasPrice' + tx.gasPrice.toString())
-  console.log(signer.getAddress())
+  const price = await web3.eth.getGasPrice()
+  tx.gasPrice = new BN(price).toNumber()
   tx.nonce = await web3.eth.getTransactionCount(signer.getAddress())
   const estimatedGas = await estimateGas(tx, signer.getAddress())
-  console.log('estimatedgas' + estimatedGas.toString())
   // add some buffer to the limit
-  tx.gasLimit = estimatedGas
-  console.log(tx.value.toString('hex'))
+  tx.gasLimit = estimatedGas.add(new BN(1000))
   const rawTx = tx.serialize().toString('hex')
   return new Promise((resolve, reject) => {
     signer.signRawTx(rawTx, (error, signedRawTx) => {
@@ -119,29 +115,11 @@ const sendRawTransaction = async signedRawTx => {
     signedRawTx = '0x' + signedRawTx
   }
   const txHash = await web3.eth.sendSignedTransaction(signedRawTx)
-
-  // let txObj = Wallet.parseTransaction(signedRawTx)
-  // txObj.gasLimit = txObj.gasLimit.toString(16)
-  // txObj.gasPrice = txObj.gasPrice.toString()
-  // txObj.value = txObj.value.toString(16)
-
-  // await this.storeTx(txHash, networkName, txObj)
-
   return txHash
 }
 
-const handle = async event => {
-  let body
-
-  if (event && event.body) {
-    try {
-      body = event.body || JSON.parse(event.body)
-    } catch (e) {
-      return { code: 400, message: 'no json body' }
-    }
-  } else {
-    return { code: 400, message: 'no json body' }
-  }
+const handle = async req => {
+  const body = req.body || JSON.parse(req.body)
 
   if (!body.metaSignedTx) {
     return { code: 400, message: 'metaSignedTx parameter missing' }
@@ -164,7 +142,7 @@ const handle = async event => {
       blockchain: body.blockchain
     })
   } catch (error) {
-    console.log('Error on this.ethereumMgr.signTx')
+    console.log('Error signing transaction')
     console.log(error)
     return { code: 500, message: error.message }
   }
@@ -173,8 +151,8 @@ const handle = async event => {
     const txHash = await sendRawTransaction(signedRawTx, body.blockchain)
     return null, txHash
   } catch (error) {
-    console.log('Error on sendRawTransaction')
-    console.log(error)
+    logger.error('Error on sendRawTransaction')
+    logger.error(error)
     return { code: 500, message: error.message }
   }
 }
