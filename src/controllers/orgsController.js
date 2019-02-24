@@ -5,7 +5,7 @@ const logger = require('../lib/logger')
 
 async function all (req, res) {
   try {
-    const organizations = await Organization.query().limit(10)
+    const organizations = await Organization.query()
     if (!organizations.length) {
       res.status(HttpStatus.NOT_FOUND).send({
         error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)

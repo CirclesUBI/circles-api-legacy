@@ -8,7 +8,7 @@ const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser'
 
 async function all (req, res) {
   try {
-    const users = await User.query().limit(10)
+    const users = await User.query()
     if (!users.length) {
       res.status(HttpStatus.NOT_FOUND).send({
         error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)

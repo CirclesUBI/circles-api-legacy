@@ -8,7 +8,7 @@ const logger = require('../lib/logger')
 // if we don't create another route
 async function all (req, res) {
   try {
-    const offers = await Offer.query().limit(25)
+    const offers = await Offer.query()
     if (!offers.length) {
       res.status(HttpStatus.NOT_FOUND).send({
         error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)

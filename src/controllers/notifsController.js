@@ -4,7 +4,7 @@ const logger = require('../lib/logger')
 
 async function all (req, res) {
   try {
-    const notifications = await Notification.query().limit()
+    const notifications = await Notification.query()
     if (!notifications.length) {
       res.status(HttpStatus.NOT_FOUND).send({
         error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
@@ -25,7 +25,6 @@ async function allOwn (req, res) {
       .where({
         owner_id: res.locals.user.username
       })
-      .limit(10)
     if (!notifications.length) {
       res.status(HttpStatus.NOT_FOUND).send({
         error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
