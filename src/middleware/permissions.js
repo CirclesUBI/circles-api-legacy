@@ -90,28 +90,4 @@ const ownershipMiddleware = resource => {
   }
 }
 
-const getUserOwnership = async (req, res) => {
-  const result = await User.query().where({ id: res.locals.user.username })
-  const user = result.length ? result[0] : null
-  if (!user) {
-    throw new Error('User.id does not exist ' + res.locals.user.username)
-  }
-  user.organizations = await user.$relatedQuery('organizations')
-  user.offers = await user.$relatedQuery('offers')
-  user.notifications = await user.$relatedQuery('notifications')
-  return await whatOwnedResource(user, req.params.id)
-}
-
-// only works with unique offer and notif ids
-const whatOwnedResource = async (user, paramId) =>
-  user.id === paramId
-    ? 'ownUser'
-    : user.organizations.map(org => org.id).includes(paramId)
-    ? 'ownOrgs'
-    : user.notifications.map(notif => notif.id).includes(paramId)
-    ? 'ownNotifs'
-    : user.offers.map(offer => offer.id).includes(paramId)
-    ? 'ownOffers'
-    : undefined
-
 module.exports = hasPermissionMiddleware

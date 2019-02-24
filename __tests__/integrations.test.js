@@ -142,310 +142,298 @@ describe('Setup', () => {
   })
 })
 
-// describe(
-//   'Integration Tests: Circles API ' + adminVersionString + ' admin routes',
-//   () => {
-//     it('It should respond to the base route on GET', async () => {
-//       const result = await request(app).get('/')
-//       expect(result.text).toEqual('"hello Ed!"')
-//       expect(result.statusCode).toEqual(200)
-//     })
+describe(
+  'Integration Tests: Circles API ' + adminVersionString + ' admin routes',
+  () => {
+    it('It should respond to the base route on GET', async () => {
+      const result = await request(app).get('/')
+      expect(result.text).toEqual('"hello Ed!"')
+      expect(result.statusCode).toEqual(200)
+    })
 
-//     describe('User API', () => {
-//       it('First it should create a specific /users on POST', async () => {
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/users')
-//           .send(adminCognitoUser.UserAttributes)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('User API', () => {
+      it('First it should create a specific /users on POST', async () => {
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/users')
+          .send(adminCognitoUser.UserAttributes)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const user = JSON.parse(res.text)
-//         expect(user.id).toEqual(adminCognitoUser.Username)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const user = JSON.parse(res.text)
+        expect(user.id).toEqual(adminCognitoUser.Username)
+      })
 
-//       it('It should return all /users on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/users')
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should return all /users on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/users')
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+      })
 
-//       it('It should return a specific /users/{user_id} on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/users/' + adminCognitoUser.Username)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should return a specific /users/{user_id} on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const user = JSON.parse(res.text)
-//         expect(user.id).toEqual(adminCognitoUser.Username)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const user = JSON.parse(res.text)
+        expect(user.id).toEqual(adminCognitoUser.Username)
+      })
 
-//       it('It should update a specific /users/{user_id} on PUT', async () => {
-//         const email = 'user@test.com'
-//         const { res, req } = await request(app)
-//           .put(adminVersionString + '/users/' + adminCognitoUser.Username)
-//           .send({ email: email })
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should update a specific /users/{user_id} on PUT', async () => {
+        const email = 'user@test.com'
+        const { res, req } = await request(app)
+          .put(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .send({ email: email })
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const user = JSON.parse(res.text)
-//         expect(user.email).toEqual(email)
-//       })
-//     })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const user = JSON.parse(res.text)
+        expect(user.email).toEqual(email)
+      })
+    })
 
-//     describe('Org API', () => {
-//       it('It should return all /orgs on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/orgs')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('Org API', () => {
+      it('It should return all /orgs on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/orgs')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+      })
 
-//       it('It should create a specific /orgs/ on POST', async () => {
-//         testOrg = createFakeOrganization()
-//         // testOrg.owner_id = adminCognitoUser.Username
-//         // testOrg.members = [adminCognitoUser.Username]
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/orgs')
-//           .send(testOrg)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should create a specific /orgs/ on POST', async () => {
+        testOrg = createFakeOrganization()
+        // testOrg.owner_id = adminCognitoUser.Username
+        // testOrg.members = [adminCognitoUser.Username]
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/orgs')
+          .send(testOrg)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const org = JSON.parse(res.text)
-//         expect(org.id).toEqual(testOrg.id)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const org = JSON.parse(res.text)
+        expect(org.id).toEqual(testOrg.id)
+      })
 
-//       it('It should return a specific /orgs/{org_id} on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/orgs/' + testOrg.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should return a specific /orgs/{org_id} on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/orgs/' + testOrg.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const org = JSON.parse(res.text)
-//         expect(org.id).toEqual(testOrg.id)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const org = JSON.parse(res.text)
+        expect(org.id).toEqual(testOrg.id)
+      })
 
-//       it('It should update a specific /orgs/{org_id} on PUT', async () => {
-//         const email = 'org@test.com'
-//         const { res, req } = await request(app)
-//           .put(adminVersionString + '/orgs/' + testOrg.id)
-//           .send({ email: email })
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should update a specific /orgs/{org_id} on PUT', async () => {
+        const email = 'org@test.com'
+        const { res, req } = await request(app)
+          .put(adminVersionString + '/orgs/' + testOrg.id)
+          .send({ email: email })
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const org = JSON.parse(res.text)
-//         expect(org.email).toEqual(email)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const org = JSON.parse(res.text)
+        expect(org.email).toEqual(email)
+      })     
 
-//       it('Orgs should have an owner who exists', async () => {
-//         let response = await request(app)
-//           .get(adminVersionString + '/orgs/' + testOrg.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should delete a specific /orgs/{org_id} on DELETE', async () => {
+        const { res, req } = await request(app)
+          .delete(adminVersionString + '/orgs/' + testOrg.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         const orgRes = response.res
-//         expect(orgRes.statusCode).toEqual(200)
-//         const org = JSON.parse(orgRes.text)
-//         expect(org.owner.id).toEqual(adminCognitoUser.Username)
-//       })
+        expect(res.statusCode).toEqual(200)
+      })
+    })
 
-//       it('It should delete a specific /orgs/{org_id} on DELETE', async () => {
-//         const { res, req } = await request(app)
-//           .delete(adminVersionString + '/orgs/' + testOrg.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('Notification API', () => {
+      it('It should return all /notifs on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/notifs')
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//       })
-//     })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+      })
 
-//     describe('Notification API', () => {
-//       it('It should return all /notifs on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/notifs')
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should create a specific /notifs/ on POST', async () => {
+        testNotif = createFakeNotification()
+        testNotif.owner_id = adminCognitoUser.Username
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/notifs')
+          .send(testNotif)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const notification = JSON.parse(res.text)
+        expect(notification.description).toEqual(testNotif.description)
+        expect(testNotif.id).toEqual(notification.id)
+      })
 
-//       it('It should create a specific /notifs/ on POST', async () => {
-//         testNotif = createFakeNotification()
-//         testNotif.owner_id = adminCognitoUser.Username
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/notifs')
-//           .send(testNotif)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should return a specific /notifs/{notification_id} on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/notifs/' + testNotif.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const notification = JSON.parse(res.text)
-//         expect(notification.description).toEqual(testNotif.description)
-//         expect(testNotif.id).toEqual(notification.id)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const notification = JSON.parse(res.text)
+        expect(notification.description).toEqual(testNotif.description)
+      })
 
-//       it('It should return a specific /notifs/{notification_id} on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/notifs/' + testNotif.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should update a specific /notifs/{notification_id} on PUT', async () => {
+        const description = 'notif@test.com'
+        const { res, req } = await request(app)
+          .put(adminVersionString + '/notifs/' + testNotif.id)
+          .send({ description: description })
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const notification = JSON.parse(res.text)
-//         expect(notification.description).toEqual(testNotif.description)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const notification = JSON.parse(res.text)
+        expect(notification.description).toEqual(description)
+      })
 
-//       it('It should update a specific /notifs/{notification_id} on PUT', async () => {
-//         const description = 'notif@test.com'
-//         const { res, req } = await request(app)
-//           .put(adminVersionString + '/notifs/' + testNotif.id)
-//           .send({ description: description })
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should delete a specific /notifs/{notification_id} on DELETE', async () => {
+        const { res, req } = await request(app)
+          .delete(adminVersionString + '/notifs/' + testNotif.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const notification = JSON.parse(res.text)
-//         expect(notification.description).toEqual(description)
-//       })
+        expect(res.statusCode).toEqual(200)
+      })
+    })
 
-//       it('It should delete a specific /notifs/{notification_id} on DELETE', async () => {
-//         const { res, req } = await request(app)
-//           .delete(adminVersionString + '/notifs/' + testNotif.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('Offer API', () => {
+      it('It should return all /offers on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/offers')
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//       })
-//     })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+      })
 
-//     describe('Offer API', () => {
-//       it('It should return all /offers on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/offers')
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should create a specific /offers/ on POST', async () => {
+        testOffer = createFakeOffer()
+        testOffer.owner_id = adminCognitoUser.Username
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/offers')
+          .send(testOffer)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const offer = JSON.parse(res.text)
+        expect(offer.title).toEqual(testOffer.title)
+        expect(testOffer.id).toEqual(offer.id)
+      })
 
-//       it('It should create a specific /offers/ on POST', async () => {
-//         testOffer = createFakeOffer()
-//         testOffer.owner_id = adminCognitoUser.Username
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/offers')
-//           .send(testOffer)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should return a specific /offers/{offer_id} on GET', async () => {
+        const { res, req } = await request(app)
+          .get(adminVersionString + '/offers/' + testOffer.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const offer = JSON.parse(res.text)
-//         expect(offer.title).toEqual(testOffer.title)
-//         expect(testOffer.id).toEqual(offer.id)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const offer = JSON.parse(res.text)
+        expect(offer.title).toEqual(testOffer.title)
+      })
 
-//       it('It should return a specific /offers/{offer_id} on GET', async () => {
-//         const { res, req } = await request(app)
-//           .get(adminVersionString + '/offers/' + testOffer.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should update a specific /offers/{offer_id} on PUT', async () => {
+        const title = 'offer@test.com'
+        const { res, req } = await request(app)
+          .put(adminVersionString + '/offers/' + testOffer.id)
+          .send({ title: title })
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const offer = JSON.parse(res.text)
-//         expect(offer.title).toEqual(testOffer.title)
-//       })
+        expect(res.statusCode).toEqual(200)
+        expect(res.text).toBeDefined()
+        const offer = JSON.parse(res.text)
+        expect(offer.title).toEqual(title)
+      })
 
-//       it('It should update a specific /offers/{offer_id} on PUT', async () => {
-//         const title = 'offer@test.com'
-//         const { res, req } = await request(app)
-//           .put(adminVersionString + '/offers/' + testOffer.id)
-//           .send({ title: title })
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should delete a specific /offers/{offer_id} on DELETE', async () => {
+        const { res, req } = await request(app)
+          .delete(adminVersionString + '/offers/' + testOffer.id)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         expect(res.text).toBeDefined()
-//         const offer = JSON.parse(res.text)
-//         expect(offer.title).toEqual(title)
-//       })
+        expect(res.statusCode).toEqual(200)
+      })
+    })
 
-//       it('It should delete a specific /offers/{offer_id} on DELETE', async () => {
-//         const { res, req } = await request(app)
-//           .delete(adminVersionString + '/offers/' + testOffer.id)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('Relayer API', () => {
+      it('It should call a specific contract on POST', async () => {
+        // const spyFn = jest.spyOn(HubContract, signup)
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/relayer/signup')
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//       })
-//     })
+        expect(res.statusCode).toEqual(200)
+        // expect(spyFn).toHaveBeenCalled()
+      })
 
-//     describe('Relayer API', () => {
-//       it('It should call a specific contract on POST', async () => {
-//         // const spyFn = jest.spyOn(HubContract, signup)
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/relayer/signup')
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+      it('It should error if non-existant contract called on POST', async () => {
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/relayer/banana')
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(200)
-//         // expect(spyFn).toHaveBeenCalled()
-//       })
+        expect(res.statusCode).toEqual(500)
+      })
+    })
 
-//       it('It should error if non-existant contract called on POST', async () => {
-//         const { res, req } = await request(app)
-//           .post(adminVersionString + '/relayer/banana')
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
+    describe('Teardown', () => {
+      it('It should delete a specific /users/{user_id} on DELETE', async () => {
+        const { res, req } = await request(app)
+          .delete(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
 
-//         expect(res.statusCode).toEqual(500)
-//       })
-//     })
+        expect(res.statusCode).toEqual(200)
+      })
+    })
 
-//     describe('Teardown', () => {
-//       it('It should delete a specific /users/{user_id} on DELETE', async () => {
-//         const { res, req } = await request(app)
-//           .delete(adminVersionString + '/users/' + adminCognitoUser.Username)
-//           .set('Accept', 'application/json')
-//           .set('accesstoken', adminUserAccessToken)
-
-//         expect(res.statusCode).toEqual(200)
-//       })
-//     })
-
-//     afterAll(async () => {
-//       try {
-//         console.log('Closing server ...')
-//         await server.close()
-//       } catch (error) {
-//         console.error(error)
-//         throw error
-//       }
-//     })
-//   }
-// )
+    afterAll(async () => {
+      try {
+        console.log('Closing server ...')
+        await server.close()
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    })
+  }
+)
 
 describe(
   'Integration Tests: Circles API ' + versionString + ' user permissions',

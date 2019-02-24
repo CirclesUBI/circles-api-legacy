@@ -14,7 +14,7 @@ async function all (req, res) {
   }
 }
 
-async function own (req, res) {
+async function allOwn (req, res) {
   try {
     const notifications = await Notification.query()
       .where({
@@ -155,7 +155,7 @@ async function deleteOwn (req, res) {
 
 module.exports = {
   all,
-  own,
+  allOwn,
   findOne,
   addOne,
   updateOne,

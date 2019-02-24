@@ -15,7 +15,7 @@ async function all (req, res) {
   }
 }
 
-async function own (req, res) {
+async function allOwn (req, res) {
   try {
     const organizations = await Organization.query().where({
       owner_id: res.locals.user.username
@@ -139,7 +139,9 @@ async function updateOwn (req, res) {
     })
     if (!orgExists.length) {
       throw new Error(
-        `Organization.id ${req.params.id} does not exist or is not owned by User.id: ${
+        `Organization.id ${
+          req.params.id
+        } does not exist or is not owned by User.id: ${
           res.locals.user.username
         }`
       )
@@ -201,7 +203,9 @@ async function deleteOwn (req, res) {
         .where({ id: req.params.id })
     } else {
       throw new Error(
-        `Organization.id ${req.params.id} does not exist or is not owned by User.id: ${
+        `Organization.id ${
+          req.params.id
+        } does not exist or is not owned by User.id: ${
           res.locals.user.username
         }`
       )
@@ -219,7 +223,7 @@ async function deleteOwn (req, res) {
 
 module.exports = {
   all,
-  own,
+  allOwn,
   findOne,
   findOwn,
   addOne,
