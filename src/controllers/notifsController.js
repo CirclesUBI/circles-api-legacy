@@ -4,7 +4,12 @@ const logger = require('../lib/logger')
 
 async function all (req, res) {
   try {
-    const notifications = await Notification.query().limit(10)
+    const notifications = await Notification.query().limit()
+    if (!notifications.length) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
+    }
     res.status(HttpStatus.OK).send(notifications)
   } catch (error) {
     logger.error(error.message)
@@ -21,6 +26,11 @@ async function allOwn (req, res) {
         owner_id: res.locals.user.username
       })
       .limit(10)
+    if (!notifications.length) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
+    }
     res.status(HttpStatus.OK).send(notifications)
   } catch (error) {
     logger.error(error.message)
@@ -32,8 +42,14 @@ async function allOwn (req, res) {
 
 async function findOne (req, res) {
   try {
-    const result = await Notification.query().where({ id: req.params.id })
-    const notification = result.length ? result[0] : null
+    const notification = await Notification.query()
+      .where({ id: req.params.id })
+      .first()
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
+    }
     res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
@@ -47,7 +63,7 @@ async function addOne (req, res) {
   let notification
   try {
     notification = await Notification.query().insert(req.body)
-    res.status(HttpStatus.OK).send(notification)
+    res.status(HttpStatus.CREATED).send(notification)
   } catch (error) {
     logger.error(error.message)
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
@@ -59,17 +75,20 @@ async function addOne (req, res) {
 async function updateOne (req, res) {
   let notification
   try {
-    const notificationExists = await Notification.query().where({
-      id: req.params.id
-    })
-    if (!notificationExists.length) {
-      throw new Error('Notification.id does not exist: ' + req.params.id)
-    } else {
-      notification = await Notification.query().patchAndFetchById(
-        req.params.id,
-        req.body
-      )
+    notification = await Notification.query()
+      .where({
+        id: req.params.id
+      })
+      .first()
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
     }
+    notification = await Notification.query().patchAndFetchById(
+      req.params.id,
+      req.body
+    )
     res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
@@ -82,22 +101,24 @@ async function updateOne (req, res) {
 async function updateOwn (req, res) {
   let notification
   try {
-    const notificationExists = await Notification.query().where({
-      id: req.params.id,
-      owner_id: res.locals.user.username
-    })
-    if (!notificationExists.length) {
-      throw new Error(
-        `No Notification.id ${req.params.id} or not owned by User.id: ${
-          res.locals.user.username
-        }`
-      )
-    } else {
-      notification = await Notification.query().patchAndFetchById(
-        req.params.id,
-        req.body
-      )
+    notification = await Notification.query()
+      .where({
+        id: req.params.id
+      })
+      .first()
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
+    } else if (notification.owner_id !== res.locals.user.username) {
+      res.status(HttpStatus.FORBIDDEN).send({
+        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+      })
     }
+    notification = await Notification.query().patchAndFetchById(
+      req.params.id,
+      req.body
+    )
     res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
@@ -112,13 +133,15 @@ async function deleteOne (req, res) {
     const notification = await Notification.query()
       .where({ id: req.params.id })
       .first()
-    if (notification) {
-      await Notification.query()
-        .delete()
-        .where({ id: req.params.id })
-    } else {
-      throw new Error('Notification.id does not exist ' + req.params.id)
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
     }
+    await Notification.query()
+      .delete()
+      .where({ id: req.params.id })
+
     res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
@@ -131,19 +154,20 @@ async function deleteOne (req, res) {
 async function deleteOwn (req, res) {
   try {
     const notification = await Notification.query()
-      .where({ id: req.params.id, owner_id: res.locals.user.username })
+      .where({ id: req.params.id })
       .first()
-    if (notification) {
-      await Notification.query()
-        .delete()
-        .where({ id: req.params.id })
-    } else {
-      throw new Error(
-        `No Notification.id ${req.params.id} or not owned by User.id: ${
-          res.locals.user.username
-        }`
-      )
+    if (!notification) {
+      res.status(HttpStatus.NOT_FOUND).send({
+        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+      })
+    } else if (notification.owner_id !== res.locals.user.username) {
+      res.status(HttpStatus.FORBIDDEN).send({
+        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+      })
     }
+    await Notification.query()
+      .delete()
+      .where({ id: req.params.id })
     res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
