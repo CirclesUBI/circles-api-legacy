@@ -1,4 +1,3 @@
-const HttpStatus = require('http-status-codes')
 const bodyParser = require('body-parser')
 const authMiddleware = require('../middleware/auth')
 const loggingMiddleware = require('../middleware/logging')
@@ -18,7 +17,7 @@ module.exports = function (app) {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  app.get('/', (req, res) => res.status(HttpStatus.OK).json('hello Ed!'))
+  app.get('/', (req, res) => res.status(200).json('hello Ed!'))
 
   app.use(loggingMiddleware)
   app.use(authMiddleware)

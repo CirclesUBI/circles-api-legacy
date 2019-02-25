@@ -1,5 +1,3 @@
-const HttpStatus = require('http-status-codes')
-const PostgresDB = require('../database').postgresDB
 const Offer = require('../models/offer')
 const logger = require('../lib/logger')
 
@@ -10,16 +8,13 @@ async function all (req, res) {
   try {
     const offers = await Offer.query()
     if (!offers.length) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(offers)
     }
-    res.status(HttpStatus.OK).send(offers)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -29,16 +24,13 @@ async function findOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(offer)
     }
-    res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -46,29 +38,24 @@ async function addOne (req, res) {
   let offer
   try {
     offer = await Offer.query().insert(req.body)
-    res.status(HttpStatus.CREATED).send(offer)
+    res.status(201).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
 async function addOwn (req, res) {
   if (req.body.owner_id !== res.locals.user.username) {
-    res.status(HttpStatus.FORBIDDEN).send({
-      error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-    })
-  }
-  try {
-    const offer = await Offer.query().insert(req.body)
-    res.status(HttpStatus.CREATED).send(offer)
-  } catch (error) {
-    logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(403)
+  } else {
+    try {
+      const offer = await Offer.query().insert(req.body)
+      res.status(201).send(offer)
+    } catch (error) {
+      logger.error(error.message)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -79,17 +66,14 @@ async function updateOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
+      res.status(200).send(offer)
     }
-    offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
-    res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -100,21 +84,16 @@ async function updateOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
     } else if (offer.owner_id !== res.locals.user.username) {
-      res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      res.sendStatus(403)
+    } else {
+      offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
+      res.status(200).send(offer)
     }
-    offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
-    res.status(HttpStatus.OK).send(offer)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -124,19 +103,16 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      await Offer.query()
+        .delete()
+        .where({ id: req.params.id })
+      res.status(200).send()
     }
-    await Offer.query()
-      .delete()
-      .where({ id: req.params.id })
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -146,23 +122,18 @@ async function deleteOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
     } else if (offer.owner_id !== res.locals.user.username) {
-      res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      res.sendStatus(403)
+    } else {
+      await Offer.query()
+        .delete()
+        .where({ id: req.params.id })
+      res.status(200).send()
     }
-    await Offer.query()
-      .delete()
-      .where({ id: req.params.id })
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 

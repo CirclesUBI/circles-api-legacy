@@ -1,4 +1,3 @@
-const HttpStatus = require('http-status-codes')
 const PostgresDB = require('../database').postgresDB
 const User = require('../models/user')
 const logger = require('../lib/logger')
@@ -10,16 +9,13 @@ async function all (req, res) {
   try {
     const users = await User.query()
     if (!users.length) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(users)
     }
-    res.status(HttpStatus.OK).send(users)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -29,16 +25,13 @@ async function own (req, res) {
       .where({ id: res.locals.user.username })
       .first()
     if (!user) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(user)
     }
-    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -48,19 +41,16 @@ async function findOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!user) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      user.notifications = await user.$relatedQuery('notifications')
+      user.offers = await user.$relatedQuery('offers')
+      user.organizations = await user.$relatedQuery('organizations')
+      res.status(200).send(user)
     }
-    user.notifications = await user.$relatedQuery('notifications')
-    user.offers = await user.$relatedQuery('offers')
-    user.organizations = await user.$relatedQuery('organizations')
-    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -74,104 +64,91 @@ async function addOne (req, res) {
       .first()
     if (user) {
       // User already exists
-      res.status(HttpStatus.BAD_REQUEST).send({
-        error: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST)
-      })
+      res.sendStatus(400)
+    } else {
+      const endpointArn = await sns.createSNSEndpoint(circlesUser)
+      circlesUser.device_endpoint = endpointArn
+      await cognitoISP.addToCognitoGroup(circlesUser)
+      user = await User.query(trx).insert(circlesUser)
+      await trx.commit()
+      res.status(201).send(user)
     }
-    const endpointArn = await sns.createSNSEndpoint(circlesUser)
-    circlesUser.device_endpoint = endpointArn
-    await cognitoISP.addToCognitoGroup(circlesUser)
-    user = await User.query(trx).insert(circlesUser)
-    await trx.commit()
-    res.status(HttpStatus.CREATED).send(user)
   } catch (error) {
     logger.error(error.message)
     await trx.rollback()
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
 async function addOwn (req, res) {
-  if (circlesUser.id !== res.locals.user.username) {
-    res.status(HttpStatus.FORBIDDEN).send({
-      error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-    })
-  }
-  let user
-  const trx = await PostgresDB.startTransaction()
-  try {
-    const circlesUser = convertCognitoToCirclesUser(req.body)
-    user = await User.query(trx)
-      .where({ id: circlesUser.id })
-      .first()
-    if (user) {
-      // User already exists
-      res.status(HttpStatus.BAD_REQUEST).send({
-        error: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST)
-      })
+  if (req.body.id !== res.locals.user.username) {
+    res.sendStatus(403)
+  } else {
+    let user
+    const trx = await PostgresDB.startTransaction()
+    try {
+      const circlesUser = convertCognitoToCirclesUser(req.body)
+      user = await User.query(trx)
+        .where({ id: circlesUser.id })
+        .first()
+      if (user) {
+        // User already exists
+        res.sendStatus(400)
+      } else {
+        const endpointArn = await sns.createSNSEndpoint(circlesUser)
+        circlesUser.device_endpoint = endpointArn
+        await cognitoISP.addToCognitoGroup(circlesUser)
+        user = await User.query(trx).insert(circlesUser)
+        await trx.commit()
+        res.status(201).send(user)
+      }
+    } catch (error) {
+      logger.error(error.message)
+      await trx.rollback()
+      res.sendStatus(500)
     }
-    const endpointArn = await sns.createSNSEndpoint(circlesUser)
-    circlesUser.device_endpoint = endpointArn
-    await cognitoISP.addToCognitoGroup(circlesUser)
-    user = await User.query(trx).insert(circlesUser)
-    await trx.commit()
-    res.status(HttpStatus.CREATED).send(user)
-  } catch (error) {
-    logger.error(error.message)
-    await trx.rollback()
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
   }
 }
 
 async function updateOne (req, res) {
   let user
   try {
-    user = await User.query(trx)
-      .where({ id: circlesUser.id })
+    user = await User.query()
+      .where({ id: req.params.id })
       .first()
     if (!user) {
       // User already exists
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      user = await User.query().patchAndFetchById(req.params.id, req.body)
+      res.status(200).send(user)
     }
-    user = await User.query().patchAndFetchById(req.params.id, req.body)
-    res.status(HttpStatus.OK).send(user)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
 async function updateOwn (req, res) {
-  let user
-  try {
-    user = await User.query(trx)
-      .where({ id: res.locals.user.username })
-      .first()
-    if (!user) {
-      // User already exists
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
-    }
-    user = await User.query().patchAndFetchById(
-      res.locals.user.username,
-      req.body
-    )
-    res.status(HttpStatus.OK).send(user)
-  } catch (error) {
-    logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
-  }
+    let user
+    try {
+      user = await User.query()
+        .where({ id: res.locals.user.username })
+        .first()
+      if (!user) {
+        // User already exists
+        res.sendStatus(404)
+      } else {
+        user = await User.query().patchAndFetchById(
+          res.locals.user.username,
+          req.body
+        )
+        res.status(200).send(user)
+      }
+    } catch (error) {
+      logger.error(error.message)
+      res.sendStatus(500)
+    }  
 }
 
 async function deleteOne (req, res) {
@@ -181,26 +158,22 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!user) {
-      // User already exists
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      // await user.$relatedQuery('organizations').unrelate().where({ owner_id: res.locals.user.username })
+       await user.$relatedQuery('organizations').delete().where({ owner_id: res.locals.user.username })
+      // await user.$relatedQuery('notifications').delete().where({ owner_id: res.locals.user.username })
+      // await user.$relatedQuery('offers').delete().where({ owner_id: res.locals.user.username })
+      await User.query(trx)
+        .delete()
+        .where({ id: req.params.id })
+      await trx.commit()
+      res.status(200).send()
     }
-
-    await user.$relatedQuery('organizations').delete()
-    await user.$relatedQuery('notifications').delete()
-    await user.$relatedQuery('offers').delete()
-    await User.query(trx)
-      .delete()
-      .where({ id: req.params.id })
-    await trx.commit()
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
     await trx.rollback()
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -212,24 +185,22 @@ async function deleteOwn (req, res) {
       .first()
     if (!user) {
       // User already exists
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      // await user.$relatedQuery('organizations').unrelate().where({ owner_id: res.locals.user.username })
+      await user.$relatedQuery('organizations').delete().where({ owner_id: res.locals.user.username })
+      // await user.$relatedQuery('notifications').delete().where({ owner_id: res.locals.user.username })
+      // await user.$relatedQuery('offers').delete().where({ owner_id: res.locals.user.username })
+      await User.query(trx)
+        .delete()
+        .where({ id: res.locals.user.username })
+      await trx.commit()
+      res.status(200).send()
     }
-    await user.$relatedQuery('organizations').delete()
-    await user.$relatedQuery('notifications').delete()
-    await user.$relatedQuery('offers').delete()
-    await User.query(trx)
-      .delete()
-      .where({ id: res.locals.user.username })
-    await trx.commit()
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
     await trx.rollback()
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 

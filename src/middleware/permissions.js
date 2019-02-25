@@ -1,8 +1,6 @@
-const HttpStatus = require('http-status-codes')
 const AccessControl = require('role-acl')
 const Permission = require('../models/permissions')
 const logger = require('../lib/logger')
-const User = require('../models/user')
 
 const parsePermissions = perms => new AccessControl(perms)
 
@@ -56,16 +54,12 @@ const hasPermissionMiddleware = resource => {
         if (granted) {
           return next()
         } else {
-          return res.status(HttpStatus.FORBIDDEN).send({
-            error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-          })
+          return res.sendStatus(403)
         }
       })
     } catch (error) {
       logger.error(error.message)
-      return res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      return res.sendStatus(403)
     }
   }
 }
@@ -83,9 +77,7 @@ const ownershipMiddleware = resource => {
       return next()
     } catch (error) {
       logger.error(error.message)
-      return res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      return res.sendStatus(403)
     }
   }
 }

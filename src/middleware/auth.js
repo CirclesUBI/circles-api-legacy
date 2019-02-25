@@ -1,4 +1,3 @@
-const HttpStatus = require('http-status-codes')
 const cognitoPoolJWTToken = require('../config/env').cognitoPoolJWTToken
 
 const jwt = require('jsonwebtoken')
@@ -15,9 +14,7 @@ const authMiddleWare = (req, res, next) => {
       decodedToken
     ) {
       if (err) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .send({ error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) })
+        return res.sendStatus(402)          
       }
       res.locals.user = decodedToken
       next()
@@ -26,7 +23,7 @@ const authMiddleWare = (req, res, next) => {
     // if there is no token
     // return an error()
     return res
-      .status(HttpStatus.UNAUTHORIZED)
+      .status(402)
       .send({ error: 'Must provide accesstoken in header' })
   }
 }

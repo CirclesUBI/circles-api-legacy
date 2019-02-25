@@ -1,4 +1,3 @@
-const HttpStatus = require('http-status-codes')
 const Notification = require('../models/notification')
 const logger = require('../lib/logger')
 
@@ -6,36 +5,29 @@ async function all (req, res) {
   try {
     const notifications = await Notification.query()
     if (!notifications.length) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(notifications)
     }
-    res.status(HttpStatus.OK).send(notifications)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
 async function allOwn (req, res) {
   try {
-    const notifications = await Notification.query()
-      .where({
-        owner_id: res.locals.user.username
-      })
+    const notifications = await Notification.query().where({
+      owner_id: res.locals.user.username
+    })
     if (!notifications.length) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(notifications)
     }
-    res.status(HttpStatus.OK).send(notifications)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -45,29 +37,23 @@ async function findOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!notification) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      res.status(200).send(notification)
     }
-    res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
 async function addOne (req, res) {
-  let notification
   try {
-    notification = await Notification.query().insert(req.body)
-    res.status(HttpStatus.CREATED).send(notification)
+    const notification = await Notification.query().insert(req.body)
+    res.status(201).send(notification)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -80,20 +66,17 @@ async function updateOne (req, res) {
       })
       .first()
     if (!notification) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      notification = await Notification.query().patchAndFetchById(
+        req.params.id,
+        req.body
+      )
+      res.status(200).send(notification)
     }
-    notification = await Notification.query().patchAndFetchById(
-      req.params.id,
-      req.body
-    )
-    res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -106,24 +89,19 @@ async function updateOwn (req, res) {
       })
       .first()
     if (!notification) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
     } else if (notification.owner_id !== res.locals.user.username) {
-      res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      res.sendStatus(403)
+    } else {
+      notification = await Notification.query().patchAndFetchById(
+        req.params.id,
+        req.body
+      )
+      res.status(200).send(notification)
     }
-    notification = await Notification.query().patchAndFetchById(
-      req.params.id,
-      req.body
-    )
-    res.status(HttpStatus.OK).send(notification)
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -133,20 +111,16 @@ async function deleteOne (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!notification) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
+    } else {
+      await Notification.query()
+        .delete()
+        .where({ id: req.params.id })
+      res.status(200).send()
     }
-    await Notification.query()
-      .delete()
-      .where({ id: req.params.id })
-
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
@@ -156,23 +130,18 @@ async function deleteOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!notification) {
-      res.status(HttpStatus.NOT_FOUND).send({
-        error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
-      })
+      res.sendStatus(404)
     } else if (notification.owner_id !== res.locals.user.username) {
-      res.status(HttpStatus.FORBIDDEN).send({
-        error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-      })
+      res.sendStatus(403)
+    } else {
+      await Notification.query()
+        .delete()
+        .where({ id: req.params.id })
+      res.status(200).send()
     }
-    await Notification.query()
-      .delete()
-      .where({ id: req.params.id })
-    res.status(HttpStatus.OK).send()
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 

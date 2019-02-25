@@ -1,5 +1,3 @@
-const HttpStatus = require('http-status-codes')
-const PostgresDB = require('../database').postgresDB
 const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
 
@@ -9,12 +7,10 @@ async function callContract (req, res) {
     if (typeof method !== 'function')
       throw new Error('no method: ' + req.params.contractName)
     const receipt = await method(req.body.address)
-    res.status(HttpStatus.OK).send()
+    res.status(200).send()
   } catch (error) {
     logger.error(error.message)
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-    })
+    res.sendStatus(500)
   }
 }
 
