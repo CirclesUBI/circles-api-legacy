@@ -1,6 +1,6 @@
 exports.up = (knex, Promise) => {
   return knex.schema.createTable('notification', t => {
-    t.string('id').primary()
+    t.increments('id').primary()
     t.string('owner_id', 50).notNullable()
     t.string('description', 100).notNullable()
     t.dateTime('created_at')

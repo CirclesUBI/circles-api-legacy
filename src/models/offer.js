@@ -9,7 +9,7 @@ module.exports = class Offer extends CirclesModel {
     return {
       type: 'object',
       properties: {
-        id: { type: 'string' },
+        id: { type: 'integer' },
         owner_id: { type: 'string' },
         item_code: { type: 'string' },
         type: {

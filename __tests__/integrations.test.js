@@ -29,7 +29,8 @@ let testUserAccessToken
 let adminUserAccessToken
 let testAdminOrg
 let testUserOrg
-let testNotif
+let testOwnedNotif
+let testOtherNotif
 let testOffer
 let testOwnedOffer
 let testOtherOffer
@@ -269,19 +270,19 @@ describe(
 
     describe('Notification API', () => {
       it('It should create a specific /notifs/ on POST', async () => {
-        testNotif = createFakeNotification()
-        testNotif.owner_id = adminCognitoUser.Username
+        testOwnedNotif = createFakeNotification()
+        testOwnedNotif.owner_id = adminCognitoUser.Username
         const { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
-          .send(testNotif)
+          .send(testOwnedNotif)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
-        expect(notification.description).toEqual(testNotif.description)
-        expect(testNotif.id).toEqual(notification.id)
+        expect(notification.description).toEqual(testOwnedNotif.description)
+        testOwnedNotif.id = notification.id
       })
 
       it('It should return all /notifs on GET', async () => {
@@ -296,20 +297,20 @@ describe(
 
       it('It should return a specific /notifs/{notification_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(adminVersionString + '/notifs/' + testNotif.id)
+          .get(adminVersionString + '/notifs/' + testOwnedNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
         expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
-        expect(notification.description).toEqual(testNotif.description)
+        expect(notification.description).toEqual(testOwnedNotif.description)
       })
 
       it('It should update a specific /notifs/{notification_id} on PUT', async () => {
         const description = 'notif@test.com'
         const { res, req } = await request(app)
-          .put(adminVersionString + '/notifs/' + testNotif.id)
+          .put(adminVersionString + '/notifs/' + testOwnedNotif.id)
           .send({ description: description })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -322,7 +323,7 @@ describe(
 
       it('It should delete a specific /notifs/{notification_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(adminVersionString + '/notifs/' + testNotif.id)
+          .delete(adminVersionString + '/notifs/' + testOwnedNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -344,7 +345,7 @@ describe(
         expect(res.text).toBeDefined()
         const offer = JSON.parse(res.text)
         expect(offer.title).toEqual(testOffer.title)
-        expect(testOffer.id).toEqual(offer.id)
+        testOffer.id = offer.id
       })
 
       it('It should return all /offers on GET', async () => {
@@ -589,36 +590,51 @@ describe(
     })
 
     describe('Notification API', () => {
-      it('First it should add a /notifs on POST with adminUser', async () => {
-        testNotif = createFakeNotification()
-        testNotif.owner_id = testCognitoUser.Username
-        const { res, req } = await request(app)
+      it('First it should add two owned /notifs on POST with adminUser', async () => {
+        testOwnedNotif = createFakeNotification()
+        testOwnedNotif.owner_id = testCognitoUser.Username        
+        let { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
-          .send(testNotif)
+          .send(testOwnedNotif)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
-        const notification = JSON.parse(res.text)
-        expect(notification.description).toEqual(testNotif.description)
+        let notification = JSON.parse(res.text)
+        expect(notification.description).toEqual(testOwnedNotif.description)
         expect(notification.owner_id).toEqual(testCognitoUser.Username)
-        testNotif.id = notification.id
-      })
+        testOwnedNotif.id = notification.id
 
-      it('... and a second /notifs on POST with adminUser', async () => {
         let secondNotif = createFakeNotification()
         secondNotif.owner_id = testCognitoUser.Username
-        const { res, req } = await request(app)
+        secondReq = await request(app)
           .post(adminVersionString + '/notifs')
           .send(secondNotif)
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
+        expect(secondReq.res.statusCode).toEqual(201)
+        expect(secondReq.res.text).toBeDefined()
+        notification = JSON.parse(secondReq.res.text)
+        expect(notification.description).toEqual(secondNotif.description)
+        expect(notification.owner_id).toEqual(testCognitoUser.Username)
+      })
+
+      it('... and a not owned /notifs on POST with adminUser', async () => {
+        testOtherNotif = createFakeNotification()
+        testOtherNotif.owner_id = adminCognitoUser.Username
+        const { res, req } = await request(app)
+          .post(adminVersionString + '/notifs')
+          .send(testOtherNotif)
+          .set('Accept', 'application/json')
+          .set('accesstoken', adminUserAccessToken)
+
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
-        expect(notification.owner_id).toEqual(testCognitoUser.Username)
+        expect(notification.owner_id).toEqual(adminCognitoUser.Username)
+        testOtherNotif.id = notification.id
       })
 
       it('It should return its own /notifs on GET', async () => {
@@ -630,18 +646,14 @@ describe(
         expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const notifications = JSON.parse(res.text)
-        for (let i = 0; i < notifications.length; i++) {
-          const notif = notifications[i]
-          expect(notif.owner_id).toEqual(testCognitoUser.Username)
-          if (notif.id === testNotif.id)
-            expect(notif.description).toEqual(testNotif.description)
-        }
+        const notifIds = notifications.map(notif => notif.id)
+        expect(notifIds).toContain(testOwnedNotif.id)
       })
 
       it('It should update its own /notifs on PUT', async () => {
         const description = 'notif@test.com'
         const { res, req } = await request(app)
-          .put(versionString + '/notifs/' + testNotif.id)
+          .put(versionString + '/notifs/' + testOwnedNotif.id)
           .send({ description: description })
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
@@ -653,19 +665,19 @@ describe(
       })
 
       it('It should not be able to update other /notifs/{notification_id} on PUT', async () => {
-        const notif = createFakeNotification()
+
         const { res, req } = await request(app)
-          .put(versionString + '/notifs/' + notif.id)
-          .send({ description: notif.description })
+          .put(versionString + '/notifs/' + testOtherNotif.id)
+          .send({ description: testOtherNotif.description })
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
-        expect(res.statusCode).toEqual(404)
+        expect(res.statusCode).toEqual(403)
       })
 
       it('It should delete its own /notifs/{notification_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(versionString + '/notifs/' + testNotif.id)
+          .delete(versionString + '/notifs/' + testOwnedNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
@@ -673,13 +685,12 @@ describe(
       })
 
       it('It should not be able to delete other /notifs/{notification_id} on DELETE', async () => {
-        const notifId = createFakeNotification().id
         const { res, req } = await request(app)
-          .delete(versionString + '/notifs/' + notifId)
+          .delete(versionString + '/notifs/' + testOtherNotif.id)
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
-        expect(res.statusCode).toEqual(404)
+        expect(res.statusCode).toEqual(403)
       })
     })
 
