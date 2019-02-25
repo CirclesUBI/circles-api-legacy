@@ -5,11 +5,8 @@ const logger = require('../lib/logger')
 async function all (req, res) {
   try {
     const organizations = await Organization.query()
-    if (!organizations.length) {
-      res.sendStatus(404)
-    } else {
-      res.status(200).send(organizations)
-    }
+    if (!organizations.length) return res.sendStatus(404)
+    res.status(200).send(organizations)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -21,11 +18,8 @@ async function allOwn (req, res) {
     const organizations = await Organization.query().where({
       owner_id: res.locals.user.username
     })
-    if (!organizations.length) {
-      res.sendStatus(404)
-    } else {
-      res.status(200).send(organizations)
-    }
+    if (!organizations.length) return res.sendStatus(404)
+    res.status(200).send(organizations)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -37,14 +31,11 @@ async function findOne (req, res) {
     const organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else {
-      // organization.members = await organization.$relatedQuery('members')
-      organization.offers = await organization.$relatedQuery('offers')
-      organization.owner = await organization.$relatedQuery('owner')
-      res.status(200).send(organization)
-    }
+    if (!organization) return res.sendStatus(404)
+
+    await organization.$relatedQuery('offers')
+    await organization.$relatedQuery('owner')
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -56,16 +47,13 @@ async function findOwn (req, res) {
     const organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else if (organization.owner_id !== res.locals.user.username) {
-      res.sendStatus(403)
-    } else {
-      // organization.members = await organization.$relatedQuery('members')
-      organization.offers = await organization.$relatedQuery('offers')
-      organization.owner = await organization.$relatedQuery('owner')
-      res.status(200).send(organization)
-    }
+    if (!organization) return res.sendStatus(404)
+    else if (organization.owner_id !== res.locals.user.username)
+      return res.sendStatus(403)
+
+    await organization.$relatedQuery('offers')
+    await organization.$relatedQuery('owner')
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -78,13 +66,10 @@ async function addOne (req, res) {
     organization = await Organization.query()
       .where({ id: req.body.id })
       .first()
-    if (organization) {
-      // Organization already exists
-      res.sendStatus(400)
-    } else {
-      organization = await Organization.query().insert(req.body)
-      res.status(201).send(organization)
-    }
+    if (organization) res.sendStatus(400)
+
+    organization = await Organization.query().insert(req.body)
+    res.status(201).send(organization)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -92,25 +77,20 @@ async function addOne (req, res) {
 }
 
 async function addOwn (req, res) {
-  if (req.body.owner_id !== res.locals.user.username) {
-    res.sendStatus(403)
-  } else {
-    let organization
-    try {
-      organization = await Organization.query()
-        .where({ id: req.body.id })
-        .first()
-      if (organization) {
-        // Organization already exists
-        res.sendStatus(400)
-      } else {
-        organization = await Organization.query().insert(req.body)
-        res.status(201).send(organization)
-      }
-    } catch (error) {
-      logger.error(error.message)
-      res.sendStatus(500)
-    }
+  if (req.body.owner_id !== res.locals.user.username) return res.sendStatus(403)
+
+  let organization
+  try {
+    organization = await Organization.query()
+      .where({ id: req.body.id })
+      .first()
+    if (organization) return res.sendStatus(400)
+
+    organization = await Organization.query().insert(req.body)
+    res.status(201).send(organization)
+  } catch (error) {
+    logger.error(error.message)
+    res.sendStatus(500)
   }
 }
 
@@ -120,15 +100,13 @@ async function updateOne (req, res) {
     organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else {
-      organization = await Organization.query().patchAndFetchById(
-        req.params.id,
-        req.body
-      )
-      res.status(200).send(organization)
-    }
+    if (!organization) res.sendStatus(404)
+
+    organization = await Organization.query().patchAndFetchById(
+      req.params.id,
+      req.body
+    )
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -141,17 +119,15 @@ async function updateOwn (req, res) {
     organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else if (organization.owner_id !== res.locals.user.username) {
-      res.sendStatus(403)
-    } else {
-      organization = await Organization.query().patchAndFetchById(
-        req.params.id,
-        req.body
-      )
-      res.status(200).send(organization)
-    }
+    if (!organization) return res.sendStatus(404)
+    else if (organization.owner_id !== res.locals.user.username)
+      return res.sendStatus(403)
+
+    organization = await Organization.query().patchAndFetchById(
+      req.params.id,
+      req.body
+    )
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
@@ -164,15 +140,13 @@ async function deleteOne (req, res) {
     const organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else {
-      await Organization.query(trx)
-        .delete()
-        .where({ id: req.params.id })
-      await trx.commit()
-      res.status(200).send(organization)
-    }
+    if (!organization) return res.sendStatus(404)
+
+    await Organization.query(trx)
+      .delete()
+      .where({ id: req.params.id })
+    await trx.commit()
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     await trx.rollback()
@@ -186,17 +160,15 @@ async function deleteOwn (req, res) {
     const organization = await Organization.query()
       .where({ id: req.params.id })
       .first()
-    if (!organization) {
-      res.sendStatus(404)
-    } else if (organization.owner_id !== res.locals.user.username) {
-      res.sendStatus(403)
-    } else {
-      await Organization.query(trx)
-        .delete()
-        .where({ id: req.params.id })
-      await trx.commit()
-      res.status(200).send(organization)
-    }
+    if (!organization) return res.sendStatus(404)
+    else if (organization.owner_id !== res.locals.user.username)
+      return res.sendStatus(403)
+      
+    await Organization.query(trx)
+      .delete()
+      .where({ id: req.params.id })
+    await trx.commit()
+    res.status(200).send(organization)
   } catch (error) {
     logger.error(error.message)
     await trx.rollback()

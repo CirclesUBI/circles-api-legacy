@@ -592,7 +592,7 @@ describe(
     describe('Notification API', () => {
       it('First it should add two owned /notifs on POST with adminUser', async () => {
         testOwnedNotif = createFakeNotification()
-        testOwnedNotif.owner_id = testCognitoUser.Username        
+        testOwnedNotif.owner_id = testCognitoUser.Username
         let { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
           .send(testOwnedNotif)
@@ -665,7 +665,6 @@ describe(
       })
 
       it('It should not be able to update other /notifs/{notification_id} on PUT', async () => {
-
         const { res, req } = await request(app)
           .put(versionString + '/notifs/' + testOtherNotif.id)
           .send({ description: testOtherNotif.description })
