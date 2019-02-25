@@ -32,3 +32,6 @@ module.exports = class Offer extends CirclesModel {
 
 // regex for prices
 // [0-9]+(\.[0-9][0-9]?)?
+
+
+//  t.increments('id').primary()

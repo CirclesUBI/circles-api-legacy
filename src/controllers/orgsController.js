@@ -166,22 +166,10 @@ async function deleteOne (req, res) {
       .first()
     if (!organization) {
       res.sendStatus(404)
-    } else {
-      // await organization.$relatedQuery('members').unrelate()
-      // await organization.$relatedQuery('owner').unrelate()
-      // await organization.$relatedQuery('offers').delete()
-      // await organization.$relatedQuery('notifications').delete()
-      // console.log('here right')
-      // let a = await organization.$relatedQuery('owner').unrelate() //.where({ owner_id: res.locals.user.username })
-      // console.log('a', a)
-      // let b = await organization.$relatedQuery('offers').delete().where({ owner_id: req.params.id })
-      // console.log('b', b)
-      // let c = await organization.$relatedQuery('notifications').delete().where({ owner_id: req.params.id })
-      // console.log('c', c)
-      let d = await Organization.query(trx)
+    } else {   
+      await Organization.query(trx)
         .delete()
         .where({ id: req.params.id })
-      console.log('d', d)
       await trx.commit()
       res.status(200).send(organization)
     }
@@ -202,18 +190,10 @@ async function deleteOwn (req, res) {
       res.sendStatus(404)
     } else if (organization.owner_id !== res.locals.user.username) {
       res.sendStatus(403)
-    } else {
-      // console.log(typeof organization.owner_id, organization.owner_id)
-      // let a = await organization.$relatedQuery('owner').unrelate().where({ id: res.locals.user.username })
-      // console.log('a', a)
-      // let b = await organization.$relatedQuery('offers').delete().where({ owner_id: req.params.id })
-      // console.log('b', b)
-      // let c = await organization.$relatedQuery('notifications').delete().where({ owner_id: req.params.id })
-      // console.log('c', c)
-      let d = await Organization.query(trx)
+    } else {      
+      await Organization.query(trx)
         .delete()
-        .where({ id: req.params.id })
-      console.log('d', d)
+        .where({ id: req.params.id })      
       await trx.commit()
       res.status(200).send(organization)
     }
