@@ -1,7 +1,6 @@
 const Cognito = require('aws-sdk/clients/cognitoidentityserviceprovider')
-const cognitoISP = new Cognito({apiVersion: '2016-04-18'})
-const cognitoPoolId = require('../config/env').cognitoPoolId;
-
+const cognitoISP = new Cognito({ apiVersion: '2016-04-18' })
+const cognitoPoolId = require('../config/env').cognitoPoolId
 
 let cognito = {}
 
@@ -55,6 +54,15 @@ cognito.createUser = createUserRequest => {
 cognito.confirmAuth = authConfirmRequest => {
   return new Promise((resolve, reject) => {
     cognitoISP.adminRespondToAuthChallenge(authConfirmRequest, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
+cognito.deleteUser = deleteUserRequest => {
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminDeleteUser(deleteUserRequest, (err, data) => {
       if (err) reject(err)
       else resolve(data)
     })

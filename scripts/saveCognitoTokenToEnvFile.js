@@ -7,7 +7,7 @@ const authRequest = {
      "USERNAME": process.env.COGNITO_TEST_USERNAME,
      "PASSWORD": process.env.COGNITO_TEST_PASSWORD
   },
-  "ClientId": process.env.COGNITO_CLIENT_ID,
+  "ClientId": process.env.COGNITO_CLIENT_ID_API,
   "UserPoolId": process.env.COGNITO_POOL_ID
 }
 

@@ -40,31 +40,14 @@ module.exports = class Organization extends CirclesModel {
           to: 'offer.owner_id'
         }
       },
-      members: {
-        relation: CirclesModel.ManyToManyRelation,
-        modelClass: `${__dirname}/user`, // Import models like this to prevent require loops.
+      owner: {
+        relation: CirclesModel.BelongsToOneRelation,
+        modelClass: `${__dirname}/user`,
         join: {
-          from: 'organization.id',
-          // ManyToMany relation needs the `through` object
-          // to describe the join table.
-          through: {
-            // If you have a model class for the join table
-            // you need to specify it like this:
-            // modelClass: PersonMovie,
-            from: 'user_organizations.organization_id',
-            to: 'user_organizations.user_id'
-          },
+          from: 'organization.owner_id',
           to: 'user.id'
         }
       }
-      // owner: {
-      //   relation: Model.BelongsToOneRelation,
-      //   modelClass: `${__dirname}/user`,
-      //   join: {
-      //     from: 'organization.owner_id',
-      //     to: 'user.id'
-      //   }
-      // }
     }
   }
 }

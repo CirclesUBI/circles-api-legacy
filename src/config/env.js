@@ -32,7 +32,9 @@ const postgres = {
 }
 
 // API stuff
-const apiVersionString = 'v' + process.env.npm_package_version
+const apiVersionString = process.env.npm_package_version
+  ? 'v' + process.env.npm_package_version
+  : process.env.API_VERSION
 
 module.exports = {
   apiVersionString,

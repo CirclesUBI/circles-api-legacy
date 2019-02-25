@@ -1,4 +1,3 @@
-const HttpStatus = require('http-status-codes')
 const cognitoPoolJWTToken = require('../config/env').cognitoPoolJWTToken
 
 const jwt = require('jsonwebtoken')
@@ -7,7 +6,7 @@ const jwkToPem = require('jwk-to-pem')
 const authMiddleWare = (req, res, next) => {
   const token = req.headers['accesstoken']
 
-  if (token) {    
+  if (token) {
     const pem = jwkToPem(cognitoPoolJWTToken)
     // verifies secret and checks exp
     jwt.verify(token, pem, { algorithms: ['RS256'] }, function (
@@ -15,9 +14,7 @@ const authMiddleWare = (req, res, next) => {
       decodedToken
     ) {
       if (err) {
-        return res
-          .status(HttpStatus.UNAUTHORIZED)
-          .send({ error: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) })
+        return res.sendStatus(402)
       }
       res.locals.user = decodedToken
       next()
@@ -25,9 +22,7 @@ const authMiddleWare = (req, res, next) => {
   } else {
     // if there is no token
     // return an error()
-    return res
-      .status(HttpStatus.UNAUTHORIZED)
-      .send({ error: 'Must provide accesstoken in header' })
+    return res.status(402).send({ error: 'Must provide accesstoken in header' })
   }
 }
 
