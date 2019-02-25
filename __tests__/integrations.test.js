@@ -268,7 +268,6 @@ describe(
     })
 
     describe('Notification API', () => {
-
       it('It should create a specific /notifs/ on POST', async () => {
         testNotif = createFakeNotification()
         testNotif.owner_id = adminCognitoUser.Username
@@ -332,7 +331,6 @@ describe(
     })
 
     describe('Offer API', () => {
-
       it('It should create a specific /offers/ on POST', async () => {
         testOffer = createFakeOffer()
         testOffer.owner_id = adminCognitoUser.Username

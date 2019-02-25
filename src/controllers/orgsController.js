@@ -97,7 +97,9 @@ async function addOwn (req, res) {
   } else {
     let organization
     try {
-      organization = await Organization.query().where({ id: req.body.id }).first()
+      organization = await Organization.query()
+        .where({ id: req.body.id })
+        .first()
       if (organization) {
         // Organization already exists
         res.sendStatus(400)

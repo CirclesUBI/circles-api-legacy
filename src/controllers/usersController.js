@@ -130,25 +130,25 @@ async function updateOne (req, res) {
 }
 
 async function updateOwn (req, res) {
-    let user
-    try {
-      user = await User.query()
-        .where({ id: res.locals.user.username })
-        .first()
-      if (!user) {
-        // User already exists
-        res.sendStatus(404)
-      } else {
-        user = await User.query().patchAndFetchById(
-          res.locals.user.username,
-          req.body
-        )
-        res.status(200).send(user)
-      }
-    } catch (error) {
-      logger.error(error.message)
-      res.sendStatus(500)
-    }  
+  let user
+  try {
+    user = await User.query()
+      .where({ id: res.locals.user.username })
+      .first()
+    if (!user) {
+      // User already exists
+      res.sendStatus(404)
+    } else {
+      user = await User.query().patchAndFetchById(
+        res.locals.user.username,
+        req.body
+      )
+      res.status(200).send(user)
+    }
+  } catch (error) {
+    logger.error(error.message)
+    res.sendStatus(500)
+  }
 }
 
 async function deleteOne (req, res) {
@@ -161,7 +161,10 @@ async function deleteOne (req, res) {
       res.sendStatus(404)
     } else {
       // await user.$relatedQuery('organizations').unrelate().where({ owner_id: res.locals.user.username })
-       await user.$relatedQuery('organizations').delete().where({ owner_id: res.locals.user.username })
+      await user
+        .$relatedQuery('organizations')
+        .delete()
+        .where({ owner_id: res.locals.user.username })
       // await user.$relatedQuery('notifications').delete().where({ owner_id: res.locals.user.username })
       // await user.$relatedQuery('offers').delete().where({ owner_id: res.locals.user.username })
       await User.query(trx)
@@ -188,7 +191,10 @@ async function deleteOwn (req, res) {
       res.sendStatus(404)
     } else {
       // await user.$relatedQuery('organizations').unrelate().where({ owner_id: res.locals.user.username })
-      await user.$relatedQuery('organizations').delete().where({ owner_id: res.locals.user.username })
+      await user
+        .$relatedQuery('organizations')
+        .delete()
+        .where({ owner_id: res.locals.user.username })
       // await user.$relatedQuery('notifications').delete().where({ owner_id: res.locals.user.username })
       // await user.$relatedQuery('offers').delete().where({ owner_id: res.locals.user.username })
       await User.query(trx)
