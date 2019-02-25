@@ -166,7 +166,7 @@ async function deleteOne (req, res) {
       .first()
     if (!organization) {
       res.sendStatus(404)
-    } else {   
+    } else {
       await Organization.query(trx)
         .delete()
         .where({ id: req.params.id })
@@ -190,10 +190,10 @@ async function deleteOwn (req, res) {
       res.sendStatus(404)
     } else if (organization.owner_id !== res.locals.user.username) {
       res.sendStatus(403)
-    } else {      
+    } else {
       await Organization.query(trx)
         .delete()
-        .where({ id: req.params.id })      
+        .where({ id: req.params.id })
       await trx.commit()
       res.status(200).send(organization)
     }
