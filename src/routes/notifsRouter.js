@@ -3,10 +3,20 @@ const notifsController = require('../controllers/notifsController')
 
 const router = Router()
 
-router.get('/', notifsController.all)
-router.post('/', notifsController.addOne)
-router.get('/:id', notifsController.findOne)
-router.put('/:id', notifsController.updateOne)
-router.delete('/:id', notifsController.deleteOne)
+const hasPermissionMiddleware = require('../middleware/permissions')
+
+router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.allOwn)
+
+router.put(
+  '/:id',
+  hasPermissionMiddleware('ownNotifs'),
+  notifsController.updateOwn
+)
+
+router.delete(
+  '/:id',
+  hasPermissionMiddleware('ownNotifs'),
+  notifsController.deleteOwn
+)
 
 module.exports = router
