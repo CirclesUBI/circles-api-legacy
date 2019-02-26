@@ -109,7 +109,7 @@ async function deleteOwn (req, res) {
       .first()
     if (!offer) res.sendStatus(404)
     else if (offer.owner_id !== res.locals.user.username) res.sendStatus(403)
-    
+
     await Offer.query()
       .delete()
       .where({ id: req.params.id })
