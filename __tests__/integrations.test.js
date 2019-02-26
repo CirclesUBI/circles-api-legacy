@@ -394,27 +394,27 @@ describe(
       })
     })
 
-    describe('Relayer API', () => {
-      it('It should call a specific contract on POST', async () => {
-        // const spyFn = jest.spyOn(HubContract, signup)
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/signup')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    // describe('Relayer API', () => {
+    //   it('It should call a specific contract on POST', async () => {
+    //     // const spyFn = jest.spyOn(HubContract, signup)
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/signup')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(200)
-        // expect(spyFn).toHaveBeenCalled()
-      })
+    //     expect(res.statusCode).toEqual(200)
+    //     // expect(spyFn).toHaveBeenCalled()
+    //   })
 
-      it('It should error if non-existant contract called on POST', async () => {
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/banana')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    //   it('It should error if non-existant contract called on POST', async () => {
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/banana')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(500)
-      })
-    })
+    //     expect(res.statusCode).toEqual(500)
+    //   })
+    // })
 
     describe('Teardown', () => {
       it('It should delete a specific /users/{user_id} on DELETE', async () => {
