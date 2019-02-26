@@ -143,7 +143,6 @@ const handle = async req => {
   let signedRawTx
   try {
     signedRawTx = await signTx({ txHex: body.metaSignedTx })
-    console.log('done signing')
   } catch (error) {
     logger.error('Error signing transaction')
     logger.error(error)

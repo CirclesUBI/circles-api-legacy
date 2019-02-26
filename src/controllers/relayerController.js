@@ -7,46 +7,17 @@ const relayer = require('../lib/relayer')
 
 async function callContract (req, res) {
   try {
-    const txHash = await relayer.handle(req)
+    const result = await relayer.handle(req)
     //const txHash = await relayHandler.handle(req)
-    logger.info('This the transactionHash', txHash)
-    if (req.body.jsonRpcReponse === true) {
-      res.status(200).json({
-        id: req.body.id,
-        jsonrpc: '2.0',
-        result: txHash
-      })
-    } else {
-      res.status(200).json({ status: 'success', data: txHash })
-    }
+    logger.info('This the transactionHash', result)
+    res.status(200).json({ status: 'success', data: result })
   } catch (error) {
     let code = 500
     if (error.code) code = error.code
     let message = error
     if (error.message) message = error.message
-    if (req.body.jsonRpcReponse === true) {
-      res.satus(code).json({
-        id: req.body.id,
-        jsonrpc: '2.0',
-        error: { code: -32600, message }
-      })
-    } else {
-      res.status(code).json({ status: 'error', message })
-    }
+    res.status(code).json({ status: 'error', message })
   }
-
-  // try {
-  //   const method = HubContract.methods[req.params.contractName]
-  //   if (typeof method !== 'function')
-  //     throw new Error('no method: ' + req.params.contractName)
-  //   const receipt = await method(req.body.address)
-  //   res.status(HttpStatus.OK).send()
-  // } catch (error) {
-  //   logger.error(error.message)
-  //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-  //     error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-  //   })
-  // }
 }
 
 module.exports = {
