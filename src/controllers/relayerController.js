@@ -1,14 +1,9 @@
-const HttpStatus = require('http-status-codes')
-const ethSigner = require('eth-signer')
-const PostgresDB = require('../database').postgresDB
-const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
 const relayer = require('../lib/relayer')
 
-async function callContract (req, res) {
+const relay = async (req, res) => {
   try {
     const result = await relayer.handle(req)
-    //const txHash = await relayHandler.handle(req)
     logger.info('This the transactionHash', result)
     res.status(200).json({ status: 'success', data: result })
   } catch (error) {
@@ -21,5 +16,5 @@ async function callContract (req, res) {
 }
 
 module.exports = {
-  callContract
+  relay
 }

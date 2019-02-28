@@ -35,9 +35,6 @@ const estimateGas = async (tx, from) => {
     from
   }
   let price = 3000000
-  // const types = ['uint8', 'bytes32', 'bytes32', 'address', 'bytes', 'address']
-  // console.log('decoding')
-  // console.log(web3.eth.abi.decodeParameters(types, `0x${tx.data.toString('hex')}`))
   try {
     price = await web3.eth.estimateGas(txCopy)
   } catch (err) {
@@ -127,7 +124,7 @@ const handle = async req => {
   const body = req.body || JSON.parse(req.body)
 
   if (!body.metaSignedTx) {
-    return { code: 400, message: 'metaSignedTx parameter missing' }
+    throw { code: 400, message: 'metaSignedTx parameter missing' }
   }
 
   // support hex strings starting with 0x
@@ -137,7 +134,7 @@ const handle = async req => {
 
   // Check if metaTx signature is valid
   if (!(await isMetaSignatureValid(body.metaSignedTx, body.metaNonce))) {
-    return { code: 403, message: 'MetaTx signature invalid' }
+    throw { code: 403, message: 'MetaTx signature invalid' }
   }
 
   let signedRawTx
@@ -146,7 +143,7 @@ const handle = async req => {
   } catch (error) {
     logger.error('Error signing transaction')
     logger.error(error)
-    return { code: 500, message: error.message }
+    throw { code: 500, message: error.message }
   }
 
   try {
@@ -155,7 +152,7 @@ const handle = async req => {
   } catch (error) {
     logger.error('Error on sendRawTransaction')
     logger.error(error)
-    return { code: 500, message: error.message }
+    throw { code: 500, message: error.message }
   }
 }
 
