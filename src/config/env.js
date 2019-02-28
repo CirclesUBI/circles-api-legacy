@@ -34,7 +34,9 @@ const postgres = {
 const rpcUrl = process.env.RPC_URL || 'http://127.0.0.1:8545'
 
 // API stuff
-const apiVersionString = 'v' + process.env.npm_package_version
+const apiVersionString = process.env.npm_package_version
+  ? 'v' + process.env.npm_package_version
+  : process.env.API_VERSION
 
 // relayer stuff
 const apiPrivKey = process.env.API_PRIV_KEY

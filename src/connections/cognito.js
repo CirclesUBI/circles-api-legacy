@@ -60,4 +60,13 @@ cognito.confirmAuth = authConfirmRequest => {
   })
 }
 
+cognito.deleteUser = deleteUserRequest => {
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminDeleteUser(deleteUserRequest, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
 module.exports = cognito

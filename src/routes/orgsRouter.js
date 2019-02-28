@@ -3,10 +3,16 @@ const orgsController = require('../controllers/orgsController')
 
 const router = Router()
 
-router.get('/', orgsController.all)
-router.post('/', orgsController.addOne)
-router.get('/:id', orgsController.findOne)
-router.put('/:id', orgsController.updateOne)
-router.delete('/:id', orgsController.deleteOne)
+const hasPermissionMiddleware = require('../middleware/permissions')
+
+router.get('/', hasPermissionMiddleware('ownOrgs'), orgsController.allOwn)
+router.post('/', hasPermissionMiddleware('ownOrgs'), orgsController.addOwn)
+router.get('/:id', hasPermissionMiddleware('ownOrgs'), orgsController.findOwn)
+router.put('/:id', hasPermissionMiddleware('ownOrgs'), orgsController.updateOwn)
+router.delete(
+  '/:id',
+  hasPermissionMiddleware('ownOrgs'),
+  orgsController.deleteOwn
+)
 
 module.exports = router
