@@ -2,6 +2,7 @@ const Web3 = require('web3')
 const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
 const logger = require('../lib/logger')
+
 const rpcUrl = require('../config/env').rpcUrl
 
 const web3 = new Web3(new Web3.providers.HttpProvider(rpcUrl))
@@ -23,3 +24,4 @@ module.exports = {
   HubContract,
   TxRelayContract
 }
+
