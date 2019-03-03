@@ -1,19 +1,20 @@
-const HubContract = require('../connections/blockchain')
 const logger = require('../lib/logger')
+const relayer = require('../lib/relayer')
 
-async function callContract (req, res) {
+const relay = async (req, res) => {
   try {
-    const method = HubContract.methods[req.params.contractName]
-    if (typeof method !== 'function')
-      throw new Error('no method: ' + req.params.contractName)
-    const receipt = await method(req.body.address)
-    res.status(200).send()
+    const result = await relayer.handle(req)
+    logger.info('This the transactionHash', result)
+    res.status(200).json({ status: 'success', data: result })
   } catch (error) {
-    logger.error(error.message)
-    res.sendStatus(500)
+    let code = 500
+    if (error.code) code = error.code
+    let message = error
+    if (error.message) message = error.message
+    res.status(code).json({ status: 'error', message })
   }
 }
 
 module.exports = {
-  callContract
+  relay
 }
