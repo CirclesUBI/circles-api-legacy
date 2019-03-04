@@ -23,14 +23,15 @@ exports.seed = function (knex, Promise) {
   ])
     .then(() => {
       testUser = {
-        "id": "test",
-        "email_verified": true,
-        "name": "Test User",
-        "phone_number_verified": true,
-        "phone_number": "+111111111111111111",
-        "email": "test@joincircles.net",
-        "picture": "http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png",
-        "custom:device_id": "test_device_id"
+        id: 'test',
+        email_verified: true,
+        name: 'Test User',
+        phone_number_verified: true,
+        phone_number: '+111111111111111111',
+        email: 'test@joincircles.net',
+        picture:
+          'http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png',
+        'custom:device_id': 'test_device_id'
       }
       //   id: '96b05fb0-13a1-4acb-8f39-505a7dedbcda',
       //   agreed_to_disclaimer: true, // used for legal reasons, and to denote that the user has been fully set up

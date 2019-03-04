@@ -19,7 +19,7 @@ const hasPermission = async (user, resource, action) => {
     const ac = await getPermissionDocuments().then(parsePermissions)
     let index = 0
     while (!permissionGranted && index < user['cognito:groups'].length) {
-      const role = user['cognito:groups'][index]      
+      const role = user['cognito:groups'][index]
       permissionGranted = ac
         .can(role)
         .execute(action)
