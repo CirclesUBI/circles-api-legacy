@@ -79,8 +79,7 @@ async function addOwn (req, res) {
     user = await User.query(trx)
       .where({ id: circlesUser.id })
       .first()
-    if (user)
-      return res.sendStatus(400)
+    if (user) return res.sendStatus(400)
 
     const endpointArn = await sns.createSNSEndpoint(circlesUser)
     circlesUser.device_endpoint = endpointArn

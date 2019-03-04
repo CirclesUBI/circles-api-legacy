@@ -78,7 +78,6 @@ async function updateOwn (req, res) {
       })
       .first()
     if (!notification) return res.sendStatus(404)
-
     else if (notification.owner_id !== res.locals.user.username)
       return res.sendStatus(403)
     notification = await Notification.query().patchAndFetchById(
@@ -117,7 +116,7 @@ async function deleteOwn (req, res) {
     if (!notification) return res.sendStatus(404)
     else if (notification.owner_id !== res.locals.user.username)
       return res.sendStatus(403)
-      
+
     await Notification.query()
       .delete()
       .where({ id: req.params.id })

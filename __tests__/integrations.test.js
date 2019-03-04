@@ -38,17 +38,17 @@ let testOtherOffer
 describe('Setup', () => {
   it('It has to create a new testCognitoUser', async () => {
     testUser = createFakeCognitoUser()
-    testUser.phone_number_verified = true
-    testUser.email_verified = true
-    const attribs = Object.entries(testUser).map(pair => {
+    testUser.attributes.phone_number_verified = true
+    testUser.attributes.email_verified = true
+    const attribs = Object.entries(testUser.attributes).map(pair => {
       return { Name: pair[0], Value: pair[1].toString() }
     })
 
     const createUserRequest = {
       MessageAction: 'SUPPRESS',
-      TemporaryPassword: 'test_user_pass',
+      TemporaryPassword: 'TestUserPass1!',
       UserAttributes: attribs,
-      Username: testUser.phone_number,
+      Username: testUser.username,
       UserPoolId: process.env.COGNITO_POOL_ID
     }
 
@@ -62,8 +62,8 @@ describe('Setup', () => {
     const authRequest = {
       AuthFlow: 'ADMIN_NO_SRP_AUTH',
       AuthParameters: {
-        USERNAME: testUser.phone_number,
-        PASSWORD: 'test_user_pass'
+        USERNAME: testUser.username,
+        PASSWORD: 'TestUserPass1!'
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
       UserPoolId: process.env.COGNITO_POOL_ID
@@ -79,8 +79,8 @@ describe('Setup', () => {
     const authChallengeRequest = {
       ChallengeName: 'NEW_PASSWORD_REQUIRED',
       ChallengeResponses: {
-        NEW_PASSWORD: 'df84gorij05439j',
-        USERNAME: testUser.phone_number
+        NEW_PASSWORD: 'Df84gorij05439j!',
+        USERNAME: testUser.username
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
       Session: testUser.sessionToken,
@@ -95,7 +95,7 @@ describe('Setup', () => {
 
   it('It has to confirm the new testCognitoUser is set up correctly', async () => {
     const getUserRequest = {
-      Username: testUser.phone_number,
+      Username: testUser.username,
       UserPoolId: process.env.COGNITO_POOL_ID
     }
 
@@ -142,6 +142,8 @@ describe('Setup', () => {
       )
       adminCognitoUser.UserAttributes['custom:device_id'] = 'test_device_id'
       adminCognitoUser.UserAttributes.id = adminCognitoUser.Username
+
+      console.log('adminCognitoUser', adminCognitoUser)
     })
   })
 })
@@ -394,27 +396,27 @@ describe(
       })
     })
 
-    describe('Relayer API', () => {
-      it('It should call a specific contract on POST', async () => {
-        // const spyFn = jest.spyOn(HubContract, signup)
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/signup')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    // describe('Relayer API', () => {
+    //   it('It should call a specific contract on POST', async () => {
+    //     // const spyFn = jest.spyOn(HubContract, signup)
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/signup')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(200)
-        // expect(spyFn).toHaveBeenCalled()
-      })
+    //     expect(res.statusCode).toEqual(200)
+    //     // expect(spyFn).toHaveBeenCalled()
+    //   })
 
-      it('It should error if non-existant contract called on POST', async () => {
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/banana')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    //   it('It should error if non-existant contract called on POST', async () => {
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/banana')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(500)
-      })
-    })
+    //     expect(res.statusCode).toEqual(500)
+    //   })
+    // })
 
     describe('Teardown', () => {
       it('It should delete a specific /users/{user_id} on DELETE', async () => {
@@ -467,7 +469,7 @@ describe(
           AuthFlow: 'ADMIN_NO_SRP_AUTH',
           AuthParameters: {
             USERNAME: testCognitoUser.Username,
-            PASSWORD: 'df84gorij05439j'
+            PASSWORD: 'Df84gorij05439j!'
           },
           ClientId: process.env.COGNITO_CLIENT_ID_API,
           UserPoolId: process.env.COGNITO_POOL_ID
@@ -817,7 +819,7 @@ describe(
 
       it('It should delete the testCognitoUser', async () => {
         const deleteUserRequest = {
-          Username: testUser.phone_number,
+          Username: testUser.username,
           UserPoolId: process.env.COGNITO_POOL_ID
         }
 

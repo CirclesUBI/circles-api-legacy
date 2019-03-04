@@ -13,7 +13,8 @@ const cognitoPoolId = process.env.COGNITO_POOL_ID
 const cognitoPoolRegion = process.env.COGNITO_POOL_REGION
 const androidGCMPlatformArn = process.env.ANDROID_GCM_PLATFORM_ARN
 
-//  https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_198tc9lcH/.well-known/jwks.json
+// https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_hqooY4ZrH/.well-known/jwks.json
+// PICK THE SECOND ONE!!!!
 const cognitoPoolJWTToken = {
   alg: 'RS256',
   e: 'AQAB',
@@ -31,17 +32,6 @@ const postgres = {
   database: process.env.PGDATABASE || 'postgres'
 }
 
-// fuel stuff
-const fuelConfig = {
-  privateKey: process.env.PRIVATE_KEY.slice(2),
-  rpcUrl: process.env.RPC_URL,
-  fuelUrl: process.env.FUEL_URL,
-  network: process.env.NETWORK,
-  txRelayAddress: process.env.TX_RELAY_ADDRESS,
-  txSenderAddress: process.env.GAS_PROVIDER_ADDRESS,
-  whiteListAddress: '0x0000000000000000000000000000000000000000'
-}
-
 // API stuff
 const apiVersionString = process.env.npm_package_version
   ? 'v' + process.env.npm_package_version
@@ -55,6 +45,5 @@ module.exports = {
   cognitoPoolJWTToken,
   cognitoPoolRegion,
   androidGCMPlatformArn,
-  postgres,
-  fuelConfig
+  postgres
 }
