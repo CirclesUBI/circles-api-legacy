@@ -37,6 +37,9 @@ const apiVersionString = process.env.npm_package_version
   ? 'v' + process.env.npm_package_version
   : process.env.API_VERSION
 
+// relayer stuff
+const apiPrivKey = process.env.API_PRIV_KEY
+
 module.exports = {
   apiVersionString,
   port,
