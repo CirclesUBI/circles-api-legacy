@@ -1,7 +1,8 @@
 const convertCognitoToCirclesUser = cognitoUser => {
   return {
     agreed_to_disclaimer: false,
-    id: cognitoUser.sub,
+    id: cognitoUser.id,
+    sub: cognitoUser.sub,    
     device_id: cognitoUser['custom:device_id'],
     email: cognitoUser.email,
     display_name: cognitoUser.name,

@@ -14,7 +14,7 @@ const authMiddleWare = (req, res, next) => {
       decodedToken
     ) {
       if (err) {
-        return res.sendStatus(402)
+        return res.sendStatus(403)
       }
       res.locals.user = decodedToken
       next()
@@ -22,7 +22,7 @@ const authMiddleWare = (req, res, next) => {
   } else {
     // if there is no token
     // return an error()
-    return res.status(402).send({ error: 'Must provide accesstoken in header' })
+    return res.status(403).send({ error: 'Must provide accesstoken in header' })
   }
 }
 

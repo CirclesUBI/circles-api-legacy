@@ -13,7 +13,8 @@ const cognitoPoolId = process.env.COGNITO_POOL_ID
 const cognitoPoolRegion = process.env.COGNITO_POOL_REGION
 const androidGCMPlatformArn = process.env.ANDROID_GCM_PLATFORM_ARN
 
-//  https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_198tc9lcH/.well-known/jwks.json
+// https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_hqooY4ZrH/.well-known/jwks.json
+// PICK THE SECOND ONE!!!!
 const cognitoPoolJWTToken = {
   alg: 'RS256',
   e: 'AQAB',
