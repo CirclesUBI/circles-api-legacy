@@ -34,6 +34,7 @@ let testOtherNotif
 let testOffer
 let testOwnedOffer
 let testOtherOffer
+let testUserPassword
 
 describe('Setup', () => {
   it('It has to create a new testCognitoUser', async () => {
@@ -44,9 +45,10 @@ describe('Setup', () => {
       return { Name: pair[0], Value: pair[1].toString() }
     })
 
+    testUserPassword = faker.internet.password(16, false, null, '%1')
     const createUserRequest = {
       MessageAction: 'SUPPRESS',
-      TemporaryPassword: 'TestUserPass1!',
+      TemporaryPassword: testUserPassword,
       UserAttributes: attribs,
       Username: testUser.username,
       UserPoolId: process.env.COGNITO_POOL_ID
@@ -63,7 +65,7 @@ describe('Setup', () => {
       AuthFlow: 'ADMIN_NO_SRP_AUTH',
       AuthParameters: {
         USERNAME: testUser.username,
-        PASSWORD: 'TestUserPass1!'
+        PASSWORD: testUserPassword
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
       UserPoolId: process.env.COGNITO_POOL_ID
@@ -76,10 +78,12 @@ describe('Setup', () => {
   })
 
   it('It has to set the new testCognitoUser password', async () => {
+    testUserPassword = faker.internet.password(16, false, null, '!2')
+
     const authChallengeRequest = {
       ChallengeName: 'NEW_PASSWORD_REQUIRED',
       ChallengeResponses: {
-        NEW_PASSWORD: 'Df84gorij05439j!',
+        NEW_PASSWORD: testUserPassword,
         USERNAME: testUser.username
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
@@ -469,7 +473,7 @@ describe(
           AuthFlow: 'ADMIN_NO_SRP_AUTH',
           AuthParameters: {
             USERNAME: testCognitoUser.Username,
-            PASSWORD: 'Df84gorij05439j!'
+            PASSWORD: testUserPassword
           },
           ClientId: process.env.COGNITO_CLIENT_ID_API,
           UserPoolId: process.env.COGNITO_POOL_ID

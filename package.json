@@ -13,7 +13,7 @@
     "migrate:all": "npm run migrate:up && npm run migrate:down && npm run migrate:seed",
     "dev": "nodemon -r dotenv/config src/app.js",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev",
-    "test": "cls && jest --forceExit --setupFiles dotenv/config",
+    "test": "jest --forceExit --setupFiles dotenv/config",
     "retest": "npm run migrate:down && npm run migrate:up && npm test",
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
     "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
