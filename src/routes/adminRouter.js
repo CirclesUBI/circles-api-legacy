@@ -3,7 +3,6 @@ const offersController = require('../controllers/offersController')
 const usersController = require('../controllers/usersController')
 const orgsController = require('../controllers/orgsController')
 const notifController = require('../controllers/notifsController')
-const relayerController = require('../controllers/relayerController')
 
 const hasPermissionMiddleware = require('../middleware/permissions')
 
@@ -104,8 +103,5 @@ router.delete(
   hasPermissionMiddleware('allNotifs'),
   notifController.deleteOne
 )
-
-// Relayer
-router.post('/relayer/:contractName', relayerController.callContract)
 
 module.exports = router

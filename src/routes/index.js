@@ -8,7 +8,6 @@ const usersRouter = require('./usersRouter')
 const orgsRouter = require('./orgsRouter')
 const notifsRouter = require('./notifsRouter')
 const offersRouter = require('./offersRouter')
-const relayerRouter = require('./relayerRouter')
 
 const apiVersionString = require('../config/env').apiVersionString
 
@@ -27,5 +26,4 @@ module.exports = function (app) {
   app.use('/' + apiVersionString + '/orgs', orgsRouter)
   app.use('/' + apiVersionString + '/notifs', notifsRouter)
   app.use('/' + apiVersionString + '/offers', offersRouter)
-  app.use('/' + apiVersionString + '/relayer', relayerRouter)
 }
