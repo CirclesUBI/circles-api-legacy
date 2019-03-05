@@ -145,7 +145,7 @@ describe('Setup', () => {
         res.UserAttributes
       )
       adminCognitoUser.UserAttributes['custom:device_id'] = 'test_device_id'
-      adminCognitoUser.UserAttributes.username = adminCognitoUser.Username      
+      adminCognitoUser.UserAttributes.username = adminCognitoUser.Username
     })
   })
 })
@@ -186,7 +186,9 @@ describe(
 
       it('It should return a specific /users/{user_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub)
+          .get(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -200,7 +202,9 @@ describe(
       it('It should update a specific /users/{user_id} on PUT', async () => {
         const email = 'user@test.com'
         const { res, req } = await request(app)
-          .put(adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub)
+          .put(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .send({ email: email })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -425,7 +429,9 @@ describe(
     describe('Teardown', () => {
       it('It should delete a specific /users/{user_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub)
+          .delete(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -611,7 +617,9 @@ describe(
         expect(res.text).toBeDefined()
         let notification = JSON.parse(res.text)
         expect(notification.description).toEqual(testOwnedNotif.description)
-        expect(notification.owner_id).toEqual(testCognitoUser.UserAttributes.sub)
+        expect(notification.owner_id).toEqual(
+          testCognitoUser.UserAttributes.sub
+        )
         testOwnedNotif.id = notification.id
 
         let secondNotif = createFakeNotification()
@@ -626,7 +634,9 @@ describe(
         expect(secondReq.res.text).toBeDefined()
         notification = JSON.parse(secondReq.res.text)
         expect(notification.description).toEqual(secondNotif.description)
-        expect(notification.owner_id).toEqual(testCognitoUser.UserAttributes.sub)
+        expect(notification.owner_id).toEqual(
+          testCognitoUser.UserAttributes.sub
+        )
       })
 
       it('... and a not owned /notifs on POST with adminUser', async () => {
@@ -641,7 +651,9 @@ describe(
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
-        expect(notification.owner_id).toEqual(adminCognitoUser.UserAttributes.sub)
+        expect(notification.owner_id).toEqual(
+          adminCognitoUser.UserAttributes.sub
+        )
         testOtherNotif.id = notification.id
       })
 

@@ -74,8 +74,7 @@ async function updateOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) return res.sendStatus(404)
-    else if (offer.owner_id !== res.locals.user.sub)
-      return res.sendStatus(403)
+    else if (offer.owner_id !== res.locals.user.sub) return res.sendStatus(403)
 
     offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
     res.status(200).send(offer)

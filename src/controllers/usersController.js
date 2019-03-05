@@ -118,10 +118,7 @@ async function updateOwn (req, res) {
       .first()
     if (!user) return res.sendStatus(404)
 
-    user = await User.query().patchAndFetchById(
-      res.locals.user.sub,
-      req.body
-    )
+    user = await User.query().patchAndFetchById(res.locals.user.sub, req.body)
     res.status(200).send(user)
   } catch (error) {
     logger.error(error.message)
