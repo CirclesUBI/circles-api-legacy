@@ -106,6 +106,6 @@ router.delete(
 )
 
 // Relayer
-router.post('/relayer/:contractName', relayerController.callContract)
+router.post('/relay/', relayerController.relay)
 
 module.exports = router

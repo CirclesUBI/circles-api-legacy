@@ -1,7 +1,6 @@
 const Web3 = require('web3')
 const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
-const logger = require('../lib/logger')
 
 const rpcUrl = require('../config/env').rpcUrl
 
