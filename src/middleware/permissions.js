@@ -18,12 +18,13 @@ const hasPermission = async (user, resource, action) => {
     let permissionGranted = false
     const ac = await getPermissionDocuments().then(parsePermissions)
     let index = 0
+    let role = 'norole'
     while (
       user['cognito:groups'] &&
       !permissionGranted &&
       index < user['cognito:groups'].length
     ) {
-      const role = user['cognito:groups'][index]
+      role = user['cognito:groups'][index]
       permissionGranted = ac
         .can(role)
         .execute(action)
@@ -34,9 +35,7 @@ const hasPermission = async (user, resource, action) => {
     }
 
     logger.info(
-      `Permissions: ${user['cognito:groups'].join(
-        ','
-      )} ${action} on ${resource} : ${
+      `Permissions: ${role} ${action} on ${resource} : ${
         permissionGranted ? '[GRANTED]' : '[FORBIDDEN]'
       }`
     )
