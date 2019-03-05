@@ -70,7 +70,7 @@ async function addOne (req, res) {
 }
 
 async function addOwn (req, res) {
-  if (req.body.id !== res.locals.user.username) return res.sendStatus(403)
+  if (req.body.sub !== res.locals.user.sub) return res.sendStatus(403)
 
   let user
   const trx = await PostgresDB.startTransaction()
