@@ -30,6 +30,7 @@ const hasPermission = async (user, resource, action) => {
         .on(resource).granted
         ? true
         : false
+      index++
     }
 
     logger.info(
