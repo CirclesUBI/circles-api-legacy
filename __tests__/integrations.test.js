@@ -11,7 +11,7 @@ const {
   createFakeNotification
 } = require('../src/seeds/helpers/fakers')
 
-const versionString = '/v1.1.2' // + process.env.npm_package_version
+const versionString = '/v' + process.env.npm_package_version
 const adminVersionString = versionString + '/admin'
 
 convertToObjectProperties = array => {
