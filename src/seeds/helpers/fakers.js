@@ -15,11 +15,14 @@ const createFakeUser = () => {
 
 const createFakeCognitoUser = () => {
   return {
-    name: faker.name.firstName(),
-    email: faker.internet.email(),
-    picture: faker.image.avatar(),
-    'custom:device_id': faker.random.uuid(),
-    phone_number: faker.helpers.replaceSymbolWithNumber('+49###########')
+    username: faker.internet.userName(),
+    attributes: {
+      name: faker.name.firstName(),
+      email: faker.internet.email(),
+      picture: faker.image.avatar(),
+      'custom:device_id': faker.random.uuid(),
+      phone_number: faker.helpers.replaceSymbolWithNumber('+49###########')
+    }
   }
 }
 
