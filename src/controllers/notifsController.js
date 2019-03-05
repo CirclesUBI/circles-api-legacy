@@ -15,7 +15,7 @@ async function all (req, res) {
 async function allOwn (req, res) {
   try {
     const notifications = await Notification.query().where({
-      owner_id: res.locals.user.username
+      owner_id: res.locals.user.sub
     })
     if (!notifications.length) res.sendStatus(404)
     res.status(200).send(notifications)
@@ -78,7 +78,7 @@ async function updateOwn (req, res) {
       })
       .first()
     if (!notification) return res.sendStatus(404)
-    else if (notification.owner_id !== res.locals.user.username)
+    else if (notification.owner_id !== res.locals.user.sub)
       return res.sendStatus(403)
     notification = await Notification.query().patchAndFetchById(
       req.params.id,
@@ -114,7 +114,7 @@ async function deleteOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!notification) return res.sendStatus(404)
-    else if (notification.owner_id !== res.locals.user.username)
+    else if (notification.owner_id !== res.locals.user.sub)
       return res.sendStatus(403)
 
     await Notification.query()

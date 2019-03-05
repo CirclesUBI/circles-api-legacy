@@ -19,7 +19,7 @@ async function all (req, res) {
 async function own (req, res) {
   try {
     const user = await User.query()
-      .where({ id: res.locals.user.username })
+      .where({ id: res.locals.user.sub })
       .first()
     if (!user) res.sendStatus(404)
     res.status(200).send(user)
@@ -114,12 +114,12 @@ async function updateOwn (req, res) {
   let user
   try {
     user = await User.query()
-      .where({ id: res.locals.user.username })
+      .where({ id: res.locals.user.sub })
       .first()
     if (!user) return res.sendStatus(404)
 
     user = await User.query().patchAndFetchById(
-      res.locals.user.username,
+      res.locals.user.sub,
       req.body
     )
     res.status(200).send(user)
@@ -140,7 +140,7 @@ async function deleteOne (req, res) {
     await user
       .$relatedQuery('organizations')
       .delete()
-      .where({ owner_id: res.locals.user.username })
+      .where({ owner_id: res.locals.user.sub })
     await User.query(trx)
       .delete()
       .where({ id: req.params.id })
@@ -157,17 +157,17 @@ async function deleteOwn (req, res) {
   const trx = await PostgresDB.startTransaction()
   try {
     const user = await User.query(trx)
-      .where({ id: res.locals.user.username })
+      .where({ id: res.locals.user.sub })
       .first()
     if (!user) return res.sendStatus(404)
 
     await user
       .$relatedQuery('organizations')
       .delete()
-      .where({ owner_id: res.locals.user.username })
+      .where({ owner_id: res.locals.user.sub })
     await User.query(trx)
       .delete()
-      .where({ id: res.locals.user.username })
+      .where({ id: res.locals.user.sub })
     await trx.commit()
     res.status(200).send()
   } catch (error) {

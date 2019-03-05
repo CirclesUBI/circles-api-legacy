@@ -16,7 +16,7 @@ async function all (req, res) {
 async function allOwn (req, res) {
   try {
     const organizations = await Organization.query().where({
-      owner_id: res.locals.user.username
+      owner_id: res.locals.user.sub
     })
     if (!organizations.length) return res.sendStatus(404)
     res.status(200).send(organizations)
@@ -48,7 +48,7 @@ async function findOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!organization) return res.sendStatus(404)
-    else if (organization.owner_id !== res.locals.user.username)
+    else if (organization.owner_id !== res.locals.user.sub)
       return res.sendStatus(403)
 
     await organization.$relatedQuery('offers')
@@ -77,7 +77,7 @@ async function addOne (req, res) {
 }
 
 async function addOwn (req, res) {
-  if (req.body.owner_id !== res.locals.user.username) return res.sendStatus(403)
+  if (req.body.owner_id !== res.locals.user.sub) return res.sendStatus(403)
 
   let organization
   try {
@@ -120,7 +120,7 @@ async function updateOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!organization) return res.sendStatus(404)
-    else if (organization.owner_id !== res.locals.user.username)
+    else if (organization.owner_id !== res.locals.user.sub)
       return res.sendStatus(403)
 
     organization = await Organization.query().patchAndFetchById(
@@ -161,7 +161,7 @@ async function deleteOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!organization) return res.sendStatus(404)
-    else if (organization.owner_id !== res.locals.user.username)
+    else if (organization.owner_id !== res.locals.user.sub)
       return res.sendStatus(403)
 
     await Organization.query(trx)
