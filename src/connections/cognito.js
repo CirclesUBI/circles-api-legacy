@@ -9,7 +9,7 @@ cognito.addToCognitoGroup = circlesUser => {
   const params = {
     GroupName: groupName,
     UserPoolId: cognitoPoolId,
-    Username: circlesUser.id
+    Username: circlesUser.username
   }
   return new Promise((resolve, reject) => {
     cognitoISP.adminAddUserToGroup(params, (err, data) => {

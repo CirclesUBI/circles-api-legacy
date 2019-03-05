@@ -34,21 +34,23 @@ let testOtherNotif
 let testOffer
 let testOwnedOffer
 let testOtherOffer
+let testUserPassword
 
 describe('Setup', () => {
   it('It has to create a new testCognitoUser', async () => {
     testUser = createFakeCognitoUser()
-    testUser.phone_number_verified = true
-    testUser.email_verified = true
-    const attribs = Object.entries(testUser).map(pair => {
+    testUser.attributes.phone_number_verified = true
+    testUser.attributes.email_verified = true
+    const attribs = Object.entries(testUser.attributes).map(pair => {
       return { Name: pair[0], Value: pair[1].toString() }
     })
 
+    testUserPassword = faker.internet.password(16, false, null, '%1')
     const createUserRequest = {
       MessageAction: 'SUPPRESS',
-      TemporaryPassword: 'test_user_pass',
+      TemporaryPassword: testUserPassword,
       UserAttributes: attribs,
-      Username: testUser.phone_number,
+      Username: testUser.username,
       UserPoolId: process.env.COGNITO_POOL_ID
     }
 
@@ -62,8 +64,8 @@ describe('Setup', () => {
     const authRequest = {
       AuthFlow: 'ADMIN_NO_SRP_AUTH',
       AuthParameters: {
-        USERNAME: testUser.phone_number,
-        PASSWORD: 'test_user_pass'
+        USERNAME: testUser.username,
+        PASSWORD: testUserPassword
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
       UserPoolId: process.env.COGNITO_POOL_ID
@@ -76,11 +78,13 @@ describe('Setup', () => {
   })
 
   it('It has to set the new testCognitoUser password', async () => {
+    testUserPassword = faker.internet.password(16, false, null, '!2')
+
     const authChallengeRequest = {
       ChallengeName: 'NEW_PASSWORD_REQUIRED',
       ChallengeResponses: {
-        NEW_PASSWORD: 'df84gorij05439j',
-        USERNAME: testUser.phone_number
+        NEW_PASSWORD: testUserPassword,
+        USERNAME: testUser.username
       },
       ClientId: process.env.COGNITO_CLIENT_ID_API,
       Session: testUser.sessionToken,
@@ -95,7 +99,7 @@ describe('Setup', () => {
 
   it('It has to confirm the new testCognitoUser is set up correctly', async () => {
     const getUserRequest = {
-      Username: testUser.phone_number,
+      Username: testUser.username,
       UserPoolId: process.env.COGNITO_POOL_ID
     }
 
@@ -106,7 +110,7 @@ describe('Setup', () => {
       testCognitoUser.UserAttributes = convertToObjectProperties(
         res.UserAttributes
       )
-      testCognitoUser.UserAttributes.id = testCognitoUser.Username
+      testCognitoUser.UserAttributes.username = testCognitoUser.Username
     })
   })
 
@@ -141,7 +145,7 @@ describe('Setup', () => {
         res.UserAttributes
       )
       adminCognitoUser.UserAttributes['custom:device_id'] = 'test_device_id'
-      adminCognitoUser.UserAttributes.id = adminCognitoUser.Username
+      adminCognitoUser.UserAttributes.username = adminCognitoUser.Username
     })
   })
 })
@@ -166,7 +170,8 @@ describe(
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const user = JSON.parse(res.text)
-        expect(user.id).toEqual(adminCognitoUser.Username)
+        expect(user.username).toEqual(adminCognitoUser.Username)
+        expect(user.id).toEqual(adminCognitoUser.UserAttributes.sub)
       })
 
       it('It should return all /users on GET', async () => {
@@ -181,20 +186,25 @@ describe(
 
       it('It should return a specific /users/{user_id} on GET', async () => {
         const { res, req } = await request(app)
-          .get(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .get(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
         expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const user = JSON.parse(res.text)
-        expect(user.id).toEqual(adminCognitoUser.Username)
+        expect(user.username).toEqual(adminCognitoUser.Username)
+        expect(user.id).toEqual(adminCognitoUser.UserAttributes.sub)
       })
 
       it('It should update a specific /users/{user_id} on PUT', async () => {
         const email = 'user@test.com'
         const { res, req } = await request(app)
-          .put(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .put(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .send({ email: email })
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
@@ -209,8 +219,8 @@ describe(
     describe('Org API', () => {
       it('It should create a specific /orgs/ on POST', async () => {
         testAdminOrg = createFakeOrganization()
-        testAdminOrg.owner_id = adminCognitoUser.Username
-        // testAdminOrg.members = [adminCognitoUser.Username]
+        testAdminOrg.owner_id = adminCognitoUser.UserAttributes.sub
+        // testAdminOrg.members = [adminCognitoUser.UserAttributes.sub]
         const { res, req } = await request(app)
           .post(adminVersionString + '/orgs')
           .send(testAdminOrg)
@@ -271,7 +281,7 @@ describe(
     describe('Notification API', () => {
       it('It should create a specific /notifs/ on POST', async () => {
         testOwnedNotif = createFakeNotification()
-        testOwnedNotif.owner_id = adminCognitoUser.Username
+        testOwnedNotif.owner_id = adminCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
           .send(testOwnedNotif)
@@ -334,7 +344,7 @@ describe(
     describe('Offer API', () => {
       it('It should create a specific /offers/ on POST', async () => {
         testOffer = createFakeOffer()
-        testOffer.owner_id = adminCognitoUser.Username
+        testOffer.owner_id = adminCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(adminVersionString + '/offers')
           .send(testOffer)
@@ -394,32 +404,34 @@ describe(
       })
     })
 
-    describe('Relayer API', () => {
-      it('It should call a specific contract on POST', async () => {
-        // const spyFn = jest.spyOn(HubContract, signup)
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/signup')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    // describe('Relayer API', () => {
+    //   it('It should call a specific contract on POST', async () => {
+    //     // const spyFn = jest.spyOn(HubContract, signup)
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/signup')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(200)
-        // expect(spyFn).toHaveBeenCalled()
-      })
+    //     expect(res.statusCode).toEqual(200)
+    //     // expect(spyFn).toHaveBeenCalled()
+    //   })
 
-      it('It should error if non-existant contract called on POST', async () => {
-        const { res, req } = await request(app)
-          .post(adminVersionString + '/relayer/banana')
-          .set('Accept', 'application/json')
-          .set('accesstoken', adminUserAccessToken)
+    //   it('It should error if non-existant contract called on POST', async () => {
+    //     const { res, req } = await request(app)
+    //       .post(adminVersionString + '/relayer/banana')
+    //       .set('Accept', 'application/json')
+    //       .set('accesstoken', adminUserAccessToken)
 
-        expect(res.statusCode).toEqual(500)
-      })
-    })
+    //     expect(res.statusCode).toEqual(500)
+    //   })
+    // })
 
     describe('Teardown', () => {
       it('It should delete a specific /users/{user_id} on DELETE', async () => {
         const { res, req } = await request(app)
-          .delete(adminVersionString + '/users/' + adminCognitoUser.Username)
+          .delete(
+            adminVersionString + '/users/' + adminCognitoUser.UserAttributes.sub
+          )
           .set('Accept', 'application/json')
           .set('accesstoken', adminUserAccessToken)
 
@@ -459,7 +471,8 @@ describe(
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const user = JSON.parse(res.text)
-        expect(user.id).toEqual(testCognitoUser.Username)
+        expect(user.username).toEqual(testCognitoUser.Username)
+        expect(user.id).toEqual(testCognitoUser.UserAttributes.sub)
       })
 
       it('It should then get a new token with groups included', async () => {
@@ -467,7 +480,7 @@ describe(
           AuthFlow: 'ADMIN_NO_SRP_AUTH',
           AuthParameters: {
             USERNAME: testCognitoUser.Username,
-            PASSWORD: 'df84gorij05439j'
+            PASSWORD: testUserPassword
           },
           ClientId: process.env.COGNITO_CLIENT_ID_API,
           UserPoolId: process.env.COGNITO_POOL_ID
@@ -488,7 +501,8 @@ describe(
         expect(res.statusCode).toEqual(200)
         expect(res.text).toBeDefined()
         const user = JSON.parse(res.text)
-        expect(user.id).toEqual(testCognitoUser.Username)
+        expect(user.username).toEqual(testCognitoUser.Username)
+        expect(user.id).toEqual(testCognitoUser.UserAttributes.sub)
       })
 
       it('It should update its own /users on PUT', async () => {
@@ -509,7 +523,7 @@ describe(
     describe('Org API', () => {
       it('It should create its own /orgs/ on POST', async () => {
         testUserOrg = createFakeOrganization()
-        testUserOrg.owner_id = testCognitoUser.Username
+        testUserOrg.owner_id = testCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(versionString + '/orgs')
           .send(testUserOrg)
@@ -524,7 +538,7 @@ describe(
 
       it('It should create a second /orgs/ on POST', async () => {
         let secondOrg = createFakeOrganization()
-        secondOrg.owner_id = testCognitoUser.Username
+        secondOrg.owner_id = testCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(versionString + '/orgs')
           .send(secondOrg)
@@ -548,7 +562,7 @@ describe(
         const orgs = JSON.parse(res.text)
         for (let i = 0; i < orgs.length; i++) {
           const org = orgs[i]
-          expect(org.owner_id).toEqual(testCognitoUser.Username)
+          expect(org.owner_id).toEqual(testCognitoUser.UserAttributes.sub)
         }
       })
 
@@ -562,7 +576,7 @@ describe(
         expect(res.text).toBeDefined()
         const org = JSON.parse(res.text)
         expect(org.id).toEqual(testUserOrg.id)
-        expect(org.owner_id).toEqual(testCognitoUser.Username)
+        expect(org.owner_id).toEqual(testCognitoUser.UserAttributes.sub)
       })
 
       it('It should update its own /orgs/{organization_id} on PUT', async () => {
@@ -592,7 +606,7 @@ describe(
     describe('Notification API', () => {
       it('First it should add two owned /notifs on POST with adminUser', async () => {
         testOwnedNotif = createFakeNotification()
-        testOwnedNotif.owner_id = testCognitoUser.Username
+        testOwnedNotif.owner_id = testCognitoUser.UserAttributes.sub
         let { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
           .send(testOwnedNotif)
@@ -603,11 +617,13 @@ describe(
         expect(res.text).toBeDefined()
         let notification = JSON.parse(res.text)
         expect(notification.description).toEqual(testOwnedNotif.description)
-        expect(notification.owner_id).toEqual(testCognitoUser.Username)
+        expect(notification.owner_id).toEqual(
+          testCognitoUser.UserAttributes.sub
+        )
         testOwnedNotif.id = notification.id
 
         let secondNotif = createFakeNotification()
-        secondNotif.owner_id = testCognitoUser.Username
+        secondNotif.owner_id = testCognitoUser.UserAttributes.sub
         secondReq = await request(app)
           .post(adminVersionString + '/notifs')
           .send(secondNotif)
@@ -618,12 +634,14 @@ describe(
         expect(secondReq.res.text).toBeDefined()
         notification = JSON.parse(secondReq.res.text)
         expect(notification.description).toEqual(secondNotif.description)
-        expect(notification.owner_id).toEqual(testCognitoUser.Username)
+        expect(notification.owner_id).toEqual(
+          testCognitoUser.UserAttributes.sub
+        )
       })
 
       it('... and a not owned /notifs on POST with adminUser', async () => {
         testOtherNotif = createFakeNotification()
-        testOtherNotif.owner_id = adminCognitoUser.Username
+        testOtherNotif.owner_id = adminCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(adminVersionString + '/notifs')
           .send(testOtherNotif)
@@ -633,7 +651,9 @@ describe(
         expect(res.statusCode).toEqual(201)
         expect(res.text).toBeDefined()
         const notification = JSON.parse(res.text)
-        expect(notification.owner_id).toEqual(adminCognitoUser.Username)
+        expect(notification.owner_id).toEqual(
+          adminCognitoUser.UserAttributes.sub
+        )
         testOtherNotif.id = notification.id
       })
 
@@ -722,7 +742,7 @@ describe(
 
       it('It should create its own /offers/ on POST', async () => {
         testOwnedOffer = createFakeOffer()
-        testOwnedOffer.owner_id = testCognitoUser.Username
+        testOwnedOffer.owner_id = testCognitoUser.UserAttributes.sub
         const { res, req } = await request(app)
           .post(versionString + '/offers')
           .send(testOwnedOffer)
@@ -746,7 +766,7 @@ describe(
         expect(res.text).toBeDefined()
         const offer = JSON.parse(res.text)
         expect(offer.title).toEqual(testOwnedOffer.title)
-        expect(offer.owner_id).toEqual(testCognitoUser.Username)
+        expect(offer.owner_id).toEqual(testCognitoUser.UserAttributes.sub)
       })
 
       it('It should be able to return other /offers/{offer_id} on GET', async () => {
@@ -817,7 +837,7 @@ describe(
 
       it('It should delete the testCognitoUser', async () => {
         const deleteUserRequest = {
-          Username: testUser.phone_number,
+          Username: testUser.username,
           UserPoolId: process.env.COGNITO_POOL_ID
         }
 

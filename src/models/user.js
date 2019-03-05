@@ -14,6 +14,7 @@ module.exports = class User extends CirclesModel {
       type: 'object',
       properties: {
         id: { type: 'string' },
+        username: { type: 'string' },
         agreed_to_disclaimer: { type: 'boolean' }, // used for legal reasons, and to denote that the user has been fully set up
         created_at: { type: 'object' },
         updated_at: { type: 'object' },

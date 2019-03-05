@@ -40,7 +40,7 @@ async function addOne (req, res) {
 }
 
 async function addOwn (req, res) {
-  if (req.body.owner_id !== res.locals.user.username) return res.sendStatus(403)
+  if (req.body.owner_id !== res.locals.user.sub) return res.sendStatus(403)
 
   try {
     const offer = await Offer.query().insert(req.body)
@@ -74,8 +74,7 @@ async function updateOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) return res.sendStatus(404)
-    else if (offer.owner_id !== res.locals.user.username)
-      return res.sendStatus(403)
+    else if (offer.owner_id !== res.locals.user.sub) return res.sendStatus(403)
 
     offer = await Offer.query().patchAndFetchById(req.params.id, req.body)
     res.status(200).send(offer)
@@ -108,8 +107,8 @@ async function deleteOwn (req, res) {
       .where({ id: req.params.id })
       .first()
     if (!offer) res.sendStatus(404)
-    else if (offer.owner_id !== res.locals.user.username) res.sendStatus(403)
-    
+    else if (offer.owner_id !== res.locals.user.sub) res.sendStatus(403)
+
     await Offer.query()
       .delete()
       .where({ id: req.params.id })
