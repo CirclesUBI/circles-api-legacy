@@ -163,7 +163,7 @@ async function deleteOwn (req, res) {
     if (!organization) return res.sendStatus(404)
     else if (organization.owner_id !== res.locals.user.username)
       return res.sendStatus(403)
-      
+
     await Organization.query(trx)
       .delete()
       .where({ id: req.params.id })
