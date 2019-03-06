@@ -31,7 +31,7 @@ router.get('/', hasPermissionMiddleware('ownUser'), usersController.own)
  * @apiGroup User
  * @apiVersion 1.1.2
  * @apiPermission none
- * 
+ *
  * @apiDescription If the User record already exists it will return the record
  *
  * @apiSuccess (Success 201) {String} agreed_to_disclaimer Legal requirement.
@@ -45,7 +45,7 @@ router.get('/', hasPermissionMiddleware('ownUser'), usersController.own)
  * @apiSuccess (Success 201) {String} profile_pic_url Url of profile pic (stored on S3).
  * @apiSuccess (Success 201) {String} updated_at  Record update date.
  * @apiSuccess (Success 201) {String} username  Username of the User.
- * 
+ *
  * @apiSuccess (Success 200) {String} agreed_to_disclaimer Legal requirement.
  * @apiSuccess (Success 200) {String} created_at  Record creation date.
  * @apiSuccess (Success 200) {String} device_endpoint Notification endpoint.
