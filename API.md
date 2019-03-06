@@ -46,7 +46,7 @@ CRUD app for user and organization profiles
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
-|  Notification | Number | <p>Id.</p>|
+|  notifId | Number | <p>Notification Id.</p>|
 
 
 
@@ -94,7 +94,7 @@ CRUD app for user and organization profiles
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
-|  Notification | Number | <p>Id.</p>|
+|  notifId | Number | <p>Notification Id.</p>|
 
 
 
@@ -126,7 +126,7 @@ CRUD app for user and organization profiles
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
-|  Offer | Number | <p>Id.</p>|
+|  offerId | Number | <p>Offer Id.</p>|
 
 
 
@@ -215,7 +215,7 @@ CRUD app for user and organization profiles
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
-|  Offer | Number | <p>Id.</p>|
+|  offerId | Number | <p>Offer Id.</p>|
 
 
 
