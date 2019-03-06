@@ -19,7 +19,7 @@
     "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
     "format": "prettier-standard src/**/*.js __tests__/**/*.js",
     "signTx": "node -r dotenv/config scripts/signTx.js",
-    "docs": "apidoc -i src/ -o doc/ && apidoc-markdown2 -p ./doc -o API.md && concat -o README.md README.md API.md"
+    "docs": "apidoc -i src/ -o doc/ && apidoc-markdown2 -p ./doc -o API.md && concat -o README.md README_HEADER.md API.md"
   },
   "jest": {
     "verbose": true,
