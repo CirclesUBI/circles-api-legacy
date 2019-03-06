@@ -3,6 +3,6 @@ const relayerController = require('../controllers/relayerController')
 
 const router = Express.Router()
 
-router.post('/:contractName', relayerController.callContract)
+router.post('/relay/', relayerController.relay)
 
 module.exports = router

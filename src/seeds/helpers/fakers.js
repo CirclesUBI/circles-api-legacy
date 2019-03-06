@@ -14,9 +14,11 @@ const createFakeUser = () => {
 }
 
 const createFakeCognitoUser = () => {
+  const username = faker.internet.userName()
   return {
-    username: faker.internet.userName(),
+    username: username,
     attributes: {
+      username: username,
       name: faker.name.firstName(),
       email: faker.internet.email(),
       picture: faker.image.avatar(),
