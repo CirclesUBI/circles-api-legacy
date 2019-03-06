@@ -28,7 +28,7 @@ router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.allOwn)
  * @apiVersion 1.1.2
  * @apiPermission user, admin
  *
- * @apiParam {Number} Notification Id.
+ * @apiParam {Number} notifId Notification Id.
  *
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
  * @apiSuccess (Success 200) {String} description Notification text.
@@ -50,7 +50,7 @@ router.put(
  * @apiVersion 1.1.2
  * @apiPermission user, admin
  *
- * @apiParam {Number} Notification Id.
+ * @apiParam {Number} notifId Notification Id.
  *
  * @apiSuccess (Success 200) None Returns nothing on success.
  */
