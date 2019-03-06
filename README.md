@@ -3,196 +3,140 @@
 
 This holds the offchain components of the circles api
 
-Api authenication is managed by a `token` sent in the response headers
-
-## Get User
-
-Get the profile of the currently Authenticated User along with basic
-subscription information.
-
-**URL** : `/v1/user/:id`
-
-**Method** : `GET`
-
-**Auth required** : ??
-
-**Permissions required** : ??  ownUser or anyUser
-
-### Success Response
-
-**Code** : `200 OK`
-
-**Response example**
+Api authenication is managed by `accesstoken` sent in the response headers
+<a name="top"></a>
+#  v0.0.0
 
 
-```
-{
-  id: string,
-  agreedToDisclaimer:boolean, 
-  createdAt: datetime;
-  updateAt: datetime;
-  lastActive: datetime;
-  displayName: string;
-  email: string;
-  profilePicURL: string;
-  organizations: [id];
-}
-```
 
-### Notes
-
-Defaults to current user if no id is passed
-
-## Update User
-
-Update allowed user parameters
-
-**URL** : `/v1/user/:id`
-
-**Method** : `POST`
-
-**Auth required** : YES
-
-**Permissions required** : ownUser
-
-**Request body**
-
-```
-{
-  displayName: string;
-  email: string; ??
-  profilePicURL: string;
-}
-```
-
-### Success Response
-
-**Code** : `200 OK`
-
-**Response examples**
+- [User](#user)
+	- [Delete User&#39;s own record](#delete-user&#39;s-own-record)
+	- [Request User&#39;s own record](#request-user&#39;s-own-record)
+	- [Create User&#39;s own record](#create-user&#39;s-own-record)
+	- [Update User&#39;s own record](#update-user&#39;s-own-record)
+	
 
 
-```
-{
-  id: string,
-  agreedToDisclaimer:boolean, 
-  createdAt: datetime;
-  updateAt: datetime;
-  lastActive: datetime;
-  displayName: string;
-  email: string;
-  profilePicURL: string;
-  organizations: [id];
-}
-```
+# <a name='user'></a> User
 
-## Get Organization
-
-Get the profile of the currently Authenticated User along with basic subscription information.
-
-**URL** : `/v1/organization/:id`
-
-**Method** : `GET`
-
-**Auth required** : ??
-
-**Permissions required** : ??  anyUser or public
-
-### Success Response
-
-**Code** : `200 OK`
-
-**Response examples**
+## <a name='delete-user&#39;s-own-record'></a> Delete User&#39;s own record
+[Back to top](#top)
 
 
-```
-{
-  id: string,
-  agreedToDisclaimer:boolean, 
-  createdAt: datetime;
-  updateAt: datetime;
-  lastActive: datetime;
-  organizationName: string;
-  email: string; ??
-  profilePicURL: string; ??
-  members: [id]; ??
-  address: ?? <- do we assume a Berlin address?
-  latitude: float;
-  longitude: float;
-  description: string;
-}
-```
 
-## Update Organization
-
-Get the profile of the currently Authenticated User along with basic subscription information.
-
-**URL** : `/v1/organization/:id`
-
-**Method** : `POST`
-
-**Auth required** : YES
-
-**Permissions required** : ownOrganization
-
-**Request body**
-
-```
-{
-  organizationName: string;
-  email: string; ??
-  profilePicURL: string; ??
-  members: [id]; ?? <- does this have the escalated permissions?
-  address: ?? <- do we assume a Berlin address?
-  latitude: float;
-  longitude: float;
-  description: string;
-}
-```
-
-### Success Response
-
-**Code** : `200 OK`
-
-**Response examples**
+	DELETE /users/
 
 
-```
-{
-  id: string,
-  agreedToDisclaimer:boolean, 
-  createdAt: datetime;
-  updateAt: datetime;
-  lastActive: datetime;
-  organizationName: string;
-  email: string; ??
-  profilePicURL: string; ??
-  members: [id]; ??
-  address: ?? <- do we assume a Berlin address?
-  latitude: float;
-  longitude: float;
-  description: string;
-}
-```
 
-## Get Notifications
 
-Gets notifications for a user of organization
 
-**URL** : `/v1/notifications/`
 
-**Method** : `GET`
+### 200
 
-**Auth required** : ??
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  None |  | <p>Returns nothing on success.</p>|
 
-**Permissions required** : ??  ownUser or anyUser
+## <a name='request-user&#39;s-own-record'></a> Request User&#39;s own record
+[Back to top](#top)
 
-**Request params**:
 
-| Parameter | Type | Required | Description |
-| organization | id | false | id of the organization to fetch notifications for |
 
-if not organization id is passed, will return user notifications
+	GET /users/
+
+
+
+
+
+
+### 200
+
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  agreed_to_disclaimer | String | <p>Legal requirement.</p>|
+|  created_at | String | <p>Record creation date.</p>|
+|  device_endpoint | String | <p>Notification endpoint.</p>|
+|  device_id | String | <p>Device Id of phone.</p>|
+|  display_name | String | <p>Full name of the User.</p>|
+|  email | String | <p>Email of the User.</p>|
+|  id | String | <p>UUID of the User.</p>|
+|  phone_number | String | <p>Phone number of the User.</p>|
+|  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
+|  updated_at | String | <p>Record update date.</p>|
+|  username | String | <p>Username of the User.</p>|
+
+## <a name='create-user&#39;s-own-record'></a> Create User&#39;s own record
+[Back to top](#top)
+
+<p>If the User record already exists it will return the record</p>
+
+	POST /users/
+
+
+
+
+
+
+### 200
+
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  agreed_to_disclaimer | String | <p>Legal requirement.</p>|
+|  created_at | String | <p>Record creation date.</p>|
+|  device_endpoint | String | <p>Notification endpoint.</p>|
+|  device_id | String | <p>Device Id of phone.</p>|
+|  display_name | String | <p>Full name of the User.</p>|
+|  email | String | <p>Email of the User.</p>|
+|  id | String | <p>UUID of the User.</p>|
+|  phone_number | String | <p>Phone number of the User.</p>|
+|  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
+|  updated_at | String | <p>Record update date.</p>|
+|  username | String | <p>Username of the User.</p>|
+### 201
+
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  agreed_to_disclaimer | String | <p>Legal requirement.</p>|
+|  created_at | String | <p>Record creation date.</p>|
+|  device_endpoint | String | <p>Notification endpoint.</p>|
+|  device_id | String | <p>Device Id of phone.</p>|
+|  display_name | String | <p>Full name of the User.</p>|
+|  email | String | <p>Email of the User.</p>|
+|  id | String | <p>UUID of the User.</p>|
+|  phone_number | String | <p>Phone number of the User.</p>|
+|  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
+|  updated_at | String | <p>Record update date.</p>|
+|  username | String | <p>Username of the User.</p>|
+
+## <a name='update-user&#39;s-own-record'></a> Update User&#39;s own record
+[Back to top](#top)
+
+
+
+	PUT /users/
+
+
+
+
+
+
+### 200
+
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  agreed_to_disclaimer | String | <p>Legal requirement.</p>|
+|  created_at | String | <p>Record creation date.</p>|
+|  device_endpoint | String | <p>Notification endpoint.</p>|
+|  device_id | String | <p>Device Id of phone.</p>|
+|  display_name | String | <p>Full name of the User.</p>|
+|  email | String | <p>Email of the User.</p>|
+|  id | String | <p>UUID of the User.</p>|
+|  phone_number | String | <p>Phone number of the User.</p>|
+|  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
+|  updated_at | String | <p>Record update date.</p>|
+|  username | String | <p>Username of the User.</p>|
+
+
 
 ### Success Response
 
