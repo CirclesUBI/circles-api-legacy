@@ -5,7 +5,7 @@ This holds the offchain components of the circles api
 
 Api authenication is managed by `accesstoken` sent in the response headers
 <a name="top"></a>
-#  v0.0.0
+#  Circles API v1.1.2
 
 
 
@@ -31,7 +31,7 @@ Api authenication is managed by `accesstoken` sent in the response headers
 
 
 
-### 200
+### Success 200
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
@@ -49,7 +49,7 @@ Api authenication is managed by `accesstoken` sent in the response headers
 
 
 
-### 200
+### Success 200
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
@@ -77,7 +77,7 @@ Api authenication is managed by `accesstoken` sent in the response headers
 
 
 
-### 200
+### Success 201
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
@@ -92,7 +92,7 @@ Api authenication is managed by `accesstoken` sent in the response headers
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | String | <p>Record update date.</p>|
 |  username | String | <p>Username of the User.</p>|
-### 201
+### Success 200
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
@@ -120,7 +120,7 @@ Api authenication is managed by `accesstoken` sent in the response headers
 
 
 
-### 200
+### Success 200
 
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
@@ -135,25 +135,5 @@ Api authenication is managed by `accesstoken` sent in the response headers
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | String | <p>Record update date.</p>|
 |  username | String | <p>Username of the User.</p>|
-
-
-
-### Success Response
-
-**Code** : `200 OK`
-
-**Response example**
-
-
-```
-{
-  id: string,
-  desscription: string, 
-  createdAt: datetime;
-  updateAt: datetime;
-  seen: boolean;
-  dismissed: boolean; <- maybe only need first one
-}
-```
 
 
