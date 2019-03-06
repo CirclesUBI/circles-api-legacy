@@ -60,7 +60,7 @@ router.get(
  * @apiGroup Offers
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {Number} Offer Id.
  *
  * @apiSuccess (Success 200) {Number} amount The amount of an item offered.
@@ -89,7 +89,7 @@ router.put(
  * @apiGroup Offers
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {Number} Offer Id.
  *
  * @apiSuccess (Success 200) None Returns nothing on success.

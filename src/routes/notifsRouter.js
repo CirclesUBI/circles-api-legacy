@@ -13,7 +13,7 @@ const hasPermissionMiddleware = require('../middleware/permissions')
  * @apiPermission user, admin
  *
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
- * @apiSuccess (Success 200) {String} description Notification text. 
+ * @apiSuccess (Success 200) {String} description Notification text.
  * @apiSuccess (Success 200) {String} dismissed Has this Notification been dismissed?
  * @apiSuccess (Success 200) {Number} id Id of the Notification (ascending integer).
  * @apiSuccess (Success 200) {String} owner_id Url User Id of the Notification owner.
@@ -27,11 +27,11 @@ router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.allOwn)
  * @apiGroup Notifs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {Number} Notification Id.
  *
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
- * @apiSuccess (Success 200) {String} description Notification text. 
+ * @apiSuccess (Success 200) {String} description Notification text.
  * @apiSuccess (Success 200) {String} dismissed Has this Notification been dismissed?
  * @apiSuccess (Success 200) {Number} id Id of the Notification (ascending integer).
  * @apiSuccess (Success 200) {String} owner_id Url User Id of the Notification owner.
@@ -49,7 +49,7 @@ router.put(
  * @apiGroup Notifs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {Number} Notification Id.
  *
  * @apiSuccess (Success 200) None Returns nothing on success.

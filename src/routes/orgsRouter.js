@@ -15,7 +15,7 @@ const hasPermissionMiddleware = require('../middleware/permissions')
  * @apiSuccess (Success 200) {String} address Organisation address.
  * @apiSuccess (Success 200) {Boolean} agreed_to_disclaimer Legal requirement.
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
- * @apiSuccess (Success 200) {String} description Organization tagline. 
+ * @apiSuccess (Success 200) {String} description Organization tagline.
  * @apiSuccess (Success 200) {String} email Email of the Organization.
  * @apiSuccess (Success 200) {String} id UUID of the Organization.
  * @apiSuccess (Success 200) {Date} last_active Last date Organization was active.
@@ -34,13 +34,13 @@ router.get('/', hasPermissionMiddleware('ownOrgs'), orgsController.allOwn)
  * @apiGroup Orgs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiDescription Create Organization record (201) or return if exists (200)
  *
  * @apiSuccess (Success 200/201) {String} address Organisation address.
  * @apiSuccess (Success 200/201) {Boolean} agreed_to_disclaimer Legal requirement.
  * @apiSuccess (Success 200/201) {Date} created_at Record creation date.
- * @apiSuccess (Success 200/201) {String} description Organization tagline. 
+ * @apiSuccess (Success 200/201) {String} description Organization tagline.
  * @apiSuccess (Success 200/201) {String} email Email of the Organization.
  * @apiSuccess (Success 200/201) {String} id UUID of the Organization.
  * @apiSuccess (Success 200/201) {Date} last_active Last date Organization was active.
@@ -59,13 +59,13 @@ router.post('/', hasPermissionMiddleware('ownOrgs'), orgsController.addOwn)
  * @apiGroup Orgs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {String} orgId Organization UUID.
  *
  * @apiSuccess (Success 200) {String} address Organisation address.
  * @apiSuccess (Success 200) {Boolean} agreed_to_disclaimer Legal requirement.
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
- * @apiSuccess (Success 200) {String} description Organization tagline. 
+ * @apiSuccess (Success 200) {String} description Organization tagline.
  * @apiSuccess (Success 200) {String} email Email of the Organization.
  * @apiSuccess (Success 200) {String} id UUID of the Organization.
  * @apiSuccess (Success 200) {Date} last_active Last date Organization was active.
@@ -84,13 +84,13 @@ router.get('/:id', hasPermissionMiddleware('ownOrgs'), orgsController.findOwn)
  * @apiGroup Orgs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {String} orgId Organization UUID.
  *
  * @apiSuccess (Success 200) {String} address Organisation address.
  * @apiSuccess (Success 200) {Boolean} agreed_to_disclaimer Legal requirement.
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
- * @apiSuccess (Success 200) {String} description Organization tagline. 
+ * @apiSuccess (Success 200) {String} description Organization tagline.
  * @apiSuccess (Success 200) {String} email Email of the Organization.
  * @apiSuccess (Success 200) {String} id UUID of the Organization.
  * @apiSuccess (Success 200) {Date} last_active Last date Organization was active.
@@ -109,7 +109,7 @@ router.put('/:id', hasPermissionMiddleware('ownOrgs'), orgsController.updateOwn)
  * @apiGroup Orgs
  * @apiVersion 1.1.2
  * @apiPermission user, admin
- * 
+ *
  * @apiParam {String} orgId Organization UUID.
  *
  * @apiSuccess (Success 200) None Returns nothing on success.
