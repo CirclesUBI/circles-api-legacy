@@ -83,9 +83,9 @@ CRUD app for user and organization profiles
 |:---------|:-----------|:--------------------------------------|
 |  created_at | Date | <p>Record creation date.</p>|
 |  description | String | <p>Notification text.</p>|
-|  dismissed | String | <p>Has this Notification been dismissed?</p>|
+|  dismissed | Boolean | <p>Has this Notification been dismissed?</p>|
 |  id | Number | <p>Id of the Notification (ascending integer).</p>|
-|  owner_id | String | <p>Url User Id of the Notification owner.</p>|
+|  owner_id | String | <p>User Id of the Notification owner.</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
 ## <a name='update-user&#39;s-own-notification'></a> Update User&#39;s own Notification
@@ -113,9 +113,9 @@ CRUD app for user and organization profiles
 |:---------|:-----------|:--------------------------------------|
 |  created_at | Date | <p>Record creation date.</p>|
 |  description | String | <p>Notification text.</p>|
-|  dismissed | String | <p>Has this Notification been dismissed?</p>|
+|  dismissed | Boolean | <p>Has this Notification been dismissed?</p>|
 |  id | Number | <p>Id of the Notification (ascending integer).</p>|
-|  owner_id | String | <p>Url User Id of the Notification owner.</p>|
+|  owner_id | String | <p>User Id of the Notification owner.</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
 # <a name='offers'></a> Offers
@@ -162,12 +162,12 @@ CRUD app for user and organization profiles
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
 |  amount | Number | <p>The amount of an item offered.</p>|
-|  category | Boolean | <p>The category of item offered.</p>|
+|  category | String | <p>The category of item offered.</p>|
 |  created_at | Date | <p>Record creation date.</p>|
 |  description | String | <p>Offer description.</p>|
 |  id | Number | <p>Id of the Offer (ascending integer).</p>|
 |  item_code | String | <p>Item code for linking with POS systems.</p>|
-|  owner_id | String | <p>Url User Id of the Offer owner.</p>|
+|  owner_id | String | <p>User Id of the Offer owner.</p>|
 |  percentage | Number | <p>Percentage of Offer to be paid in Circles (multiple of 0.1).</p>|
 |  price | Number | <p>Price of Offer in Circles (multiple of 0.1).</p>|
 |  public | Boolean | <p>Is this Offer publicly viewable?</p>|
@@ -192,22 +192,18 @@ CRUD app for user and organization profiles
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
 |  amount | Number | <p>The amount of an item offered.</p>|
-|  category | Boolean | <p>The category of item offered.</p>|
+|  category | String | <p>The category of item offered.</p>|
 |  created_at | Date | <p>Record creation date.</p>|
 |  description | String | <p>Offer description.</p>|
 |  id | Number | <p>Id of the Offer (ascending integer).</p>|
 |  item_code | String | <p>Item code for linking with POS systems.</p>|
-|  owner_id | String | <p>Url User Id of the Offer owner.</p>|
+|  owner_id | String | <p>User Id of the Offer owner.</p>|
 |  percentage | Number | <p>Percentage of Offer to be paid in Circles (multiple of 0.1).</p>|
 |  price | Number | <p>Price of Offer in Circles (multiple of 0.1).</p>|
 |  public | Boolean | <p>Is this Offer publicly viewable?</p>|
 |  title | String | <p>The title of the Offer.</p>|
-|  updated_at | Date | <p>Record update date.</p>|
-### Success 200
-
-| Name     | Type       | Description                           |
-|:---------|:-----------|:--------------------------------------|
 |  type | Enum | <p>The type of Offer {'ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY'}.</p>|
+|  updated_at | Date | <p>Record update date.</p>|
 
 ## <a name='update-user&#39;s-own-offer'></a> Update User&#39;s own Offer
 [Back to top](#top)
@@ -233,12 +229,12 @@ CRUD app for user and organization profiles
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
 |  amount | Number | <p>The amount of an item offered.</p>|
-|  category | Boolean | <p>The category of item offered.</p>|
+|  category | String | <p>The category of item offered.</p>|
 |  created_at | Date | <p>Record creation date.</p>|
 |  description | String | <p>Offer description.</p>|
 |  id | Number | <p>Id of the Offer (ascending integer).</p>|
 |  item_code | String | <p>Item code for linking with POS systems.</p>|
-|  owner_id | String | <p>Url User Id of the Offer owner.</p>|
+|  owner_id | String | <p>User Id of the Offer owner.</p>|
 |  percentage | Number | <p>Percentage of Offer to be paid in Circles (multiple of 0.1).</p>|
 |  price | Number | <p>Price of Offer in Circles (multiple of 0.1).</p>|
 |  public | Boolean | <p>Is this Offer publicly viewable?</p>|
@@ -306,7 +302,7 @@ CRUD app for user and organization profiles
 |  latitude | Float | <p>Latitude of Organization</p>|
 |  longitude | Float | <p>longitude of Organization</p>|
 |  organization_name | String | <p>Display name of Organization.</p>|
-|  owner_id | String | <p>Url User Id of the Organization owner.</p>|
+|  owner_id | String | <p>User Id of the Organization owner.</p>|
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
@@ -336,7 +332,7 @@ CRUD app for user and organization profiles
 |  latitude | Float | <p>Latitude of Organization</p>|
 |  longitude | Float | <p>longitude of Organization</p>|
 |  organization_name | String | <p>Display name of Organization.</p>|
-|  owner_id | String | <p>Url User Id of the Organization owner.</p>|
+|  owner_id | String | <p>User Id of the Organization owner.</p>|
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
@@ -366,7 +362,7 @@ CRUD app for user and organization profiles
 |  latitude | Float | <p>Latitude of Organization</p>|
 |  longitude | Float | <p>longitude of Organization</p>|
 |  organization_name | String | <p>Display name of Organization.</p>|
-|  owner_id | String | <p>Url User Id of the Organization owner.</p>|
+|  owner_id | String | <p>User Id of the Organization owner.</p>|
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
@@ -403,7 +399,7 @@ CRUD app for user and organization profiles
 |  latitude | Float | <p>Latitude of Organization</p>|
 |  longitude | Float | <p>longitude of Organization</p>|
 |  organization_name | String | <p>Display name of Organization.</p>|
-|  owner_id | String | <p>Url User Id of the Organization owner.</p>|
+|  owner_id | String | <p>User Id of the Organization owner.</p>|
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
