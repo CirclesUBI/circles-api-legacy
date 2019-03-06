@@ -18,7 +18,8 @@
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
     "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
     "format": "prettier-standard src/**/*.js __tests__/**/*.js",
-    "signTx": "node -r dotenv/config scripts/signTx.js"
+    "signTx": "node -r dotenv/config scripts/signTx.js",
+    "docs": "apidoc -i src/ -o doc/ && apidoc-markdown2 -p ./doc -o API.md && concat -o README.md README.md API.md"
   },
   "jest": {
     "verbose": true,
@@ -64,6 +65,9 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.7",
+    "apidoc-markdown2": "^0.3.7",
+    "concat": "^1.0.3",
     "dotenv": "^6.0.0",
     "faker": "^4.1.0",
     "git-branch-is": "^2.1.0",
