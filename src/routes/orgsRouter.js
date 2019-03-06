@@ -22,7 +22,7 @@ const hasPermissionMiddleware = require('../middleware/permissions')
  * @apiSuccess (Success 200) {Float} latitude Latitude of Organization
  * @apiSuccess (Success 200) {Float} longitude longitude of Organization
  * @apiSuccess (Success 200) {String} organization_name Display name of Organization.
- * @apiSuccess (Success 200) {String} owner_id Url User Id of the Organization owner.
+ * @apiSuccess (Success 200) {String} owner_id User Id of the Organization owner.
  * @apiSuccess (Success 200) {String} profile_pic_url Url of profile pic (stored on S3).
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */
@@ -47,7 +47,7 @@ router.get('/', hasPermissionMiddleware('ownOrgs'), orgsController.allOwn)
  * @apiSuccess (Success 200/201) {Float} latitude Latitude of Organization
  * @apiSuccess (Success 200/201) {Float} longitude longitude of Organization
  * @apiSuccess (Success 200/201) {String} organization_name Display name of Organization.
- * @apiSuccess (Success 200/201) {String} owner_id Url User Id of the Organization owner.
+ * @apiSuccess (Success 200/201) {String} owner_id User Id of the Organization owner.
  * @apiSuccess (Success 200/201) {String} profile_pic_url Url of profile pic (stored on S3).
  * @apiSuccess (Success 200/201) {Date} updated_at Record update date.
  */
@@ -72,7 +72,7 @@ router.post('/', hasPermissionMiddleware('ownOrgs'), orgsController.addOwn)
  * @apiSuccess (Success 200) {Float} latitude Latitude of Organization
  * @apiSuccess (Success 200) {Float} longitude longitude of Organization
  * @apiSuccess (Success 200) {String} organization_name Display name of Organization.
- * @apiSuccess (Success 200) {String} owner_id Url User Id of the Organization owner.
+ * @apiSuccess (Success 200) {String} owner_id User Id of the Organization owner.
  * @apiSuccess (Success 200) {String} profile_pic_url Url of profile pic (stored on S3).
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */
@@ -97,7 +97,7 @@ router.get('/:id', hasPermissionMiddleware('ownOrgs'), orgsController.findOwn)
  * @apiSuccess (Success 200) {Float} latitude Latitude of Organization
  * @apiSuccess (Success 200) {Float} longitude longitude of Organization
  * @apiSuccess (Success 200) {String} organization_name Display name of Organization.
- * @apiSuccess (Success 200) {String} owner_id Url User Id of the Organization owner.
+ * @apiSuccess (Success 200) {String} owner_id User Id of the Organization owner.
  * @apiSuccess (Success 200) {String} profile_pic_url Url of profile pic (stored on S3).
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */

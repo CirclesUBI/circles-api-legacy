@@ -14,9 +14,9 @@ const hasPermissionMiddleware = require('../middleware/permissions')
  *
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
  * @apiSuccess (Success 200) {String} description Notification text.
- * @apiSuccess (Success 200) {String} dismissed Has this Notification been dismissed?
+ * @apiSuccess (Success 200) {Boolean} dismissed Has this Notification been dismissed?
  * @apiSuccess (Success 200) {Number} id Id of the Notification (ascending integer).
- * @apiSuccess (Success 200) {String} owner_id Url User Id of the Notification owner.
+ * @apiSuccess (Success 200) {String} owner_id User Id of the Notification owner.
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */
 router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.allOwn)
@@ -32,9 +32,9 @@ router.get('/', hasPermissionMiddleware('ownNotifs'), notifsController.allOwn)
  *
  * @apiSuccess (Success 200) {Date} created_at Record creation date.
  * @apiSuccess (Success 200) {String} description Notification text.
- * @apiSuccess (Success 200) {String} dismissed Has this Notification been dismissed?
+ * @apiSuccess (Success 200) {Boolean} dismissed Has this Notification been dismissed?
  * @apiSuccess (Success 200) {Number} id Id of the Notification (ascending integer).
- * @apiSuccess (Success 200) {String} owner_id Url User Id of the Notification owner.
+ * @apiSuccess (Success 200) {String} owner_id User Id of the Notification owner.
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */
 router.put(
