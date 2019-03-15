@@ -26,7 +26,7 @@ module.exports = class User extends CirclesModel {
         device_endpoint: { type: 'string' },
         phone_number: { type: 'string' },
         wallet_address: { type: 'string' },
-        token_address: { type: 'string' },
+        token_address: { type: 'string' }
       }
     }
   }
