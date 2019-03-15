@@ -7,6 +7,10 @@ const hasPermissionMiddleware = require('../middleware/permissions')
 router.get('/', hasPermissionMiddleware('ownUser'), usersController.own)
 router.post('/', usersController.addOwn)
 router.put('/', hasPermissionMiddleware('ownUser'), usersController.updateOwn)
-router.delete('/', hasPermissionMiddleware('ownUser'), usersController.deleteOwn)
+router.delete(
+  '/',
+  hasPermissionMiddleware('ownUser'),
+  usersController.deleteOwn
+)
 
 module.exports = router
