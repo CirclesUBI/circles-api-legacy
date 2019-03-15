@@ -26,7 +26,7 @@ exports.seed = function (knex, Promise) {
         id: 'test',
         username: 'test',
         display_name: 'Test User',
-        address: '0x',
+        wallet_address: '0x',
         token_address: '0x',
         email_verified: true,
         name: 'Test User',
