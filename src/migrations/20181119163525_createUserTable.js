@@ -17,14 +17,14 @@ exports.up = (knex, Promise) => {
       t.boolean('agreed_to_disclaimer')
         .notNullable()
         .defaultTo(false)
-      t.string('custom:device_id').notNullable()
+      t.string('device_id').notNullable()
       t.string('device_endpoint')
       t.string('phone_number').notNullable()
       t.string('phone_number_verified')
         .notNullable()
         .defaultTo(false)
-      t.string('address').notNullable()
-      t.string('token_address').notNullable()
+      t.string('address')
+      t.string('token_address')
     }),
     knex.schema.createTable('organization', t => {
       t.string('id').primary()
