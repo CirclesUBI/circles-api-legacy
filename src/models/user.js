@@ -2,7 +2,7 @@ const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class User extends CirclesModel {
   static get tableName () {
-    return 'user'
+    return 'users'
   }
 
   static get name () {
@@ -34,7 +34,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/organization`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'organization.owner_id'
         }
       },
@@ -42,7 +42,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/notification`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'notification.owner_id'
         }
       },
@@ -50,7 +50,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/offer`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'offer.owner_id'
         }
       }

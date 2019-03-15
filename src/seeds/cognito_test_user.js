@@ -24,12 +24,16 @@ exports.seed = function (knex, Promise) {
     .then(() => {
       testUser = {
         id: 'test',
+        username: 'test',
+        display_name: 'Test User',
+        address: '0x',
+        token_address: '0x',
         email_verified: true,
         name: 'Test User',
         phone_number_verified: true,
         phone_number: '+111111111111111111',
         email: 'test@joincircles.net',
-        picture:
+        profile_pic_url:
           'http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png',
         'custom:device_id': 'test_device_id'
       }
@@ -41,7 +45,7 @@ exports.seed = function (knex, Promise) {
       //   device_id: 'deviceid',
       //   phone_number: '+00111111111111111'
       // }
-      return knex('user').insert(testUser)
+      return knex('users').insert(testUser)
     })
     .then(() => {
       testOrg = createFakeOrganization()
