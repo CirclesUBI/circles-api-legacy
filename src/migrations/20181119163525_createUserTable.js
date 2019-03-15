@@ -1,10 +1,14 @@
 exports.up = (knex, Promise) => {
   return Promise.all([
-    knex.schema.createTable('user', t => {
+    knex.schema.createTable('users', t => {
       t.string('id').primary()
+      t.string('name')
       t.string('username', 50).notNullable()
       t.string('display_name', 100).notNullable()
       t.string('email', 50).notNullable()
+      t.boolean('email_verified')
+        .notNullable()
+        .defaultTo(false)
       t.string('profile_pic_url', 500).notNullable()
       t.dateTime('created_at')
         .notNullable()
@@ -16,10 +20,15 @@ exports.up = (knex, Promise) => {
       t.string('device_id').notNullable()
       t.string('device_endpoint')
       t.string('phone_number').notNullable()
+      t.string('phone_number_verified')
+        .notNullable()
+        .defaultTo(false)
+      t.string('address')
+      t.string('token_address')
     }),
     knex.schema.createTable('organization', t => {
       t.string('id').primary()
-      t.string('owner_id').references('user.id')
+      t.string('owner_id').references('users.id')
       t.string('organization_name', 100).notNullable()
       t.string('email', 50).notNullable()
       t.string('profile_pic_url', 500).notNullable()
@@ -56,6 +65,6 @@ exports.down = (knex, Promise) => {
   return Promise.all([
     // knex.schema.dropTable('user_organizations'),
     knex.schema.dropTable('organization'),
-    knex.schema.dropTable('user')
+    knex.schema.dropTable('users')
   ])
 }

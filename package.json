@@ -10,7 +10,7 @@
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
     "migrate:seed": "knex seed:run",
-    "migrate:all": "npm run migrate:up && npm run migrate:down && npm run migrate:seed",
+    "migrate:all": "npm run migrate:down && npm run migrate:up && npm run migrate:seed",
     "dev": "nodemon -r dotenv/config src/app.js",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev",
     "test": "jest --forceExit --setupFiles dotenv/config",
