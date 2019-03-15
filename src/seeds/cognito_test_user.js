@@ -17,7 +17,7 @@ exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
   return Promise.all([
     knex('organization').del(),
-    knex('user').del(),
+    knex('users').del(),
     knex('notification').del(),
     knex('offer').del()
   ])

@@ -24,7 +24,7 @@ exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
   return Promise.all([
     knex('organization').del(),
-    knex('user').del(),
+    knex('users').del(),
     knex('user_organizations').del(),
     knex('notification').del(),
     knex('offer').del()
@@ -39,7 +39,7 @@ exports.seed = function (knex, Promise) {
         }
         fakeUsers.push(u)
       }
-      return knex('user').insert(fakeUsers)
+      return knex('users').insert(fakeUsers)
     })
     .then(() => {
       for (let i = 0; i < requiredOrganizations; i++) {
