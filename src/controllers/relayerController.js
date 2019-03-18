@@ -1,9 +1,19 @@
 const logger = require('../lib/logger')
 const MetaTxHandler = require('metatx-server')
 const apiPrivKey = process.env.API_PRIV_KEY
-const { provider, txRelayAddress, txRelayABI } = require('../connections/blockchain')
+const {
+  provider,
+  txRelayAddress,
+  txRelayABI
+} = require('../connections/blockchain')
 
-const metaTxHandler = new MetaTxHandler(apiPrivKey, provider, txRelayAddress, txRelayABI, logger)
+const metaTxHandler = new MetaTxHandler(
+  apiPrivKey,
+  provider,
+  txRelayAddress,
+  txRelayABI,
+  logger
+)
 
 const relay = async (req, res) => {
   try {
