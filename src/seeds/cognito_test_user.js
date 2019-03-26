@@ -28,9 +28,7 @@ exports.seed = function (knex, Promise) {
         display_name: 'Test User',
         wallet_address: '0x',
         token_address: '0x',
-        email_verified: true,
         name: 'Test User',
-        phone_number_verified: true,
         phone_number: '+111111111111111111',
         email: 'test@joincircles.net',
         profile_pic_url:
