@@ -7,7 +7,9 @@ const convertCognitoToCirclesUser = cognitoUser => {
     email: cognitoUser.email,
     display_name: cognitoUser.name,
     phone_number: cognitoUser.phone_number,
-    profile_pic_url: cognitoUser.picture
+    profile_pic_url: cognitoUser.picture,
+    token_address: cognitoUser.token_address,
+    wallet_address: cognitoUser.wallet_address
   }
 }
 

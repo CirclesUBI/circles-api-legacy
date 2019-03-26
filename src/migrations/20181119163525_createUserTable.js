@@ -23,7 +23,7 @@ exports.up = (knex, Promise) => {
       t.string('phone_number_verified')
         .notNullable()
         .defaultTo(false)
-      t.string('address')
+      t.string('wallet_address')
       t.string('token_address')
     }),
     knex.schema.createTable('organization', t => {
