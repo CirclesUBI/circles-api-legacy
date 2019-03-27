@@ -17,4 +17,20 @@ sns.createSNSEndpoint = circlesUser => {
   })
 }
 
+sns.updateSNSEndpoint = (deviceEndpoint, deviceId) => {
+  const snsParams = {
+    EndpointArn: deviceEndpoint,
+    Attributes: {
+      Token: deviceId, 
+      Enabled: true
+    }
+  }
+  return new Promise((resolve, reject) => {
+    sns.setEndpointAttributes(snsParams, (err, data) => {
+      if (err) reject(err)
+      else resolve(data.EndpointArn)
+    })
+  })
+}
+
 module.exports = sns
