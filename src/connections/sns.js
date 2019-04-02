@@ -21,7 +21,7 @@ sns.updateSNSEndpoint = (deviceEndpoint, deviceId) => {
   const snsParams = {
     EndpointArn: deviceEndpoint,
     Attributes: {
-      Token: deviceId, 
+      Token: deviceId,
       Enabled: true
     }
   }

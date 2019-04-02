@@ -70,13 +70,12 @@ cognito.deleteUser = deleteUserRequest => {
 }
 
 cognito.updatePhone = (username, newPhoneNumber) => {
-
   var updatePhoneParams = {
-    UserAttributes: [ 
+    UserAttributes: [
       {
         Name: 'phone_number',
         Value: newPhoneNumber
-      }      
+      }
     ],
     UserPoolId: cognitoPoolId,
     Username: username

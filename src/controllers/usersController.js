@@ -182,8 +182,16 @@ async function recoverAccount (req, res) {
       .first()
     if (!user) return res.sendStatus(404)
 
-    logger.info((user.device_endpoint === req.body.device_endpoint), user.device_endpoint, req.body.device_endpoint)
-    logger.info((user.phone_number === req.body.phone_number), user.phone_number, req.body.phone_number)
+    logger.info(
+      user.device_endpoint === req.body.device_endpoint,
+      user.device_endpoint,
+      req.body.device_endpoint
+    )
+    logger.info(
+      user.phone_number === req.body.phone_number,
+      user.phone_number,
+      req.body.phone_number
+    )
 
     await user.$relatedQuery('notifications')
     await user.$relatedQuery('offers')
@@ -191,13 +199,22 @@ async function recoverAccount (req, res) {
 
     if (user.phone_number !== req.body.phone_number) {
       // update sns endpoint with new device token
-      const endpointArn = await sns.updateSNSEndpoint(user.device_endpoint, req.body.device_id)
+      const endpointArn = await sns.updateSNSEndpoint(
+        user.device_endpoint,
+        req.body.device_id
+      )
       logger.info('endpointArn ' + endpointArn)
       // update cognito with new phone number and trigger verification
-      const res = await cognitoISP.updatePhone(user.username, req.body.phone_number)
+      const res = await cognitoISP.updatePhone(
+        user.username,
+        req.body.phone_number
+      )
       logger.info('updatePhone ' + res)
 
-      user = await user.patchAndFetchById(user.id, {phone_number: (req.body.phone_number || user.phone_number) , device_endpoint: endpointArn})
+      user = await user.patchAndFetchById(user.id, {
+        phone_number: req.body.phone_number || user.phone_number,
+        device_endpoint: endpointArn
+      })
       logger.info('user ' + user)
     }
     res.status(200).send(user)
