@@ -26,7 +26,7 @@ CRUD app for user and organization profiles
 - [Orgs](#orgs)
 	- [Update User&#39;s own Organization](#update-user&#39;s-own-organization)
 	- [Request User&#39;s own Organization](#request-user&#39;s-own-organization)
-	- [Request all User&#39;s own Organizations](#request-all-user&#39;s-own-organizations)
+	- [Request all Organizations](#request-all-organizations)
 	- [Create User&#39;s own Organization](#create-user&#39;s-own-organization)
 	- [Update User&#39;s own Organization](#update-user&#39;s-own-organization)
 	
@@ -306,7 +306,7 @@ CRUD app for user and organization profiles
 |  profile_pic_url | String | <p>Url of profile pic (stored on S3).</p>|
 |  updated_at | Date | <p>Record update date.</p>|
 
-## <a name='request-all-user&#39;s-own-organizations'></a> Request all User&#39;s own Organizations
+## <a name='request-all-organizations'></a> Request all Organizations
 [Back to top](#top)
 
 
