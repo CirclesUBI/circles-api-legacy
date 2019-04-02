@@ -13,6 +13,6 @@ router.delete(
   usersController.deleteOwn
 )
 
-router.post('/recover/:wallet_address', usersController.recoverAccount)
+router.post('/recover', usersController.recoverAccount)
 
 module.exports = router
