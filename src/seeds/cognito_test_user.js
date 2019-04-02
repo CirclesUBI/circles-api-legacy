@@ -17,23 +17,33 @@ exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
   return Promise.all([
     knex('organization').del(),
-    knex('user').del(),
+    knex('users').del(),
     knex('notification').del(),
     knex('offer').del()
   ])
     .then(() => {
       testUser = {
         id: 'test',
-        email_verified: true,
+        username: 'test',
+        display_name: 'Test User',
+        wallet_address: '0x',
+        token_address: '0x',
         name: 'Test User',
-        phone_number_verified: true,
         phone_number: '+111111111111111111',
         email: 'test@joincircles.net',
-        picture:
+        profile_pic_url:
           'http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png',
-        'custom:device_id': 'test_device_id'
+        device_id: 'test_device_id'
       }
-      return knex('user').insert(testUser)
+      //   id: '96b05fb0-13a1-4acb-8f39-505a7dedbcda',
+      //   agreed_to_disclaimer: true, // used for legal reasons, and to denote that the user has been fully set up
+      //   display_name: 'testuser',
+      //   email: 'test@joincircles.net',
+      //   profile_pic_url: 'testuser',
+      //   device_id: 'deviceid',
+      //   phone_number: '+00111111111111111'
+      // }
+      return knex('users').insert(testUser)
     })
     .then(() => {
       testOrg = createFakeOrganization()

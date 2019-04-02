@@ -2,7 +2,7 @@ const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class User extends CirclesModel {
   static get tableName () {
-    return 'user'
+    return 'users'
   }
 
   static get name () {
@@ -14,6 +14,7 @@ module.exports = class User extends CirclesModel {
       type: 'object',
       properties: {
         id: { type: 'string' },
+        name: { type: 'string' },
         username: { type: 'string' },
         agreed_to_disclaimer: { type: 'boolean' }, // used for legal reasons, and to denote that the user has been fully set up
         created_at: { type: 'object' },
@@ -23,7 +24,9 @@ module.exports = class User extends CirclesModel {
         profile_pic_url: { type: 'string' },
         device_id: { type: 'string' },
         device_endpoint: { type: 'string' },
-        phone_number: { type: 'string' }
+        phone_number: { type: 'string' },
+        wallet_address: { type: 'string' },
+        token_address: { type: 'string' }
       }
     }
   }
@@ -34,7 +37,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/organization`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'organization.owner_id'
         }
       },
@@ -42,7 +45,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/notification`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'notification.owner_id'
         }
       },
@@ -50,7 +53,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/offer`,
         join: {
-          from: 'user.id',
+          from: 'users.id',
           to: 'offer.owner_id'
         }
       }
