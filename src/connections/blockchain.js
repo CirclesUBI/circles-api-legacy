@@ -1,7 +1,7 @@
 const Web3 = require('web3')
 const ethers = require('ethers')
-const Hash = require("eth-lib/lib/hash");
-const Account = require("eth-lib/lib/account");
+const Hash = require('eth-lib/lib/hash')
+const Account = require('eth-lib/lib/account')
 const hexStringToUint8Array = require('../lib/hexStringToUint8Array')
 const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
@@ -15,23 +15,25 @@ const txRelayAddress =
   process.env.RELAY_CONTRACT_ADDRESS
 const txRelayABI = TxRelayContractJSON.abi
 
-const packSignature = (signature) => {
+const packSignature = signature => {
   return `{signature.r}{signature.s.substring(2);}{Web3.utils.toHex(ethersSignature.v).substring(2)}`
 }
 
-const recoverAddress = async (message, signature, key) => {  
-  const messageHash = await Hash.keccak256(hexStringToUint8Array(`0x${message.toString(16)}`))
-  const s = await Account.sign(messageHash, key);
-  const vrs = await Account.decodeSignature(s);
+const recoverAddress = async (message, signature, key) => {
+  const messageHash = await Hash.keccak256(
+    hexStringToUint8Array(`0x${message.toString(16)}`)
+  )
+  const s = await Account.sign(messageHash, key)
+  const vrs = await Account.decodeSignature(s)
   const web3Formatting = {
-      message: message,
-      messageHash: messageHash,
-      v: Web3.utils.toHex(signature.v),
-      r: signature.r,
-      s: signature.s,
-      signature: packSignature(signature)
-  };
-  const address = await web3.eth.accounts.recover(web3Formatting);
+    message: message,
+    messageHash: messageHash,
+    v: Web3.utils.toHex(signature.v),
+    r: signature.r,
+    s: signature.s,
+    signature: packSignature(signature)
+  }
+  const address = await web3.eth.accounts.recover(web3Formatting)
   return address
 }
 

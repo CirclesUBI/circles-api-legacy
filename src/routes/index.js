@@ -23,7 +23,10 @@ module.exports = function (app) {
 
   app.use(loggingMiddleware)
 
-  app.use('/' + apiVersionString + '/users/recovery', usersController.recoverAccount)
+  app.use(
+    '/' + apiVersionString + '/users/recovery',
+    usersController.recoverAccount
+  )
 
   app.use(authMiddleware)
 
