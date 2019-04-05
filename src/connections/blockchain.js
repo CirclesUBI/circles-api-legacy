@@ -1,4 +1,8 @@
 const Web3 = require('web3')
+const ethers = require('ethers')
+const Hash = require("eth-lib/lib/hash");
+const Account = require("eth-lib/lib/account");
+const hexStringToUint8Array = require('../lib/hexStringToUint8Array')
 const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
 
@@ -11,31 +15,24 @@ const txRelayAddress =
   process.env.RELAY_CONTRACT_ADDRESS
 const txRelayABI = TxRelayContractJSON.abi
 
+const packSignature = (signature) => {
+  return `{signature.r}{signature.s.substring(2);}{Web3.utils.toHex(ethersSignature.v).substring(2)}`
+}
+
 const recoverAddress = async (message, signature, key) => {  
-
-  let s = await web3.eth.accounts.sign(String(message), key)
-  console.log('eth sig', signature)
-  console.log('web3 sig', s)
-
-
-  const messageHash = await web3.eth.accounts.hashMessage(String(message))
-  
-  // signature Object {
-  //   "r": "0x5bd1a8a4e75432ed8f608f3b5a99274235b0de4bd6ab66b6a414d98a471defea",
-  //   "recoveryParam": 0,
-  //   "s": "0x3560058932986bd7cf8b06eb4614e8588e41dd6552aa41689a0f63bd393fd461",
-  //   "v": 27,
-  // }
-
-  let signatureObject = {
-    messageHash: messageHash,
-    v: Web3.utils.toHex(signature.v), //27 in hex
-    r: String(signature.r),
-    s: String(signature.s)
-  }
-  console.log('signatureObject', signatureObject)
-
-  return web3.eth.accounts.recover(s)
+  const messageHash = await Hash.keccak256(hexStringToUint8Array(`0x${message.toString(16)}`))
+  const s = await Account.sign(messageHash, key);
+  const vrs = await Account.decodeSignature(s);
+  const web3Formatting = {
+      message: message,
+      messageHash: messageHash,
+      v: Web3.utils.toHex(signature.v),
+      r: signature.r,
+      s: signature.s,
+      signature: packSignature(signature)
+  };
+  const address = await web3.eth.accounts.recover(web3Formatting);
+  return address
 }
 
 module.exports = {
