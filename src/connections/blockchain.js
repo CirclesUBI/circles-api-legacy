@@ -11,20 +11,31 @@ const txRelayAddress =
   process.env.RELAY_CONTRACT_ADDRESS
 const txRelayABI = TxRelayContractJSON.abi
 
-const recoverAddress = async (message, signature) => {
-  const messageHash = await web3.eth.accounts.hashMessage(message)
-  // {
-  //    recoveryParam: 0,
-  //    r: "0x79f56f3422dc67f57b2aeeb0b20295a99ec90420b203177f83d419c98beda7fe",
-  //    s: "0x1a9d05433883bdc7e6d882740f4ea7921ef458a61b2cfe6197c2bb1bc47236fd"
+const recoverAddress = async (message, signature, key) => {  
+
+  let s = await web3.eth.accounts.sign(String(message), key)
+  console.log('eth sig', signature)
+  console.log('web3 sig', s)
+
+
+  const messageHash = await web3.eth.accounts.hashMessage(String(message))
+  
+  // signature Object {
+  //   "r": "0x5bd1a8a4e75432ed8f608f3b5a99274235b0de4bd6ab66b6a414d98a471defea",
+  //   "recoveryParam": 0,
+  //   "s": "0x3560058932986bd7cf8b06eb4614e8588e41dd6552aa41689a0f63bd393fd461",
+  //   "v": 27,
   // }
 
-  return web3.eth.accounts.recover({
+  let signatureObject = {
     messageHash: messageHash,
-    v: 27 + signature.recoveryParam, // weeeeird
-    r: signature.r,
-    s: signature.s
-  })
+    v: Web3.utils.toHex(signature.v), //27 in hex
+    r: String(signature.r),
+    s: String(signature.s)
+  }
+  console.log('signatureObject', signatureObject)
+
+  return web3.eth.accounts.recover(s)
 }
 
 module.exports = {

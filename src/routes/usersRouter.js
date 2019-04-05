@@ -13,6 +13,4 @@ router.delete(
   usersController.deleteOwn
 )
 
-router.post('/recover', usersController.recoverAccount)
-
 module.exports = router

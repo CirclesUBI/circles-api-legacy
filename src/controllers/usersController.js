@@ -2,7 +2,7 @@ const PostgresDB = require('../database').postgresDB
 const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
-const recoverAddress = require('../connections/blockchain')
+const { recoverAddress } = require('../connections/blockchain')
 const sns = require('../connections/sns')
 const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
 
@@ -176,12 +176,15 @@ async function deleteOwn (req, res) {
 }
 
 async function recoverAccount (req, res) {
+  console.log('recoverAccount')
   try {
     // todo: add security
     const walletAddress = await recoverAddress(
+      req.body.message,
       req.body.signature,
-      req.body.message
+      req.body.key
     )
+    logger.info('walletAddress: ' + walletAddress)
 
     const user = await User.query()
       .where({ wallet_address: walletAddress })
