@@ -178,7 +178,9 @@ async function getSuggestedContacts (req, res) {
   try {
     let contacts = JSON.parse(req.body.contacts)
     let numbers = contacts.map(contact => contact.number)
-    const users = await User.query().whereIn('phone_number', numbers)
+    const users = await User.query()
+      .whereIn('phone_number', numbers)
+      .andWhere('agreed_to_disclaimer', true)
     if (!users) return res.sendStatus(404)
     let suggestedNumbers = users.map(user => user.phone_number)
     let suggestedContacts = contacts.filter(contact =>
