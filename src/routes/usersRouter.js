@@ -84,4 +84,20 @@ router.delete(
   usersController.deleteOwn
 )
 
+/**
+ * @api {post} /users/contacts Get a list of suggested Circles contacts
+ * @apiName GetSuggestedContacts
+ * @apiGroup Users
+ * @apiVersion 1.1.2
+ * @apiPermission user, admin
+ *
+ * @apiSuccess (Success 200) {Object[]} contacts List of contacts that are Circles users.
+ * @apiSuccess (Success 200) {String} contacts.id   Phone specific contact Id.
+ * @apiSuccess (Success 200) {String} contacts.number Phone number of contact.
+ */
+router.post('/contacts', 
+  hasPermissionMiddleware('ownUser'),
+  usersController.getSuggestedContacts
+)
+
 module.exports = router
