@@ -176,13 +176,12 @@ async function deleteOwn (req, res) {
 }
 
 async function recoverAccount (req, res) {
-  console.log('recoverAccount')
   try {
     // todo: add security
+    console.log('req.body', req.body)
     const walletAddress = await recoverAddress(
       req.body.message,
-      req.body.signature,
-      req.body.key
+      req.body.signature
     )
     logger.info('walletAddress: ' + walletAddress)
 
@@ -191,22 +190,34 @@ async function recoverAccount (req, res) {
       .first()
     if (!user) return res.sendStatus(404)
 
-    logger.info(
+    await user.$relatedQuery('notifications')
+    await user.$relatedQuery('offers')
+    await user.$relatedQuery('organizations')
+
+    console.log(
+      'device_id',
+      user.device_id === req.body.device_id,
+      user.device_id,
+      req.body.device_id
+    )
+    console.log(
+      'device_endpoint',
       user.device_endpoint === req.body.device_endpoint,
       user.device_endpoint,
       req.body.device_endpoint
     )
-    logger.info(
+    console.log(
+      'phone number',
       user.phone_number === req.body.phone_number,
       user.phone_number,
       req.body.phone_number
     )
 
-    await user.$relatedQuery('notifications')
-    await user.$relatedQuery('offers')
-    await user.$relatedQuery('organizations')
+    const endpointData = await sns.getSNSEndpoint(user.device_endpoint)
 
-    if (user.phone_number !== req.body.phone_number) {
+    console.log('endpointData', endpointData.toJson())
+
+    if (user.device_id !== endpointData.Attributes.Token || !endpointData.Attributes.Enabled) {
       // update sns endpoint with new device token
       const endpointArn = await sns.updateSNSEndpoint(
         user.device_endpoint,
@@ -222,7 +233,7 @@ async function recoverAccount (req, res) {
 
       user = await user.patchAndFetchById(user.id, {
         phone_number: req.body.phone_number || user.phone_number,
-        device_endpoint: endpointArn
+        device_endpoint: endpointArn        
       })
       logger.info('user ' + user)
     }

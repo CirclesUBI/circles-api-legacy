@@ -5,11 +5,11 @@ const {
   createFakeNotification
 } = require('./helpers/fakers')
 
-const fakeUsers = []
-const requiredUsers = 5
+const requiredUsers = 10
+const fakeUsers = [...new Array(requiredUsers)]
 
-const fakeOrganizations = []
 const requiredOrganizations = 2
+let fakeOrganizations = [...new Array(requiredOrganizations)]
 
 let fakeUserOrgs = []
 
@@ -22,66 +22,93 @@ const offersPerOrg = 3
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
-  return Promise.all([
-    knex('organization').del(),
-    knex('users').del(),
-    knex('user_organizations').del(),
-    knex('notification').del(),
-    knex('offer').del()
-  ])
-    .then(() => {
-      for (let i = 0; i < requiredUsers; i++) {
-        const u = createFakeUser()
-        // saving enough userIds so I can associate each
-        // org with a user in the 'user_organizations' join table
-        if (i < requiredOrganizations) {
-          fakeUserOrgs.push({ user_id: u.id })
+  return (
+    Promise.all([
+      knex('organization').del(),
+      knex('users').del(),
+      knex('user_organizations').del(),
+      knex('notification').del(),
+      knex('offer').del()
+    ])
+      .then(() => {
+        let b = createFakeUser()
+        fakeUsers.map(u => {
+          u = createFakeUser()
+          return u
+        })
+        console.log(fakeUsers, b)
+        return knex('users').insert(fakeUsers)
+      })
+      .then(() => {
+        fakeOrganizations.map((blank, i) => {
+          let org = createFakeOrganization()
+          // 1/2 have just an owner
+          org.owner_id = fakeUsers[i].id
+          if (i > requiredOrganizations / 2) {
+            // 1/2 have an owner and {rand amt} members
+            let amt = Math.ciel(Math.random * 10)
+            for (let j = 0; j < amt; j++) {
+              //pick a rand user
+              let member
+              while (!member) {
+                const randUser =
+                  fakeUsers[Math.floor(Math.random * fakeUsers.length)]
+                // can't pick the owner
+                member = randUser.id != org.owner_id ? randUser : undefined
+              }
+              fakeUserOrgs.push({
+                organization_id: org.id,
+                user_id: member.id
+              })
+            }
+          }
+          return org
+        })
+
+        return knex('organization').insert(fakeOrganizations)
+      })
+      // .then(() => {
+      //   for (let i = 0; i < requiredOrganizations; i++) {
+      //     const o = createFakeOrganization()
+      //     o.owner_id = fakeUsers[i].id
+      //     fakeUserOrgs[i].organization_id = o.id
+      //     fakeOrganizations.push(o)
+      //   }
+      //   return knex('organization').insert(fakeOrganizations)
+      // })
+      .then(() => {
+        return knex('user_organizations').insert(fakeUserOrgs)
+      })
+      .then(() => {
+        for (let i = 0; i < fakeUsers.length; i++) {
+          for (let j = 0; j < notificationsPerUser; j++) {
+            const n = createFakeNotification()
+            n.user_id = fakeUsers[i].id
+            fakeNotifications.push(n)
+          }
         }
-        fakeUsers.push(u)
-      }
-      return knex('users').insert(fakeUsers)
-    })
-    .then(() => {
-      for (let i = 0; i < requiredOrganizations; i++) {
-        const o = createFakeOrganization()
-        o.owner_id = fakeUsers[i].id
-        fakeUserOrgs[i].organization_id = o.id
-        fakeOrganizations.push(o)
-      }
-      return knex('organization').insert(fakeOrganizations)
-    })
-    .then(() => {
-      return knex('user_organizations').insert(fakeUserOrgs)
-    })
-    .then(() => {
-      for (let i = 0; i < fakeUsers.length; i++) {
-        for (let j = 0; j < notificationsPerUser; j++) {
-          const n = createFakeNotification()
-          n.user_id = fakeUsers[i].id
-          fakeNotifications.push(n)
+        return knex('notification').insert(fakeNotifications)
+      })
+      .then(() => {
+        for (let i = 0; i < fakeUsers.length; i++) {
+          for (let j = 0; j < offersPerUser; j++) {
+            const o = createFakeOffer()
+            o.owner_id = fakeUsers[i].id
+            fakeOffers.push(o)
+          }
         }
-      }
-      return knex('notification').insert(fakeNotifications)
-    })
-    .then(() => {
-      for (let i = 0; i < fakeUsers.length; i++) {
-        for (let j = 0; j < offersPerUser; j++) {
-          const o = createFakeOffer()
-          o.owner_id = fakeUsers[i].id
-          fakeOffers.push(o)
+        return knex('offer').insert(fakeOffers)
+      })
+      .then(() => {
+        fakeOffers = []
+        for (let i = 0; i < fakeOrganizations.length; i++) {
+          for (let j = 0; j < offersPerOrg; j++) {
+            const o = createFakeOffer()
+            o.owner_id = fakeOrganizations[i].id
+            fakeOffers.push(o)
+          }
         }
-      }
-      return knex('offer').insert(fakeOffers)
-    })
-    .then(() => {
-      fakeOffers = []
-      for (let i = 0; i < fakeOrganizations.length; i++) {
-        for (let j = 0; j < offersPerOrg; j++) {
-          const o = createFakeOffer()
-          o.owner_id = fakeOrganizations[i].id
-          fakeOffers.push(o)
-        }
-      }
-      return knex('offer').insert(fakeOffers)
-    })
+        return knex('offer').insert(fakeOffers)
+      })
+  )
 }

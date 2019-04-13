@@ -17,6 +17,19 @@ sns.createSNSEndpoint = circlesUser => {
   })
 }
 
+sns.getSNSEndpoint = endpointArn  => {
+  const params = {
+    EndpointArn: endpointArn
+  }
+  console.log('arans', params)
+  return new Promise((resolve, reject) => {
+    sns.getEndpointAttributes(params, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
 sns.updateSNSEndpoint = (deviceEndpoint, deviceId) => {
   const snsParams = {
     EndpointArn: deviceEndpoint,
