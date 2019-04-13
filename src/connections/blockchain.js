@@ -20,7 +20,6 @@ const packSignature = signature => {
 }
 
 const recoverAddress = async (message, signature) => {
-  
   const messageHash = await Hash.keccak256(
     hexStringToUint8Array(`0x${message.toString(16)}`)
   )

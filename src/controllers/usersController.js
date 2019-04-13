@@ -217,7 +217,10 @@ async function recoverAccount (req, res) {
 
     console.log('endpointData', endpointData.toJson())
 
-    if (user.device_id !== endpointData.Attributes.Token || !endpointData.Attributes.Enabled) {
+    if (
+      user.device_id !== endpointData.Attributes.Token ||
+      !endpointData.Attributes.Enabled
+    ) {
       // update sns endpoint with new device token
       const endpointArn = await sns.updateSNSEndpoint(
         user.device_endpoint,
@@ -233,7 +236,7 @@ async function recoverAccount (req, res) {
 
       user = await user.patchAndFetchById(user.id, {
         phone_number: req.body.phone_number || user.phone_number,
-        device_endpoint: endpointArn        
+        device_endpoint: endpointArn
       })
       logger.info('user ' + user)
     }

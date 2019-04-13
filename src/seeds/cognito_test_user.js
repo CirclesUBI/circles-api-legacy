@@ -35,7 +35,7 @@ exports.seed = function (knex, Promise) {
           'http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png',
         device_id: 'test_device_id',
         agreed_to_disclaimer: true // used for legal reasons, and to denote that the user has been fully set up
-      }      
+      }
       return knex('users').insert(testUser)
     })
     .then(() => {

@@ -17,7 +17,7 @@ sns.createSNSEndpoint = circlesUser => {
   })
 }
 
-sns.getSNSEndpoint = endpointArn  => {
+sns.getSNSEndpoint = endpointArn => {
   const params = {
     EndpointArn: endpointArn
   }
