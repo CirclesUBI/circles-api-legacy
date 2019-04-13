@@ -23,6 +23,7 @@ CRUD app for user and organization profiles
 	
 - [Users](#users)
 	- [Delete User&#39;s own record](#delete-user&#39;s-own-record)
+	- [Get a list of suggested Circles contacts](#get-a-list-of-suggested-circles-contacts)
 	- [Request User&#39;s own record](#request-user&#39;s-own-record)
 	- [Create User&#39;s own record](#create-user&#39;s-own-record)
 	- [Update User&#39;s own record](#update-user&#39;s-own-record)
@@ -413,6 +414,26 @@ CRUD app for user and organization profiles
 | Name     | Type       | Description                           |
 |:---------|:-----------|:--------------------------------------|
 |  None |  | <p>Returns nothing on success.</p>|
+
+## <a name='get-a-list-of-suggested-circles-contacts'></a> Get a list of suggested Circles contacts
+[Back to top](#top)
+
+
+
+	POST /users/contacts
+
+
+
+
+
+
+### Success 200
+
+| Name     | Type       | Description                           |
+|:---------|:-----------|:--------------------------------------|
+|  contacts | Object[] | <p>List of contacts that are Circles users.</p>|
+| &nbsp;&nbsp;&nbsp;&nbsp; contacts.id | String | <p>Phone specific contact Id.</p>|
+| &nbsp;&nbsp;&nbsp;&nbsp; contacts.number | String | <p>Phone number of contact.</p>|
 
 ## <a name='request-user&#39;s-own-record'></a> Request User&#39;s own record
 [Back to top](#top)
