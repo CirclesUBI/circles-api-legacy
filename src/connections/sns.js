@@ -35,7 +35,7 @@ sns.updateSNSEndpoint = (deviceEndpoint, deviceId) => {
     EndpointArn: deviceEndpoint,
     Attributes: {
       Token: deviceId,
-      Enabled: true
+      Enabled: 'true'
     }
   }
   return new Promise((resolve, reject) => {

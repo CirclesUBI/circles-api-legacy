@@ -177,76 +177,85 @@ async function deleteOwn (req, res) {
 
 async function recoverAccount (req, res) {
   try {
-    // todo: add security
-    console.log('req.body', req.body)
+    const now = Date.now()
+    // if timestamp message is more than 2.5 minutes ago or more than 2.5 mins from now
+    if (req.body.message < now - 150 || req.body.message > now + 150)
+      return res.sendStatus(403)
+
     const walletAddress = await recoverAddress(
       req.body.message,
       req.body.signature
     )
-    logger.info('walletAddress: ' + walletAddress)
 
-    const user = await User.query()
+    let user = await User.query()
       .where({ wallet_address: walletAddress })
       .first()
     if (!user) return res.sendStatus(404)
 
-    await user.$relatedQuery('notifications')
-    await user.$relatedQuery('offers')
-    await user.$relatedQuery('organizations')
+    let updateUserObj = {}
 
-    console.log(
-      'device_id',
-      user.device_id === req.body.device_id,
-      user.device_id,
-      req.body.device_id
-    )
-    console.log(
-      'device_endpoint',
-      user.device_endpoint === req.body.device_endpoint,
-      user.device_endpoint,
-      req.body.device_endpoint
-    )
-    console.log(
-      'phone number',
-      user.phone_number === req.body.phone_number,
-      user.phone_number,
-      req.body.phone_number
-    )
+    try {
+      const endpointData = await sns.getSNSEndpoint(user.device_endpoint)
+      // Is it a new device?
+      if (
+        req.body.device_id !== endpointData.Attributes.Token ||
+        !endpointData.Attributes.Enabled
+      ) {
+        // update sns endpoint with new device token
+        const endpointArn = await sns.updateSNSEndpoint(
+          user.device_endpoint,
+          req.body.device_id
+        )
+        logger.info('updating endpointArn ' + endpointArn)
+        updateUserObj.device_endpoint = endpointArn
+        updateUserObj.device_id = req.body.device_id
+      }
+    } catch (error) {
+      // malformed endpoint or non-existent
+      if (error.code === 'InvalidParameter' || error.code === 'NotFound') {
+        logger.warn(
+          '[' +
+            error.code +
+            '] on getSNSEndpoint() for user.id: ' +
+            user.id +
+            ' ... creating new endpoint'
+        )
+        try {
+          user.device_id = req.body.device_id
+          updateUserObj.device_endpoint = await sns.createSNSEndpoint(user)
+          updateUserObj.device_id = req.body.device_id
+        } catch (error) {
+          throw error
+        }
+      } else {
+        throw error
+      }
+    }
 
-    const endpointData = await sns.getSNSEndpoint(user.device_endpoint)
-
-    console.log('endpointData', endpointData.toJson())
-
-    if (
-      user.device_id !== endpointData.Attributes.Token ||
-      !endpointData.Attributes.Enabled
-    ) {
-      // update sns endpoint with new device token
-      const endpointArn = await sns.updateSNSEndpoint(
-        user.device_endpoint,
-        req.body.device_id
-      )
-      logger.info('endpointArn ' + endpointArn)
+    // Is it a new phone number?
+    if (user.phone_number !== req.body.phone_number) {
       // update cognito with new phone number and trigger verification
       const res = await cognitoISP.updatePhone(
         user.username,
         req.body.phone_number
       )
-      logger.info('updatePhone ' + res)
-
-      user = await user.patchAndFetchById(user.id, {
-        phone_number: req.body.phone_number || user.phone_number,
-        device_endpoint: endpointArn
-      })
-      logger.info('user ' + user)
+      logger.info('updating phone_number ' + res)
+      updateUserObj.phone_number = req.body.phone_number
     }
+
+    if (Object.entries(updateUserObj).length !== 0)
+      user = await User.query().patchAndFetchById(user.id, updateUserObj)
+
+    await user.$relatedQuery('notifications')
+    await user.$relatedQuery('offers')
+    await user.$relatedQuery('organizations')
     res.status(200).send(user)
   } catch (error) {
     logger.error(error.message)
     res.sendStatus(500)
   }
 }
-    
+
 async function getSuggestedContacts (req, res) {
   try {
     let contacts = JSON.parse(req.body.contacts)
