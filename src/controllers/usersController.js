@@ -178,8 +178,8 @@ async function deleteOwn (req, res) {
 async function recoverAccount (req, res) {
   try {
     const now = Date.now()
-    // if timestamp message is more than 2.5 minutes ago or more than 2.5 mins from now
-    if (req.body.message < now - 150 || req.body.message > now + 150)
+    // if timestamp message is more than 2.5 minutes ago or in the future send FORBIDDEN
+    if (req.body.message < now - 150 || req.body.message > now)
       return res.sendStatus(403)
 
     const walletAddress = await recoverAddress(
