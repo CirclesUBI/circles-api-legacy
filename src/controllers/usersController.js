@@ -206,7 +206,7 @@ async function recoverAccount (req, res) {
           user.device_endpoint,
           req.body.device_id
         )
-        logger.info('updating endpointArn ' + endpointArn)
+        logger.debug('updating endpointArn ' + endpointArn)
         updateUserObj.device_endpoint = endpointArn
         updateUserObj.device_id = req.body.device_id
       }
@@ -239,7 +239,7 @@ async function recoverAccount (req, res) {
         user.username,
         req.body.phone_number
       )
-      logger.info('updating phone_number ' + res)
+      logger.debug('updating phone_number ' + res)
       updateUserObj.phone_number = req.body.phone_number
     }
 
