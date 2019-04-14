@@ -95,7 +95,8 @@ router.delete(
  * @apiSuccess (Success 200) {String} contacts.id   Phone specific contact Id.
  * @apiSuccess (Success 200) {String} contacts.number Phone number of contact.
  */
-router.post('/contacts', 
+router.post(
+  '/contacts',
   hasPermissionMiddleware('ownUser'),
   usersController.getSuggestedContacts
 )
