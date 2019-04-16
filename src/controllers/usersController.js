@@ -2,7 +2,7 @@ const PostgresDB = require('../database').postgresDB
 const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
-const { recoverAddress } = require('../connections/blockchain')
+const { recoverAddress } = require('../lib/blockchain')
 const sns = require('../connections/sns')
 const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
 
@@ -179,7 +179,7 @@ async function recoverAccount (req, res) {
   try {
     const now = Date.now()
     // if timestamp message is more than 2.5 minutes ago or in the future send FORBIDDEN
-    if (req.body.message < now - 150 || req.body.message > now)
+    if (req.body.message < now-150000 || req.body.message > now)
       return res.sendStatus(403)
 
     const walletAddress = await recoverAddress(
@@ -258,14 +258,14 @@ async function recoverAccount (req, res) {
 
 async function getSuggestedContacts (req, res) {
   try {
-    let contacts = JSON.parse(req.body.contacts)
-    let numbers = contacts.map(contact => contact.number)
+    const contacts = JSON.parse(req.body.contacts)
+    const numbers = contacts.map(contact => contact.number)
     const users = await User.query()
       .whereIn('phone_number', numbers)
       .andWhere('agreed_to_disclaimer', true)
     if (!users) return res.sendStatus(404)
-    let suggestedNumbers = users.map(user => user.phone_number)
-    let suggestedContacts = contacts.filter(contact =>
+    const suggestedNumbers = users.map(user => user.phone_number)
+    const suggestedContacts = contacts.filter(contact =>
       suggestedNumbers.includes(contact.number)
     )
     res.status(200).send(suggestedContacts)

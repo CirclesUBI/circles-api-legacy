@@ -36,7 +36,6 @@ exports.seed = function (knex, Promise) {
           u = createFakeUser()
           return u
         })
-        console.log(fakeUsers, b)
         return knex('users').insert(fakeUsers)
       })
       .then(() => {

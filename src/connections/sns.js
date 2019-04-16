@@ -21,7 +21,6 @@ sns.getSNSEndpoint = endpointArn => {
   const params = {
     EndpointArn: endpointArn
   }
-  console.log('arans', params)
   return new Promise((resolve, reject) => {
     sns.getEndpointAttributes(params, (err, data) => {
       if (err) reject(err)

@@ -25,14 +25,11 @@ const hexStringToUint8Array = value => {
   if (value.length % 2) {
     value = '0' + value
   }
-  console.log(value)
   const result = []
   for (let i = 0; i < value.length; i += 2) {
     result.push(parseInt(value.substr(i, 2), 16))
   }
-  console.log(result)
   const sliced = addSlice(new Uint8Array(result))
-  console.log(sliced)
   return sliced
 }
 
