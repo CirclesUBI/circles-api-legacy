@@ -23,26 +23,19 @@ exports.seed = function (knex, Promise) {
   ])
     .then(() => {
       testUser = {
-        id: 'test',
+        id: '96b05fb0-13a1-4acb-8f39-505a7dedbcda',
         username: 'test',
         display_name: 'Test User',
-        wallet_address: '0x',
+        wallet_address: '0x571707f398847bEaD4113d334780945E0Bd2c72F',
         token_address: '0x',
         name: 'Test User',
         phone_number: '+111111111111111111',
         email: 'test@joincircles.net',
         profile_pic_url:
           'http://ribstf.org/wp-content/uploads/2015/11/empty-profile-pic.png',
-        device_id: 'test_device_id'
+        device_id: 'test_device_id',
+        agreed_to_disclaimer: true // used for legal reasons, and to denote that the user has been fully set up
       }
-      //   id: '96b05fb0-13a1-4acb-8f39-505a7dedbcda',
-      //   agreed_to_disclaimer: true, // used for legal reasons, and to denote that the user has been fully set up
-      //   display_name: 'testuser',
-      //   email: 'test@joincircles.net',
-      //   profile_pic_url: 'testuser',
-      //   device_id: 'deviceid',
-      //   phone_number: '+00111111111111111'
-      // }
       return knex('users').insert(testUser)
     })
     .then(() => {

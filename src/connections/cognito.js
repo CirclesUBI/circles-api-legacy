@@ -69,4 +69,24 @@ cognito.deleteUser = deleteUserRequest => {
   })
 }
 
+cognito.updatePhone = (username, newPhoneNumber) => {
+  var updatePhoneParams = {
+    UserAttributes: [
+      {
+        Name: 'phone_number',
+        Value: newPhoneNumber
+      }
+    ],
+    UserPoolId: cognitoPoolId,
+    Username: username
+  }
+
+  return new Promise((resolve, reject) => {
+    cognitoISP.adminUpdateUserAttributes(updatePhoneParams, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+}
+
 module.exports = cognito

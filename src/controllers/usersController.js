@@ -2,6 +2,7 @@ const PostgresDB = require('../database').postgresDB
 const User = require('../models/user')
 const logger = require('../lib/logger')
 const cognitoISP = require('../connections/cognito')
+const { recoverAddress } = require('../lib/blockchain')
 const sns = require('../connections/sns')
 const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
 
@@ -174,16 +175,97 @@ async function deleteOwn (req, res) {
   }
 }
 
+async function recoverAccount (req, res) {
+  try {
+    const now = Date.now()
+    // if timestamp message is more than 2.5 minutes ago or in the future send FORBIDDEN
+    if (req.body.message < now-150000 || req.body.message > now)
+      return res.sendStatus(403)
+
+    const walletAddress = await recoverAddress(
+      req.body.message,
+      req.body.signature
+    )
+
+    let user = await User.query()
+      .where({ wallet_address: walletAddress })
+      .first()
+    if (!user) return res.sendStatus(404)
+
+    let updateUserObj = {}
+
+    try {
+      const endpointData = await sns.getSNSEndpoint(user.device_endpoint)
+      // Is it a new device?
+      if (
+        req.body.device_id !== endpointData.Attributes.Token ||
+        !endpointData.Attributes.Enabled
+      ) {
+        // update sns endpoint with new device token
+        const endpointArn = await sns.updateSNSEndpoint(
+          user.device_endpoint,
+          req.body.device_id
+        )
+        logger.debug('updating endpointArn ' + endpointArn)
+        updateUserObj.device_endpoint = endpointArn
+        updateUserObj.device_id = req.body.device_id
+      }
+    } catch (error) {
+      // malformed endpoint or non-existent
+      if (error.code === 'InvalidParameter' || error.code === 'NotFound') {
+        logger.warn(
+          '[' +
+            error.code +
+            '] on getSNSEndpoint() for user.id: ' +
+            user.id +
+            ' ... creating new endpoint'
+        )
+        try {
+          user.device_id = req.body.device_id
+          updateUserObj.device_endpoint = await sns.createSNSEndpoint(user)
+          updateUserObj.device_id = req.body.device_id
+        } catch (error) {
+          throw error
+        }
+      } else {
+        throw error
+      }
+    }
+
+    // Is it a new phone number?
+    if (user.phone_number !== req.body.phone_number) {
+      // update cognito with new phone number and trigger verification
+      const res = await cognitoISP.updatePhone(
+        user.username,
+        req.body.phone_number
+      )
+      logger.debug('updating phone_number ' + res)
+      updateUserObj.phone_number = req.body.phone_number
+    }
+
+    if (Object.entries(updateUserObj).length !== 0)
+      user = await User.query().patchAndFetchById(user.id, updateUserObj)
+
+    await user.$relatedQuery('notifications')
+    await user.$relatedQuery('offers')
+    await user.$relatedQuery('organizations')
+    res.status(200).send(user)
+  } catch (error) {
+    logger.error(error.message)
+    res.sendStatus(500)
+  }
+}
+
 async function getSuggestedContacts (req, res) {
   try {
-    let contacts = JSON.parse(req.body.contacts)
-    let numbers = contacts.map(contact => contact.number)
+    const contacts = JSON.parse(req.body.contacts)
+    const numbers = contacts.map(contact => contact.number)
     const users = await User.query()
       .whereIn('phone_number', numbers)
       .andWhere('agreed_to_disclaimer', true)
     if (!users) return res.sendStatus(404)
-    let suggestedNumbers = users.map(user => user.phone_number)
-    let suggestedContacts = contacts.filter(contact =>
+    const suggestedNumbers = users.map(user => user.phone_number)
+    const suggestedContacts = contacts.filter(contact =>
       suggestedNumbers.includes(contact.number)
     )
     res.status(200).send(suggestedContacts)
@@ -203,5 +285,6 @@ module.exports = {
   updateOwn,
   deleteOne,
   deleteOwn,
+  recoverAccount,
   getSuggestedContacts
 }

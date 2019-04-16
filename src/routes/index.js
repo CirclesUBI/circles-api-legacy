@@ -12,6 +12,8 @@ const relayerRouter = require('./relayerRouter')
 
 const apiVersionString = require('../config/env').apiVersionString
 
+const usersController = require('../controllers/usersController')
+
 module.exports = function (app) {
   app.use(cors())
   app.use(bodyParser.urlencoded({ extended: true }))
@@ -20,6 +22,12 @@ module.exports = function (app) {
   app.get('/', (req, res) => res.status(200).json('hello Ed!'))
 
   app.use(loggingMiddleware)
+
+  app.use(
+    '/' + apiVersionString + '/users/recovery',
+    usersController.recoverAccount
+  )
+
   app.use(authMiddleware)
 
   app.use('/' + apiVersionString + '/admin', adminRouter)

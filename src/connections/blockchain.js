@@ -1,5 +1,4 @@
 const Web3 = require('web3')
-const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
 
 const rpcUrl = require('../config/env').rpcUrl
@@ -14,5 +13,6 @@ const txRelayABI = TxRelayContractJSON.abi
 module.exports = {
   provider,
   txRelayAddress,
-  txRelayABI
+  txRelayABI,
+  web3
 }
