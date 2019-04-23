@@ -58,9 +58,7 @@ const createFakeOffer = () => {
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
-      offer.price = Number(
-        faker.random.number(250) + '.' + faker.random.number(99)
-      )
+      offer.price = Number(1.99)
       break
     case 'PERCENTAGE_ITEM':
       offer.title = faker.commerce.productName()

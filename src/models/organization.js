@@ -42,7 +42,7 @@ module.exports = class Organization extends CirclesModel {
       },
       owner: {
         relation: CirclesModel.BelongsToOneRelation,
-        modelClass: `${__dirname}/users`,
+        modelClass: `${__dirname}/user`,
         join: {
           from: 'organization.owner_id',
           to: 'users.id'
