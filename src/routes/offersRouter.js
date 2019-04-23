@@ -50,7 +50,11 @@ router.get('/', hasPermissionMiddleware('allOffers'), offersController.all)
  * @apiSuccess (Success 200) {Enum} type The type of Offer {'ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY'}.
  * @apiSuccess (Success 200) {Date} updated_at Record update date.
  */
-router.get('/:id', hasPermissionMiddleware('allOffers'), offersController.findOne)
+router.get(
+  '/:id',
+  hasPermissionMiddleware('allOffers'),
+  offersController.findOne
+)
 
 /**
  * @api {post} /offers/ Create an Offer
@@ -73,11 +77,7 @@ router.get('/:id', hasPermissionMiddleware('allOffers'), offersController.findOn
  * @apiSuccess (Success 201) {Enum} type The type of Offer {'ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY'}.
  * @apiSuccess (Success 201) {Date} updated_at Record update date.
  */
-router.post(
-  '/',
-  hasPermissionMiddleware('ownOffers'),
-  offersController.addOne
-)
+router.post('/', hasPermissionMiddleware('ownOffers'), offersController.addOne)
 
 /**
  * @api {put} /offers/:offerId Update User's own Offer
