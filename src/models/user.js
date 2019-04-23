@@ -2,7 +2,7 @@ const CirclesModel = require('../lib/postgresModels')
 
 module.exports = class User extends CirclesModel {
   static get tableName () {
-    return 'users'
+    return 'user'
   }
 
   static get name () {
