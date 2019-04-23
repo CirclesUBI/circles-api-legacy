@@ -15,12 +15,7 @@ const offersPerOrg = 8
 
 exports.seed = function (knex, Promise) {
   // Deletes ALL existing entries
-  return Promise.all([
-    knex('organization').del(),
-    knex('users').del(),
-    knex('notification').del(),
-    knex('offer').del()
-  ])
+  return Promise.all([])
     .then(() => {
       testUser = {
         id: 'test',
@@ -43,7 +38,7 @@ exports.seed = function (knex, Promise) {
       //   device_id: 'deviceid',
       //   phone_number: '+00111111111111111'
       // }
-      return knex('users').insert(testUser)
+      return knex('user').insert(testUser)
     })
     .then(() => {
       testOrg = createFakeOrganization()

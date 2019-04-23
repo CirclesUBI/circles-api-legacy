@@ -3,6 +3,7 @@ const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
 
 const createFakeUser = () => {
   return {
+    username: faker.internet.userName(),
     id: faker.random.uuid(),
     agreed_to_disclaimer: true, // used for legal reasons, and to denote that the user has been fully set up
     display_name: faker.name.firstName(),
