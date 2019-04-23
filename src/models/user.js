@@ -37,7 +37,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/organization`,
         join: {
-          from: 'users.id',
+          from: 'user.id',
           to: 'organization.owner_id'
         }
       },
@@ -45,7 +45,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/notification`,
         join: {
-          from: 'users.id',
+          from: 'user.id',
           to: 'notification.owner_id'
         }
       },
@@ -53,7 +53,7 @@ module.exports = class User extends CirclesModel {
         relation: CirclesModel.HasManyRelation,
         modelClass: `${__dirname}/offer`,
         join: {
-          from: 'users.id',
+          from: 'user.id',
           to: 'offer.owner_id'
         }
       }
