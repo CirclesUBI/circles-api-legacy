@@ -553,7 +553,7 @@ describe(
 
       it('It should return its own /orgs on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/orgs/')
+          .get(versionString + '/orgs/own')
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 
