@@ -1,6 +1,6 @@
 exports.up = (knex, Promise) => {
   return Promise.all([
-    knex.schema.createTable('users', t => {
+    knex.schema.createTable('user', t => {
       t.string('id').primary()
       t.string('name')
       t.string('username', 50).notNullable()
@@ -22,7 +22,7 @@ exports.up = (knex, Promise) => {
     }),
     knex.schema.createTable('organization', t => {
       t.string('id').primary()
-      t.string('owner_id').references('users.id')
+      t.string('owner_id').references('user.id')
       t.string('organization_name', 100).notNullable()
       t.string('email', 50).notNullable()
       t.string('profile_pic_url', 500).notNullable()
@@ -59,6 +59,6 @@ exports.down = (knex, Promise) => {
   return Promise.all([
     // knex.schema.dropTable('user_organizations'),
     knex.schema.dropTable('organization'),
-    knex.schema.dropTable('users')
+    knex.schema.dropTable('user')
   ])
 }
