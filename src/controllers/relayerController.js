@@ -1,5 +1,5 @@
 const logger = require('../lib/logger')
-const MetaTxHandler = require('metatx-server')
+const MetaTxHandler = require('../connections/metatx-server')
 const apiPrivKey = process.env.API_PRIV_KEY
 const {
   provider,
@@ -17,7 +17,7 @@ const metaTxHandler = new MetaTxHandler(
 
 const relay = async (req, res) => {
   try {
-    const result = await MetaTxHandler.handle(req)
+    const result = await metaTxHandler.handle(req)
     logger.info('This the transactionHash', result)
     res.status(200).json({ status: 'success', data: result })
   } catch (error) {

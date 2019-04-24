@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "preinstall": "nvm use -i 10.15.0 || echo nvm not found: check node version && pause",
   "scripts": {
-    "start": "node -r dotenv/config src/app.js",
+    "start": "nodemon -r dotenv/config src/app.js",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
@@ -76,7 +76,7 @@
     "git-branch-is": "^2.1.0",
     "husky": "^1.3.1",
     "lodash": "^4.17.11",
-    "nodemon": "^1.18.8",
+    "nodemon": "^1.18.11",
     "prettier-standard": "^9.1.1"
   },
   "nodemonConfig": {
