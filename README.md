@@ -8,6 +8,7 @@ This holds the offchain components of the Circles API
 ```sh
 # clone and set up submodules
 git clone
+cd circles-api
 git submodule update --init
 
 # install
