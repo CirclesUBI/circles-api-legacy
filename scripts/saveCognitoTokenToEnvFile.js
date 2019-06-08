@@ -1,10 +1,10 @@
-const cognito = require('../src/connections/cognito');
+const { cognito } = require('../src/connections/cognito');
 const fs = require('fs')
 
 const authRequest = {
   "AuthFlow": "ADMIN_NO_SRP_AUTH",
   "AuthParameters": { 
-     "USERNAME": process.env.COGNITO_TEST_USERNAME,
+     "USERNAME": process.env.COGNITO_TEST_PHONE,
      "PASSWORD": process.env.COGNITO_TEST_PASSWORD
   },
   "ClientId": process.env.COGNITO_CLIENT_ID_API,
@@ -23,8 +23,9 @@ cognito.initAuth(authRequest).then( res => {
     }
     saveFile += line.toString() + "\n" 
   })
+  saveFile = saveFile.slice(0, -2)
 
-  if (!modified) saveFile +=  'AUTH_ACCESS_TOKEN=' + res.AuthenticationResult.AccessToken + '\n'
+  if (!modified) saveFile +=  'AUTH_ACCESS_TOKEN=' + res.AuthenticationResult.AccessToken
 
   fs.writeFile('.env', saveFile, 'utf8', function (err) {
     if (err) return console.error(err);
