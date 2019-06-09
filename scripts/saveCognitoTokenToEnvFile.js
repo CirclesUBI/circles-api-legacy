@@ -25,8 +25,6 @@ cognito.initAuth(authRequest).then( res => {
   })
   saveFile = saveFile.slice(0, -2)
 
-  if (!modified) saveFile +=  'AUTH_ACCESS_TOKEN=' + res.AuthenticationResult.AccessToken
-
   fs.writeFile('.env', saveFile, 'utf8', function (err) {
     if (err) return console.error(err);
   });
