@@ -4,7 +4,7 @@ const fs = require('fs')
 const authRequest = {
   "AuthFlow": "ADMIN_NO_SRP_AUTH",
   "AuthParameters": { 
-     "USERNAME": process.env.COGNITO_TEST_PHONE,
+     "USERNAME": process.env.COGNITO_TEST_USERNAME,
      "PASSWORD": process.env.COGNITO_TEST_PASSWORD
   },
   "ClientId": process.env.COGNITO_CLIENT_ID_API,
