@@ -14,6 +14,10 @@ const signUpRequest = {
       "Value": '+1111111111'
     },
     {
+      "Name": 'name',
+      "Value": 'Test User'
+    },
+    {
       "Name": 'email',
       "Value": 'test@joincircles.net'
     },
