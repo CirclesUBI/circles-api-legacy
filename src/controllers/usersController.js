@@ -1,7 +1,7 @@
 const PostgresDB = require('../database').postgresDB
 const User = require('../models/user')
 const logger = require('../lib/logger')
-const cognitoISP = require('../connections/cognito')
+const { cognito } = require('../connections/cognito')
 const sns = require('../connections/sns')
 const convertCognitoToCirclesUser = require('../lib/convertCognitoToCirclesUser')
 
@@ -58,7 +58,7 @@ async function addOne (req, res) {
 
     const endpointArn = await sns.createSNSEndpoint(circlesUser)
     circlesUser.device_endpoint = endpointArn
-    await cognitoISP.addToCognitoGroup(circlesUser)
+    await cognito.addToCognitoGroup(circlesUser)
     user = await User.query(trx).insert(circlesUser)
     await trx.commit()
     res.status(201).send(user)
@@ -83,7 +83,7 @@ async function addOwn (req, res) {
 
     const endpointArn = await sns.createSNSEndpoint(circlesUser)
     circlesUser.device_endpoint = endpointArn
-    await cognitoISP.addToCognitoGroup(circlesUser)
+    await cognito.addToCognitoGroup(circlesUser)
     user = await User.query(trx).insert(circlesUser)
     await trx.commit()
     res.status(201).send(user)

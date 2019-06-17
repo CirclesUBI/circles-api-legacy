@@ -2,7 +2,7 @@ const faker = require('faker')
 const request = require('supertest')
 const app = require('../src/app')
 const server = require('../src/app').server
-const cognito = require('../src/connections/cognito')
+const { cognito } = require('../src/connections/cognito')
 
 const {
   createFakeCognitoUser,
