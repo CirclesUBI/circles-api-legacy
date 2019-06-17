@@ -16,9 +16,9 @@
     "test": "jest --forceExit --setupFiles dotenv/config",
     "retest": "npm run migrate:down && npm run migrate:up && npm test",
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
-    "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
-    "cognito:jwt": "node -r dotenv/config scripts/saveCognitoJWTToEnvFile.js",
-    "cognito:testuser": "node -r dotenv/config scripts/createCognitoTestUser.js",
+    "cognito:token": "node -r dotenv/config scripts/saveAuthTokenToEnvFile.js",
+    "cognito:jwt": "node -r dotenv/config scripts/saveJWTToEnvFile.js",
+    "cognito:testuser": "node -r dotenv/config scripts/createTestUser.js",
     "format": "prettier-standard src/**/*.js __tests__/**/*.js",
     "signTx": "node -r dotenv/config scripts/signTx.js",
     "docs": "apidoc -i src/ -o doc/ && apidoc-markdown2 -p ./doc -o API.md && concat -o README.md README_HEADER.md API.md"
