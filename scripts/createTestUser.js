@@ -29,8 +29,11 @@ const signUpRequest = {
 }
 
 cognitoISP.signUp(signUpRequest, (err, res) => {
-  if (err) console.error(err)
-  console.log('SignUp.')
+  if (err) {
+    console.error(err)    
+    return console.log('exiting ...')
+  } 
+  console.log('Signed up.')
 
   const confirmSignUpRequest = {
     "UserPoolId": process.env.COGNITO_POOL_ID,
@@ -38,7 +41,7 @@ cognitoISP.signUp(signUpRequest, (err, res) => {
   }
   cognitoISP.adminConfirmSignUp(confirmSignUpRequest, (err, res) => {
     if (err) console.error(err)
-    console.log('Confirm.')
+    console.log('Confirmed signup.')
 
     const addToGroupRequest = {
       "Username": process.env.COGNITO_TEST_USERNAME,
@@ -73,7 +76,7 @@ cognitoISP.signUp(signUpRequest, (err, res) => {
                 
         cognitoISP.adminInitiateAuth(authRequest, (err, res) => {
           if (err) console.error(err)
-
+          console.log('Logged in.')
           const token = res.AuthenticationResult.AccessToken
           let reqUrl = 'http://localhost:8080/' + process.env.API_VERSION + '/users'
 
@@ -85,8 +88,9 @@ cognitoISP.signUp(signUpRequest, (err, res) => {
               accesstoken: token
             }
           }, function(error, response, body) {
-            if (error) console.error(error) 
-            if (!error && response.statusCode == 200) {
+            if (error) console.error(error)
+            if (!error && response.statusCode == 201) {
+              console.log('Created DB user record:')
               console.log(body);
             }          
           })
