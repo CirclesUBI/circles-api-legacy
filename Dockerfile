@@ -2,7 +2,7 @@ FROM mhart/alpine-node:10.1
 WORKDIR /app
 COPY . .
 
-RUN apk --update add gcc make g++ zlib-dev
+RUN apk --update add make gcc g++ python
 
 RUN npm install
 
