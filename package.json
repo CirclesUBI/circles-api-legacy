@@ -59,7 +59,6 @@
     "jsonwebtoken": "^8.4.0",
     "jwk-to-pem": "^2.0.0",
     "knex": "^0.15.2",
-    "metatx-server": "^1.0.4",
     "objection": "^1.4.0",
     "pg": "^7.6.1",
     "role-acl": "^3.2.0",
