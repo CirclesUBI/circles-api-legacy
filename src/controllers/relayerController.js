@@ -1,5 +1,5 @@
 const logger = require('../lib/logger')
-const MetaTxHandler = require('../connections/metatx-server')
+const MetaTxHandler = require('metatx-server')
 const apiPrivKey = process.env.API_PRIV_KEY
 const {
   provider,
