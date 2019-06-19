@@ -1,0 +1,12 @@
+.git/
+.tests/
+.vscode/
+scripts/
+.eslintrc.js
+.gitignore
+.gitmodules
+.nvmrc
+node_modules/
+!contracts/
+contracts/*
+!contracts/build
