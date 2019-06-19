@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  api:
-    image: 344108883756.dkr.ecr.eu-central-1.amazonaws.com/circles-api-ecr:latest
+  main:
+    image: circles-api:latest
     env_file:
       - .env
     ports:

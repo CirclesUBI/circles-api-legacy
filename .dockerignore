@@ -1,5 +1,17 @@
-.git/
-.tests/
+.git
+Dockerfile
+docker-compose.yml
+knexfile.js
+.DS_Store
+.gitignore
+*.md
+env.*
+
+# To prevent storing dev/temporary container data
+*.csv
+tmp
+
+__tests__/
 .vscode/
 scripts/
 .eslintrc.js
