@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 
 services:
   main:
@@ -7,11 +7,9 @@ services:
     env_file:
       - .env
     ports:
-      - 0.0.0.0:8080:8080
-    command: ['sh', './scripts/post-boot.sh'] 
+      - 8080:8080
+    command: ['npm', 'run', 'prod']
 
   ganache:
     image: trufflesuite/ganache-cli:latest
-    command: -m 'enable depend figure right kit daughter job giraffe news window tonight more'
-    ports: 
-      - 8545:8545
+    command: -i 5777 -m 'enable depend figure right kit daughter job giraffe news window tonight more'
