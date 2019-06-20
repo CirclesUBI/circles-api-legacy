@@ -13,12 +13,17 @@ tmp
 
 __tests__/
 .vscode/
-scripts/
+
 .eslintrc.js
 .gitignore
 .gitmodules
 .nvmrc
 node_modules/
+
 !contracts/
 contracts/*
 !contracts/build
+
+!scripts/
+scripts/*
+!scripts/post-boot.sh

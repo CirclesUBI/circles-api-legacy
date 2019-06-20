@@ -3,10 +3,12 @@ version: '3'
 services:
   main:
     image: circles-api:latest
+    depends_on: ['ganache']
     env_file:
       - .env
     ports:
       - 0.0.0.0:8080:8080
+    command: ['sh', './scripts/post-boot.sh'] 
 
   ganache:
     image: trufflesuite/ganache-cli:latest
