@@ -6,7 +6,7 @@
   "preinstall": "nvm use -i 10.15.0 || echo nvm not found: check node version && pause",
   "scripts": {
     "start": "node src/app.js",
-    "migrate:truffle": "cd contracts && npx truffle migrate --network staging --reset --compile-all",
+    "migrate:truffle": "cd contracts && npx truffle migrate --reset --compile-all",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
