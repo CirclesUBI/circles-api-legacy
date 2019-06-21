@@ -1,4 +1,4 @@
-const cognito = require('../src/connections/cognito');
+const { cognito } = require('../src/connections/cognito');
 const fs = require('fs')
 
 const authRequest = {
@@ -23,8 +23,7 @@ cognito.initAuth(authRequest).then( res => {
     }
     saveFile += line.toString() + "\n" 
   })
-
-  if (!modified) saveFile +=  'AUTH_ACCESS_TOKEN=' + res.AuthenticationResult.AccessToken + '\n'
+  saveFile = saveFile.slice(0, -2)
 
   fs.writeFile('.env', saveFile, 'utf8', function (err) {
     if (err) return console.error(err);
