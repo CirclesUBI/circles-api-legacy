@@ -1,0 +1,15 @@
+version: '3.6'
+
+services:
+  main:
+    image: circles-api:latest
+    depends_on: ['ganache']
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    command: ['npm', 'run', 'local']
+
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    command: -i 5777 -m 'enable depend figure right kit daughter job giraffe news window tonight more'

@@ -152,7 +152,7 @@ describe('Setup', () => {
 
 describe(
   'Integration Tests: Circles API ' + adminVersionString + ' admin routes',
-  async () => {
+  () => {
     it('It should respond to the base route on GET', async () => {
       const result = await request(app).get('/')
       expect(result.text).toEqual('"hello Ed!"')
