@@ -12,6 +12,7 @@ const txRelayAddress =
 const txRelayABI = TxRelayContractJSON.abi
 
 module.exports = {
+  web3,
   provider,
   txRelayAddress,
   txRelayABI
