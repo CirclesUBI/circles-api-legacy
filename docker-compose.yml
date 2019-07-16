@@ -8,8 +8,8 @@ services:
       - .env
     ports:
       - 8080:8080
-    command: ['npm', 'run', 'local']
+    command: ['npm', 'run', 'docker']
 
   ganache:
     image: trufflesuite/ganache-cli:latest
-    command: -i 5777 -m 'enable depend figure right kit daughter job giraffe news window tonight more'
+    command: -d -i 5777 -m 'enable depend figure right kit daughter job giraffe news window tonight more'

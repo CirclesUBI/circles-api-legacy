@@ -46,10 +46,10 @@ const getNonce = async (sender) => {
 };
 
 const sign = async (txParams, relayNonce, signer) => {
-  txParams.nonce = Web3.utils.toHex(relayNonce);
+  console.log(web3.utils)
+  txParams.nonce = web3.utils.toHex(relayNonce);
   const tx = new Transaction(txParams);
   const rawTx = `0x${tx.serialize().toString('hex')}`;
-  console.log(rawTx)
   signer.signRawTx(rawTx, (err, metaSignedTx) => {
     const params = {
       metaNonce: txParams.nonce,
@@ -74,7 +74,7 @@ getSender().then(async (senderKeyPair) => {
     from: senderKeyPair.address,
     to: hubAddress,
     value: 0,
-    data: HubContract.methods.signup(senderKeyPair.address, 'test').encodeABI()
+    data: HubContract.methods.relayerSignup(senderKeyPair.address, 'test').encodeABI()
   };
   console.log(`relayNonce ${relayNonce}`)
   return sign(tx, relayNonce, txRelaySigner);
