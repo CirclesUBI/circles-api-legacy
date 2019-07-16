@@ -49,7 +49,6 @@ const sign = async (txParams, relayNonce, signer) => {
   txParams.nonce = Web3.utils.toHex(relayNonce);
   const tx = new Transaction(txParams);
   const rawTx = `0x${tx.serialize().toString('hex')}`;
-  console.log(rawTx)
   signer.signRawTx(rawTx, (err, metaSignedTx) => {
     const params = {
       metaNonce: txParams.nonce,
