@@ -20,23 +20,27 @@ const relay = async (req, res) => {
   try {
     const result = await metaTxHandler.handle(req)
     logger.info('This the transactionHash', result)
-    
+
     const receipt = await web3.eth.getTransactionReceipt(result)
 
     const signupEventInputs = [
       {
-        "indexed": true,
-        "name": "user",
-        "type": "address"
+        indexed: true,
+        name: 'user',
+        type: 'address'
       },
       {
-        "indexed": false,
-        "name": "token",
-        "type": "address"
+        indexed: false,
+        name: 'token',
+        type: 'address'
       }
     ]
 
-    const log = web3.eth.abi.decodeLog(signupEventInputs, receipt.logs[1].data, receipt.logs[1].topics)
+    const log = web3.eth.abi.decodeLog(
+      signupEventInputs,
+      receipt.logs[1].data,
+      receipt.logs[1].topics
+    )
     console.log(log)
 
     res.status(200).json({ status: 'success', data: result })
