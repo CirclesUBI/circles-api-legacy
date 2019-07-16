@@ -41,7 +41,6 @@ const relay = async (req, res) => {
       receipt.logs[1].data,
       receipt.logs[1].topics
     )
-    console.log(log)
 
     res.status(200).json({ status: 'success', data: result })
   } catch (error) {
