@@ -12,7 +12,7 @@
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
     "migrate:seed": "knex seed:run",
-    "migrate:all": "npm run migrate:down && npm run migrate:up && npm run migrate:seed",    
+    "migrate:all": "npm run migrate:down && npm run migrate:up && npm run migrate:seed",
     "local": "cd contracts && npx truffle migrate --reset --compile-all && cd .. && npm run dev",
     "staging": "cd contracts && npx truffle migrate --network staging --reset --compile-all && cd .. && npm start",
     "docker": "cd contracts && npx truffle migrate --network docker --reset --compile-all && cd .. && npm start",
