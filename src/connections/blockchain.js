@@ -3,7 +3,7 @@ const HubContractJSON = require('../../contracts/build/contracts/Hub.json')
 const TxRelayContractJSON = require('../../contracts/build/contracts/TxRelay.json')
 
 const rpcUrl = require('../config/env').rpcUrl
-const provider = new Web3.providers.HttpProvider(rpcUrl)
+const provider = new Web3.providers.WebsocketProvider(rpcUrl)
 const web3 = new Web3(provider)
 
 const txRelayAddress =
