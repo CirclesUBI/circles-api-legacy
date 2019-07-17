@@ -43,7 +43,7 @@ const relay = async (req, res) => {
     )
     console.log(log)
 
-    res.status(200).json({ status: 'success', data: result })
+    res.status(200).json({ status: 'success', data: receipt })
   } catch (error) {
     let code = 500
     if (error.code) code = error.code
