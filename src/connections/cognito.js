@@ -69,4 +69,4 @@ cognito.deleteUser = deleteUserRequest => {
   })
 }
 
-module.exports = cognito
+module.exports = { cognito, cognitoISP }

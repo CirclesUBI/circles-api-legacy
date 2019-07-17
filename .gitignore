@@ -5,7 +5,8 @@ node_modules/*
 *.log
 *.csv
 *.notes
-.env
 .env*
 build/*
 tunnel.sh
+doc/*
+coverage/*

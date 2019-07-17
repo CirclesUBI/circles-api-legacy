@@ -2,7 +2,7 @@ const faker = require('faker')
 const request = require('supertest')
 const app = require('../src/app')
 const server = require('../src/app').server
-const cognito = require('../src/connections/cognito')
+const { cognito } = require('../src/connections/cognito')
 
 const {
   createFakeCognitoUser,
@@ -553,7 +553,7 @@ describe(
 
       it('It should return its own /orgs on GET', async () => {
         const { res, req } = await request(app)
-          .get(versionString + '/orgs/')
+          .get(versionString + '/orgs/own')
           .set('Accept', 'application/json')
           .set('accesstoken', testUserAccessToken)
 

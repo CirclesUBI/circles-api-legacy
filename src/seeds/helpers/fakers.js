@@ -3,6 +3,7 @@ const offerTypes = ['ITEM', 'PERCENTAGE_ITEM', 'PERCENTAGE_CATEGORY']
 
 const createFakeUser = () => {
   return {
+    username: faker.internet.userName(),
     id: faker.random.uuid(),
     agreed_to_disclaimer: true, // used for legal reasons, and to denote that the user has been fully set up
     display_name: faker.name.firstName(),
@@ -58,9 +59,7 @@ const createFakeOffer = () => {
       offer.title = faker.commerce.productName()
       offer.description = faker.lorem.sentence()
       offer.amount = faker.random.number(250)
-      offer.price = Number(
-        faker.random.number(250) + '.' + faker.random.number(99)
-      )
+      offer.price = Number(1.99)
       break
     case 'PERCENTAGE_ITEM':
       offer.title = faker.commerce.productName()

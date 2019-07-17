@@ -5,20 +5,27 @@
   "main": "src/index.js",
   "preinstall": "nvm use -i 10.15.0 || echo nvm not found: check node version && pause",
   "scripts": {
-    "start": "node -r dotenv/config src/app.js",
+    "start": "node src/app.js",
+    "dev": "nodemon -r dotenv/config src/app.js",
+    "migrate:truffle": "cd contracts && npx truffle migrate --reset --compile-all",
     "migrate:up": "knex migrate:latest",
     "migrate:down": "knex migrate:rollback",
     "migrate:create": "sh scripts/copyMigration.sh",
     "migrate:seed": "knex seed:run",
     "migrate:all": "npm run migrate:down && npm run migrate:up && npm run migrate:seed",
-    "dev": "nodemon -r dotenv/config src/app.js",
+    "local": "cd contracts && npx truffle migrate --reset --compile-all && cd .. && npm run dev",
+    "staging": "cd contracts && npx truffle migrate --network staging --reset --compile-all && cd .. && npm start",
+    "docker": "cd contracts && npx truffle migrate --network docker --reset --compile-all && cd .. && npm start",
     "dev:tunnel": "sh scripts/tunnel.sh && npm run dev",
     "test": "jest --forceExit --setupFiles dotenv/config",
     "retest": "npm run migrate:down && npm run migrate:up && npm test",
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage",
-    "token": "node -r dotenv/config scripts/saveCognitoTokenToEnvFile.js",
+    "cognito:token": "node -r dotenv/config scripts/saveAuthTokenToEnvFile.js",
+    "cognito:jwt": "node -r dotenv/config scripts/saveJWTToEnvFile.js",
+    "cognito:testuser": "node -r dotenv/config scripts/createTestUser.js",
     "format": "prettier-standard src/**/*.js __tests__/**/*.js",
-    "signTx": "node -r dotenv/config scripts/signTx.js"
+    "signTx": "node -r dotenv/config scripts/signTx.js",
+    "docs": "apidoc -i src/ -o doc/ && apidoc-markdown2 -p ./doc -o API.md && concat -o README.md README_HEADER.md API.md"
   },
   "jest": {
     "verbose": true,
@@ -56,23 +63,28 @@
     "jsonwebtoken": "^8.4.0",
     "jwk-to-pem": "^2.0.0",
     "knex": "^0.15.2",
+    "metatx-server": "^1.0.9",
     "objection": "^1.4.0",
     "pg": "^7.6.1",
     "role-acl": "^3.2.0",
     "supertest": "^3.4.2",
     "supports-color": "^6.1.0",
-    "web3": "1.0.0-beta.37",
+    "web3": "^1.0.0-beta.37",
     "websocket": "^1.0.28",
     "winston": "^3.0.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.7",
+    "apidoc-markdown2": "^0.3.7",
+    "concat": "^1.0.3",
     "dotenv": "^6.0.0",
     "faker": "^4.1.0",
     "git-branch-is": "^2.1.0",
     "husky": "^1.3.1",
     "lodash": "^4.17.11",
-    "nodemon": "^1.18.8",
-    "prettier-standard": "^9.1.1"
+    "nodemon": "^1.18.11",
+    "prettier-standard": "^9.1.1",
+    "request": "^2.88.0"
   },
   "nodemonConfig": {
     "events": {
