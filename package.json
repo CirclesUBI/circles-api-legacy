@@ -62,7 +62,7 @@
     "jest": "^24.0.0",
     "jsonwebtoken": "^8.4.0",
     "jwk-to-pem": "^2.0.0",
-    "knex": "^0.15.2",
+    "knex": "^0.19.5",
     "metatx-server": "^1.0.9",
     "objection": "^1.4.0",
     "pg": "^7.6.1",
